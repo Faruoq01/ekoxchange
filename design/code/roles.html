@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Eko Xchange Dashboard - Roles</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#7C3AED",
+              "background-light": "#F8FAFC",
+              "background-dark": "#0F172A",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1E293B",
+              "text-light": "#64748B",
+              "text-dark": "#94A3B8",
+              "heading-light": "#0F172A",
+              "heading-dark": "#F1F5F9",
+              "border-light": "#E2E8F0",
+              "border-dark": "#334155",
+            },
+            fontFamily: {
+              display: ["Poppins", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.75rem",
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 34px;
+        height: 20px;
+      }
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 12px;
+        width: 12px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+      input:checked + .slider {
+        background-color: #7c3aed;
+      }
+      input:checked + .slider:before {
+        transform: translateX(14px);
+      }
+    </style>
+  </head>
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex h-screen">
+      <aside
+        class="w-64 bg-card-light dark:bg-card-dark p-6 flex flex-col justify-between"
+      >
+        <div>
+          <div class="flex items-center gap-2 mb-10">
+            <div class="bg-yellow-400 p-2 rounded-full">
+              <span class="text-white text-2xl font-bold">E</span>
+            </div>
+            <span
+              class="text-xl font-semibold text-heading-light dark:text-heading-dark"
+              >Eko Xchange</span
+            >
+          </div>
+          <nav class="flex flex-col gap-2">
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">dashboard</span>
+              <span>Dashboard</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">group</span>
+              <span>Users</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">currency_bitcoin</span>
+              <span>Crypto</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">receipt_long</span>
+              <span>Transactions</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">bar_chart</span>
+              <span>Analytics</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">support_agent</span>
+              <span>Support</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined"
+                >admin_panel_settings</span
+              >
+              <span>Roles</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">card_giftcard</span>
+              <span>Gift Card</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">group_add</span>
+              <span>Referrals</span>
+            </a>
+          </nav>
+        </div>
+        <div>
+          <a
+            class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+            href="#"
+          >
+            <span class="material-symbols-outlined">settings</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </aside>
+      <main class="flex-1 p-6 lg:p-10 overflow-y-auto">
+        <header class="flex justify-between items-center mb-8">
+          <h1
+            class="text-3xl font-bold text-heading-light dark:text-heading-dark"
+          >
+            Roles and Permissions
+          </h1>
+          <div class="flex items-center gap-4">
+            <button
+              class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <div
+              class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-500"
+            >
+              <img
+                alt="User avatar"
+                class="rounded-full w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlUrdzmlIurWPF4fyBiq1V8kLAMMlA7M9mjI6oO_NAhT4prluxHNWRXqRW9TGo6fxIPrnXEs1ziZtugtIf2DWSxf6AcwtduzL77zB5bhJKAsJDNiA5VyQ2cF2YXLm4fz3Op7Ha9-3QoUCNkmBcg0-wVnFL3qgvgjohd2bOnDd4T92P_MeB0MNwBKeWy8PUp4-t9mfUi3AGspgW1EiDBpaubTZcA-ucsottyA7RgpGMIwSZfASHxjvMkRy5ib-4P0tyCPGvPdHtw"
+              />
+            </div>
+          </div>
+        </header>
+        <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg">
+          <div class="flex justify-between items-center mb-6">
+            <h2
+              class="text-2xl font-semibold text-heading-light dark:text-heading-dark"
+            >
+              Manage Roles
+            </h2>
+            <button
+              class="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90 transition-colors"
+            >
+              <span class="material-symbols-outlined">add</span>
+              <span>New Role</span>
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr
+                  class="text-xs text-text-light dark:text-text-dark uppercase border-b border-border-light dark:border-border-dark"
+                >
+                  <th class="py-3 px-4 font-medium">Role Name</th>
+                  <th class="py-3 px-4 font-medium">Description</th>
+                  <th class="py-3 px-4 font-medium">Users</th>
+                  <th class="py-3 px-4 font-medium text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody
+                class="divide-y divide-border-light dark:divide-border-dark"
+              >
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 font-semibold">Administrator</td>
+                  <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                    Full access to all features and settings.
+                  </td>
+                  <td class="py-4 px-4 font-medium">5</td>
+                  <td class="py-4 px-4 text-center">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white p-1 rounded-full"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >edit</span
+                      >
+                    </button>
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-red-500 dark:hover:text-red-400 p-1 rounded-full"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >delete</span
+                      >
+                    </button>
+                  </td>
+                </tr>
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 font-semibold">Support Agent</td>
+                  <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                    Can view and respond to support tickets.
+                  </td>
+                  <td class="py-4 px-4 font-medium">12</td>
+                  <td class="py-4 px-4 text-center">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white p-1 rounded-full"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >edit</span
+                      >
+                    </button>
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-red-500 dark:hover:text-red-400 p-1 rounded-full"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >delete</span
+                      >
+                    </button>
+                  </td>
+                </tr>
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 font-semibold">Analyst</td>
+                  <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                    Can view analytics and transaction data.
+                  </td>
+                  <td class="py-4 px-4 font-medium">8</td>
+                  <td class="py-4 px-4 text-center">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white p-1 rounded-full"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >edit</span
+                      >
+                    </button>
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-red-500 dark:hover:text-red-400 p-1 rounded-full"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >delete</span
+                      >
+                    </button>
+                  </td>
+                </tr>
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 font-semibold">Viewer</td>
+                  <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                    Read-only access to dashboard data.
+                  </td>
+                  <td class="py-4 px-4 font-medium">25</td>
+                  <td class="py-4 px-4 text-center">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white p-1 rounded-full"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >edit</span
+                      >
+                    </button>
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-red-500 dark:hover:text-red-400 p-1 rounded-full"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >delete</span
+                      >
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="mt-8 bg-card-light dark:bg-card-dark p-6 rounded-lg">
+          <h2
+            class="text-2xl font-semibold text-heading-light dark:text-heading-dark mb-6"
+          >
+            Permissions for 'Administrator' Role
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="space-y-4">
+              <h3
+                class="font-semibold text-lg text-heading-light dark:text-heading-dark border-b border-border-light dark:border-border-dark pb-2"
+              >
+                Users
+              </h3>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >View Users</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >Create Users</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >Edit Users</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >Delete Users</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <h3
+                class="font-semibold text-lg text-heading-light dark:text-heading-dark border-b border-border-light dark:border-border-dark pb-2"
+              >
+                Transactions
+              </h3>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >View Transactions</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >Approve Transactions</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >Export Data</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <h3
+                class="font-semibold text-lg text-heading-light dark:text-heading-dark border-b border-border-light dark:border-border-dark pb-2"
+              >
+                Support
+              </h3>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >View Tickets</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >Reply to Tickets</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >Close Tickets</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <h3
+                class="font-semibold text-lg text-heading-light dark:text-heading-dark border-b border-border-light dark:border-border-dark pb-2"
+              >
+                Analytics
+              </h3>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >View Dashboard</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >Access Reports</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <h3
+                class="font-semibold text-lg text-heading-light dark:text-heading-dark border-b border-border-light dark:border-border-dark pb-2"
+              >
+                Settings
+              </h3>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >Manage Roles</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-text-light dark:text-text-dark"
+                  >Configure Platform</span
+                >
+                <label class="switch"
+                  ><input checked="" type="checkbox" /><span
+                    class="slider"
+                  ></span
+                ></label>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-end mt-8">
+            <button
+              class="bg-gray-200 dark:bg-gray-600 text-heading-light dark:text-heading-dark px-6 py-2 rounded-lg mr-4 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

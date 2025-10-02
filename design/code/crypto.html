@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Eko Xchange Dashboard - Crypto Management</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#7C3AED",
+              "background-light": "#F8FAFC",
+              "background-dark": "#0F172A",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1E293B",
+              "text-light": "#64748B",
+              "text-dark": "#94A3B8",
+              "heading-light": "#0F172A",
+              "heading-dark": "#F1F5F9",
+              "border-light": "#E2E8F0",
+              "border-dark": "#334155",
+            },
+            fontFamily: {
+              display: ["Poppins", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.75rem",
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+    </style>
+  </head>
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex h-screen">
+      <aside
+        class="w-64 bg-card-light dark:bg-card-dark p-6 flex flex-col justify-between"
+      >
+        <div>
+          <div class="flex items-center gap-2 mb-10">
+            <div class="bg-yellow-400 p-2 rounded-full">
+              <span class="text-white text-2xl font-bold">E</span>
+            </div>
+            <span
+              class="text-xl font-semibold text-heading-light dark:text-heading-dark"
+              >Eko Xchange</span
+            >
+          </div>
+          <nav class="flex flex-col gap-2">
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">dashboard</span>
+              <span>Dashboard</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">group</span>
+              <span>Users</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">currency_bitcoin</span>
+              <span>Crypto</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">receipt_long</span>
+              <span>Transactions</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">bar_chart</span>
+              <span>Analytics</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">support_agent</span>
+              <span>Support</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined"
+                >admin_panel_settings</span
+              >
+              <span>Roles</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">card_giftcard</span>
+              <span>Gift Card</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">group_add</span>
+              <span>Referrals</span>
+            </a>
+          </nav>
+        </div>
+        <div>
+          <a
+            class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+            href="#"
+          >
+            <span class="material-symbols-outlined">settings</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </aside>
+      <main class="flex-1 p-6 lg:p-10 overflow-y-auto">
+        <header class="flex justify-between items-center mb-8">
+          <h1
+            class="text-3xl font-bold text-heading-light dark:text-heading-dark"
+          >
+            Crypto Management
+          </h1>
+          <div class="flex items-center gap-4">
+            <button
+              class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <div
+              class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-500"
+            >
+              <img
+                alt="User avatar"
+                class="rounded-full w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlUrdzmlIurWPF4fyBiq1V8kLAMMlA7M9mjI6oO_NAhT4prluxHNWRXqRW9TGo6fxIPrnXEs1ziZtugtIf2DWSxf6AcwtduzL77zB5bhJKAsJDNiA5VyQ2cF2YXLm4fz3Op7Ha9-3QoUCNkmBcg0-wVnFL3qgvgjohd2bOnDd4T92P_MeB0MNwBKeWy8PUp4-t9mfUi3AGspgW1EiDBpaubTZcA-ucsottyA7RgpGMIwSZfASHxjvMkRy5ib-4P0tyCPGvPdHtw"
+              />
+            </div>
+          </div>
+        </header>
+        <div class="mb-8">
+          <h2
+            class="text-2xl font-semibold text-heading-light dark:text-heading-dark mb-4"
+          >
+            Wallet Balances
+          </h2>
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          >
+            <div
+              class="bg-card-light dark:bg-card-dark p-6 rounded-lg flex flex-col justify-between"
+            >
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <img
+                    alt="Bitcoin"
+                    class="w-10 h-10"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVTS4QvdUt209B2Dr4rBWLbPZ4v0RX5Jt8LuOR6MNG2xN8NoOFZT66nALKoRZMJtSrjO40mz7UGuWqdgwpbRcZRJCgd_iJEUkiN_rpwb1e7vjpxjSxXimo8bpVRd7AUG57tSS3oCGOq2o0BRzoJVu9Thy31PJGoo16bcZiY2oCP6N4ZJ6Uy78mS0YOTVXDbrLy4Sz7LGGUUDVtxwP3Sb76LRPwOj5UzhlC6JAfu2Enj45GwhLl0ce2FapoBpTO_RNDDPkDHIms-g"
+                  />
+                  <div>
+                    <p
+                      class="font-semibold text-heading-light dark:text-heading-dark"
+                    >
+                      Bitcoin
+                    </p>
+                    <p class="text-sm text-text-light dark:text-text-dark">
+                      BTC
+                    </p>
+                  </div>
+                </div>
+                <span class="text-green-500 text-sm font-medium">+1.5%</span>
+              </div>
+              <div>
+                <p
+                  class="text-2xl font-bold text-heading-light dark:text-heading-dark"
+                >
+                  3.529020 BTC
+                </p>
+                <p class="text-text-light dark:text-text-dark">$190,500.55</p>
+              </div>
+            </div>
+            <div
+              class="bg-card-light dark:bg-card-dark p-6 rounded-lg flex flex-col justify-between"
+            >
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <img
+                    alt="Ethereum"
+                    class="w-10 h-10"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTgxzxuCQUmKZtHEer0BBDDtTT9ezF62d8q9ndrpYT6AseZXTbsUEF3onlqO5D9FUNTKzohqZnFDbrAwA4eoih1v3aVyMHzfkPEH79GkEnc94nKcmPTfUNKZhOlWN6Gn7CbU1U9spoPI9Vqwa1N2ZbtYuKHAs5qaaeqLsoop227QK-tPknOBIwYHPoamfPgMoCq8tYS8hpeUncjDNDEvem-rmijTQvjegD_Dd5q6dH436tx_7e0R63ECDhw_5FJABA0g6nR-C8eQ"
+                  />
+                  <div>
+                    <p
+                      class="font-semibold text-heading-light dark:text-heading-dark"
+                    >
+                      Ethereum
+                    </p>
+                    <p class="text-sm text-text-light dark:text-text-dark">
+                      ETH
+                    </p>
+                  </div>
+                </div>
+                <span class="text-red-500 text-sm font-medium">-0.8%</span>
+              </div>
+              <div>
+                <p
+                  class="text-2xl font-bold text-heading-light dark:text-heading-dark"
+                >
+                  15.253 ETH
+                </p>
+                <p class="text-text-light dark:text-text-dark">$45,750.22</p>
+              </div>
+            </div>
+            <div
+              class="bg-card-light dark:bg-card-dark p-6 rounded-lg flex flex-col justify-between"
+            >
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <img
+                    alt="Solana"
+                    class="w-10 h-10 rounded-full"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGtR2tHieeqPQQ9ZFKnpzfNS9iiHhMDogaGGa_xFoGZIDQaFqvybU9K9dHGFRlGxFH1FwJ2CXWvuNMnGXeTch7kIarWc27CPBtzbRhLHZY4SkCV3OvvaJvdf0I5nA9BVmPJBly4C-mc0NxMYjbq2_4WJCbdr6JlVacItTFQ4pRuJiT7_8YPQYHtcKtdnzOe_nAV7bX4AyaOOd1ACHNCHeEzyd8ECWDNRH7obrzLKmzpLAewu1UhQlvnlzndS6x1PSpvRi_p9lyEg"
+                  />
+                  <div>
+                    <p
+                      class="font-semibold text-heading-light dark:text-heading-dark"
+                    >
+                      Solana
+                    </p>
+                    <p class="text-sm text-text-light dark:text-text-dark">
+                      SOL
+                    </p>
+                  </div>
+                </div>
+                <span class="text-green-500 text-sm font-medium">+3.2%</span>
+              </div>
+              <div>
+                <p
+                  class="text-2xl font-bold text-heading-light dark:text-heading-dark"
+                >
+                  250.75 SOL
+                </p>
+                <p class="text-text-light dark:text-text-dark">$25,075.00</p>
+              </div>
+            </div>
+            <div
+              class="bg-card-light dark:bg-card-dark p-6 rounded-lg flex flex-col justify-between"
+            >
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <img
+                    alt="Tron"
+                    class="w-10 h-10"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMvWuBG5NhCqe7fah14_bWbxAK4P6QkFrEQyJfu1YfHM4mCMR9G2dDZWhpjnDhunYDMNO4Zpj0Mn2WBCY34drnV6KHOWYSIKlfA8caua6e-0wgyman6GXqGVAajd4GlsGeDHdtYt4u2td1aWdOAq4Ej7QDvi9zdDxKUlC4H-ffABxc5uDs8pCrXegKua5N5hxWjrU313bzgBBpi_i1JpeNHBnXF_eMie7SHGQmVzRYOM_pFC0DZMIwQ2V06biEotS19va4itJS2A"
+                  />
+                  <div>
+                    <p
+                      class="font-semibold text-heading-light dark:text-heading-dark"
+                    >
+                      Tron
+                    </p>
+                    <p class="text-sm text-text-light dark:text-text-dark">
+                      TRX
+                    </p>
+                  </div>
+                </div>
+                <span class="text-green-500 text-sm font-medium">+0.5%</span>
+              </div>
+              <div>
+                <p
+                  class="text-2xl font-bold text-heading-light dark:text-heading-dark"
+                >
+                  100,000 TRX
+                </p>
+                <p class="text-text-light dark:text-text-dark">$12,000.00</p>
+              </div>
+            </div>
+            <div
+              class="bg-card-light dark:bg-card-dark p-6 rounded-lg flex flex-col justify-between"
+            >
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <img
+                    alt="Tether"
+                    class="w-10 h-10"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCwgDNz75fjbxTqK16nmBtlhqq_6UuWVWC1MKM8V950d7cD1uuMj7VM0usv1x9dJZF8znkMuaGiEBF5MRGC6lPGQ7wpJIlNUdOb3F4WTqOTaTgbhAY8zyzKykqkIkXKMiIdu61MrkWV7Axlb7HME5R7faIG99Tqbx_dSWy4iXGakasN977irsrml6Tr_dBA1F87fNe-iqsC4MXz0l8ceJha55z9NfdC6XDjREpz2TdNYzYJDRp5eSfVbQoUUwCz_wpPS18jQ53nw"
+                  />
+                  <div>
+                    <p
+                      class="font-semibold text-heading-light dark:text-heading-dark"
+                    >
+                      USDT (Tron)
+                    </p>
+                    <p class="text-sm text-text-light dark:text-text-dark">
+                      USDT
+                    </p>
+                  </div>
+                </div>
+                <span
+                  class="text-gray-500 dark:text-gray-400 text-sm font-medium"
+                  >0.0%</span
+                >
+              </div>
+              <div>
+                <p
+                  class="text-2xl font-bold text-heading-light dark:text-heading-dark"
+                >
+                  5,000 USDT
+                </p>
+                <p class="text-text-light dark:text-text-dark">$5,000.00</p>
+              </div>
+            </div>
+            <div
+              class="bg-card-light dark:bg-card-dark p-6 rounded-lg flex flex-col justify-between"
+            >
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <img
+                    alt="Tether"
+                    class="w-10 h-10"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCwgDNz75fjbxTqK16nmBtlhqq_6UuWVWC1MKM8V950d7cD1uuMj7VM0usv1x9dJZF8znkMuaGiEBF5MRGC6lPGQ7wpJIlNUdOb3F4WTqOTaTgbhAY8zyzKykqkIkXKMiIdu61MrkWV7Axlb7HME5R7faIG99Tqbx_dSWy4iXGakasN977irsrml6Tr_dBA1F87fNe-iqsC4MXz0l8ceJha55z9NfdC6XDjREpz2TdNYzYJDRp5eSfVbQoUUwCz_wpPS18jQ53nw"
+                  />
+                  <div>
+                    <p
+                      class="font-semibold text-heading-light dark:text-heading-dark"
+                    >
+                      USDT (ETH)
+                    </p>
+                    <p class="text-sm text-text-light dark:text-text-dark">
+                      USDT
+                    </p>
+                  </div>
+                </div>
+                <span
+                  class="text-gray-500 dark:text-gray-400 text-sm font-medium"
+                  >0.0%</span
+                >
+              </div>
+              <div>
+                <p
+                  class="text-2xl font-bold text-heading-light dark:text-heading-dark"
+                >
+                  10,000 USDT
+                </p>
+                <p class="text-text-light dark:text-text-dark">$10,000.00</p>
+              </div>
+            </div>
+            <div
+              class="bg-card-light dark:bg-card-dark p-6 rounded-lg flex flex-col justify-between"
+            >
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <img
+                    alt="USDC"
+                    class="w-10 h-10"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuABYuqx7X3cOvsLa9vRlzUqi7E1eY4qFRU_XW_YhA1XhA9Vd7UoOz7IgqVR-QmvHuZCK4sXoQdtczy-cCQ_eLbWqmBD8JT3xe21l0eTmweZTLGWcy9fJSnEENhTbP9TlLtK3J5220bmG0Y41FeXyHHvgUQAB_dl_c9kdSFrjMXHVMrGUWqN5OcgMc5Uokob-7S27uhgbcgkP4xAHDdpuV3klXaWwRNtqFuX9WLoLS1Xk1wec0TP3jCpqRQhN2pkzoGPmSfs131jIA"
+                  />
+                  <div>
+                    <p
+                      class="font-semibold text-heading-light dark:text-heading-dark"
+                    >
+                      USDC (ETH)
+                    </p>
+                    <p class="text-sm text-text-light dark:text-text-dark">
+                      USDC
+                    </p>
+                  </div>
+                </div>
+                <span
+                  class="text-gray-500 dark:text-gray-400 text-sm font-medium"
+                  >0.0%</span
+                >
+              </div>
+              <div>
+                <p
+                  class="text-2xl font-bold text-heading-light dark:text-heading-dark"
+                >
+                  2,500 USDC
+                </p>
+                <p class="text-text-light dark:text-text-dark">$2,500.00</p>
+              </div>
+            </div>
+            <div
+              class="border-2 border-dashed border-border-light dark:border-border-dark rounded-lg flex items-center justify-center text-text-light dark:text-text-dark hover:bg-primary/5 dark:hover:bg-primary/10 cursor-pointer transition-colors"
+            >
+              <div class="text-center">
+                <span class="material-symbols-outlined text-4xl"
+                  >add_circle</span
+                >
+                <p class="mt-2 font-medium">Add New Wallet</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div
+            class="lg:col-span-3 bg-card-light dark:bg-card-dark p-6 rounded-lg"
+          >
+            <div class="flex justify-between items-center mb-4">
+              <h2
+                class="text-xl font-semibold text-heading-light dark:text-heading-dark"
+              >
+                Fee Management
+              </h2>
+              <button class="text-primary font-medium hover:underline">
+                View All
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead>
+                  <tr
+                    class="text-xs text-text-light dark:text-text-dark uppercase border-b border-border-light dark:border-border-dark"
+                  >
+                    <th class="py-3 px-4 font-medium">Crypto</th>
+                    <th class="py-3 px-4 font-medium">Fee Type</th>
+                    <th class="py-3 px-4 font-medium">Fee</th>
+                    <th class="py-3 px-4 font-medium">Status</th>
+                    <th class="py-3 px-4 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody
+                  class="divide-y divide-border-light dark:divide-border-dark"
+                >
+                  <tr class="text-sm text-heading-light dark:text-heading-dark">
+                    <td class="py-4 px-4 font-medium">Bitcoin (BTC)</td>
+                    <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                      Withdrawal
+                    </td>
+                    <td class="py-4 px-4">0.0005 BTC</td>
+                    <td class="py-4 px-4">
+                      <span
+                        class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300"
+                        >Active</span
+                      >
+                    </td>
+                    <td class="py-4 px-4">
+                      <button
+                        class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+                      >
+                        <span class="material-symbols-outlined text-base"
+                          >edit</span
+                        >
+                      </button>
+                      <button
+                        class="text-text-light dark:text-text-dark hover:text-red-500 ml-2"
+                      >
+                        <span class="material-symbols-outlined text-base"
+                          >delete</span
+                        >
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="text-sm text-heading-light dark:text-heading-dark">
+                    <td class="py-4 px-4 font-medium">Ethereum (ETH)</td>
+                    <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                      Withdrawal
+                    </td>
+                    <td class="py-4 px-4">0.005 ETH</td>
+                    <td class="py-4 px-4">
+                      <span
+                        class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300"
+                        >Active</span
+                      >
+                    </td>
+                    <td class="py-4 px-4">
+                      <button
+                        class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+                      >
+                        <span class="material-symbols-outlined text-base"
+                          >edit</span
+                        >
+                      </button>
+                      <button
+                        class="text-text-light dark:text-text-dark hover:text-red-500 ml-2"
+                      >
+                        <span class="material-symbols-outlined text-base"
+                          >delete</span
+                        >
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="text-sm text-heading-light dark:text-heading-dark">
+                    <td class="py-4 px-4 font-medium">Solana (SOL)</td>
+                    <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                      Network Fee
+                    </td>
+                    <td class="py-4 px-4">0.00001 SOL</td>
+                    <td class="py-4 px-4">
+                      <span
+                        class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300"
+                        >Active</span
+                      >
+                    </td>
+                    <td class="py-4 px-4">
+                      <button
+                        class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+                      >
+                        <span class="material-symbols-outlined text-base"
+                          >edit</span
+                        >
+                      </button>
+                      <button
+                        class="text-text-light dark:text-text-dark hover:text-red-500 ml-2"
+                      >
+                        <span class="material-symbols-outlined text-base"
+                          >delete</span
+                        >
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="text-sm text-heading-light dark:text-heading-dark">
+                    <td class="py-4 px-4 font-medium">USDT (Tron)</td>
+                    <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                      Trade
+                    </td>
+                    <td class="py-4 px-4">0.1%</td>
+                    <td class="py-4 px-4">
+                      <span
+                        class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-red-900 dark:text-red-300"
+                        >Inactive</span
+                      >
+                    </td>
+                    <td class="py-4 px-4">
+                      <button
+                        class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+                      >
+                        <span class="material-symbols-outlined text-base"
+                          >edit</span
+                        >
+                      </button>
+                      <button
+                        class="text-text-light dark:text-text-dark hover:text-red-500 ml-2"
+                      >
+                        <span class="material-symbols-outlined text-base"
+                          >delete</span
+                        >
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div
+            class="lg:col-span-2 bg-card-light dark:bg-card-dark p-6 rounded-lg"
+          >
+            <div class="flex justify-between items-center mb-4">
+              <h2
+                class="text-xl font-semibold text-heading-light dark:text-heading-dark"
+              >
+                Rate Management
+              </h2>
+              <button class="text-primary font-medium hover:underline">
+                View All
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead>
+                  <tr
+                    class="text-xs text-text-light dark:text-text-dark uppercase border-b border-border-light dark:border-border-dark"
+                  >
+                    <th class="py-3 px-4 font-medium">Pair</th>
+                    <th class="py-3 px-4 font-medium">Rate</th>
+                    <th class="py-3 px-4 font-medium text-right">24h Change</th>
+                  </tr>
+                </thead>
+                <tbody
+                  class="divide-y divide-border-light dark:divide-border-dark"
+                >
+                  <tr class="text-sm text-heading-light dark:text-heading-dark">
+                    <td class="py-4 px-4 font-medium">BTC/USD</td>
+                    <td class="py-4 px-4">$54,000.75</td>
+                    <td class="py-4 px-4 text-right text-green-500 font-medium">
+                      +2.5%
+                    </td>
+                  </tr>
+                  <tr class="text-sm text-heading-light dark:text-heading-dark">
+                    <td class="py-4 px-4 font-medium">ETH/USD</td>
+                    <td class="py-4 px-4">$3,000.10</td>
+                    <td class="py-4 px-4 text-right text-red-500 font-medium">
+                      -1.2%
+                    </td>
+                  </tr>
+                  <tr class="text-sm text-heading-light dark:text-heading-dark">
+                    <td class="py-4 px-4 font-medium">SOL/USD</td>
+                    <td class="py-4 px-4">$100.00</td>
+                    <td class="py-4 px-4 text-right text-green-500 font-medium">
+                      +3.2%
+                    </td>
+                  </tr>
+                  <tr class="text-sm text-heading-light dark:text-heading-dark">
+                    <td class="py-4 px-4 font-medium">TRX/USD</td>
+                    <td class="py-4 px-4">$0.12</td>
+                    <td class="py-4 px-4 text-right text-green-500 font-medium">
+                      +0.5%
+                    </td>
+                  </tr>
+                  <tr class="text-sm text-heading-light dark:text-heading-dark">
+                    <td class="py-4 px-4 font-medium">USDT/USD</td>
+                    <td class="py-4 px-4">$1.00</td>
+                    <td
+                      class="py-4 px-4 text-right text-gray-500 dark:text-gray-400 font-medium"
+                    >
+                      0.0%
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

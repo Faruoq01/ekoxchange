@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Eko Xchange Dashboard - Settings</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#7C3AED",
+              "background-light": "#F8FAFC",
+              "background-dark": "#0F172A",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1E293B",
+              "text-light": "#64748B",
+              "text-dark": "#94A3B8",
+              "heading-light": "#0F172A",
+              "heading-dark": "#F1F5F9",
+              "border-light": "#E2E8F0",
+              "border-dark": "#334155",
+            },
+            fontFamily: {
+              display: ["Poppins", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.75rem",
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+    </style>
+  </head>
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex h-screen">
+      <aside
+        class="w-64 bg-card-light dark:bg-card-dark p-6 flex flex-col justify-between"
+      >
+        <div>
+          <div class="flex items-center gap-2 mb-10">
+            <div class="bg-yellow-400 p-2 rounded-full">
+              <span class="text-white text-2xl font-bold">E</span>
+            </div>
+            <span
+              class="text-xl font-semibold text-heading-light dark:text-heading-dark"
+              >Eko Xchange</span
+            >
+          </div>
+          <nav class="flex flex-col gap-2">
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">dashboard</span>
+              <span>Dashboard</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">group</span>
+              <span>Users</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">currency_bitcoin</span>
+              <span>Crypto</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">receipt_long</span>
+              <span>Transactions</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">bar_chart</span>
+              <span>Analytics</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">support_agent</span>
+              <span>Support</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined"
+                >admin_panel_settings</span
+              >
+              <span>Roles</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">card_giftcard</span>
+              <span>Gift Card</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">group_add</span>
+              <span>Referrals</span>
+            </a>
+          </nav>
+        </div>
+        <div>
+          <a
+            class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-lg"
+            href="#"
+          >
+            <span class="material-symbols-outlined">settings</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </aside>
+      <main class="flex-1 p-6 lg:p-10 overflow-y-auto">
+        <header class="flex justify-between items-center mb-8">
+          <h1
+            class="text-3xl font-bold text-heading-light dark:text-heading-dark"
+          >
+            Settings
+          </h1>
+          <div class="flex items-center gap-4">
+            <button
+              class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <div
+              class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-500"
+            >
+              <img
+                alt="User avatar"
+                class="rounded-full w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlUrdzmlIurWPF4fyBiq1V8kLAMMlA7M9mjI6oO_NAhT4prluxHNWRXqRW9TGo6fxIPrnXEs1ziZtugtIf2DWSxf6AcwtduzL77zB5bhJKAsJDNiA5VyQ2cF2YXLm4fz3Op7Ha9-3QoUCNkmBcg0-wVnFL3qgvgjohd2bOnDd4T92P_MeB0MNwBKeWy8PUp4-t9mfUi3AGspgW1EiDBpaubTZcA-ucsottyA7RgpGMIwSZfASHxjvMkRy5ib-4P0tyCPGvPdHtw"
+              />
+            </div>
+          </div>
+        </header>
+        <div class="space-y-10">
+          <section class="bg-card-light dark:bg-card-dark p-6 rounded-lg">
+            <h2
+              class="text-2xl font-semibold text-heading-light dark:text-heading-dark mb-6"
+            >
+              General
+            </h2>
+            <form class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    class="block text-sm font-medium text-text-light dark:text-text-dark mb-2"
+                    for="username"
+                    >Username</label
+                  >
+                  <input
+                    class="w-full bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg px-4 py-2 text-heading-light dark:text-heading-dark focus:ring-primary focus:border-primary"
+                    id="username"
+                    type="text"
+                    value="eko_user"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium text-text-light dark:text-text-dark mb-2"
+                    for="email"
+                    >Email Address</label
+                  >
+                  <input
+                    class="w-full bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg px-4 py-2 text-heading-light dark:text-heading-dark focus:ring-primary focus:border-primary"
+                    id="email"
+                    type="email"
+                    value="user@ekoxchange.com"
+                  />
+                </div>
+              </div>
+              <div>
+                <label
+                  class="block text-sm font-medium text-text-light dark:text-text-dark mb-2"
+                  for="profile-pic"
+                  >Profile Picture</label
+                >
+                <div class="flex items-center gap-4">
+                  <img
+                    alt="Current profile picture"
+                    class="w-16 h-16 rounded-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlUrdzmlIurWPF4fyBiq1V8kLAMMlA7M9mjI6oO_NAhT4prluxHNWRXqRW9TGo6fxIPrnXEs1ziZtugtIf2DWSxf6AcwtduzL77zB5bhJKAsJDNiA5VyQ2cF2YXLm4fz3Op7Ha9-3QoUCNkmBcg0-wVnFL3qgvgjohd2bOnDd4T92P_MeB0MNwBKeWy8PUp4-t9mfUi3AGspgW1EiDBpaubTZcA-ucsottyA7RgpGMIwSZfASHxjvMkRy5ib-4P0tyCPGvPdHtw"
+                  />
+                  <button
+                    class="px-4 py-2 text-sm font-semibold text-primary border border-primary rounded-lg hover:bg-primary/10 transition-colors"
+                    type="button"
+                  >
+                    Change
+                  </button>
+                  <button
+                    class="px-4 py-2 text-sm font-semibold text-text-light dark:text-text-dark hover:text-red-500 dark:hover:text-red-400"
+                    type="button"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <button
+                  class="bg-primary text-white px-6 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+                  type="submit"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </section>
+          <section class="bg-card-light dark:bg-card-dark p-6 rounded-lg">
+            <h2
+              class="text-2xl font-semibold text-heading-light dark:text-heading-dark mb-6"
+            >
+              Security
+            </h2>
+            <div class="space-y-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3
+                    class="font-semibold text-heading-light dark:text-heading-dark"
+                  >
+                    Change Password
+                  </h3>
+                  <p class="text-sm text-text-light dark:text-text-dark">
+                    Update your password to a new one.
+                  </p>
+                </div>
+                <button
+                  class="px-4 py-2 text-sm font-semibold text-primary border border-primary rounded-lg hover:bg-primary/10 transition-colors"
+                >
+                  Change
+                </button>
+              </div>
+              <hr class="border-border-light dark:border-border-dark" />
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3
+                    class="font-semibold text-heading-light dark:text-heading-dark"
+                  >
+                    Two-Factor Authentication (2FA)
+                  </h3>
+                  <p class="text-sm text-text-light dark:text-text-dark">
+                    Add an extra layer of security to your account.
+                  </p>
+                </div>
+                <label
+                  class="relative inline-flex items-center cursor-pointer"
+                  for="two-factor"
+                >
+                  <input
+                    checked=""
+                    class="sr-only peer"
+                    id="two-factor"
+                    type="checkbox"
+                  />
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"
+                  ></div>
+                </label>
+              </div>
+            </div>
+          </section>
+          <section class="bg-card-light dark:bg-card-dark p-6 rounded-lg">
+            <h2
+              class="text-2xl font-semibold text-heading-light dark:text-heading-dark mb-6"
+            >
+              Notifications
+            </h2>
+            <div class="space-y-4">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3
+                    class="font-semibold text-heading-light dark:text-heading-dark"
+                  >
+                    Email Notifications
+                  </h3>
+                  <p class="text-sm text-text-light dark:text-text-dark">
+                    Receive email notifications for account activity.
+                  </p>
+                </div>
+                <label
+                  class="relative inline-flex items-center cursor-pointer"
+                  for="email-notifications"
+                >
+                  <input
+                    checked=""
+                    class="sr-only peer"
+                    id="email-notifications"
+                    type="checkbox"
+                  />
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"
+                  ></div>
+                </label>
+              </div>
+              <hr class="border-border-light dark:border-border-dark" />
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3
+                    class="font-semibold text-heading-light dark:text-heading-dark"
+                  >
+                    Push Notifications
+                  </h3>
+                  <p class="text-sm text-text-light dark:text-text-dark">
+                    Get push notifications on your mobile device.
+                  </p>
+                </div>
+                <label
+                  class="relative inline-flex items-center cursor-pointer"
+                  for="push-notifications"
+                >
+                  <input
+                    class="sr-only peer"
+                    id="push-notifications"
+                    type="checkbox"
+                  />
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"
+                  ></div>
+                </label>
+              </div>
+              <hr class="border-border-light dark:border-border-dark" />
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3
+                    class="font-semibold text-heading-light dark:text-heading-dark"
+                  >
+                    Promotional Offers
+                  </h3>
+                  <p class="text-sm text-text-light dark:text-text-dark">
+                    Receive emails about new features and promotions.
+                  </p>
+                </div>
+                <label
+                  class="relative inline-flex items-center cursor-pointer"
+                  for="promotional-offers"
+                >
+                  <input
+                    checked=""
+                    class="sr-only peer"
+                    id="promotional-offers"
+                    type="checkbox"
+                  />
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"
+                  ></div>
+                </label>
+              </div>
+            </div>
+          </section>
+          <section class="bg-card-light dark:bg-card-dark p-6 rounded-lg">
+            <h2
+              class="text-2xl font-semibold text-heading-light dark:text-heading-dark mb-6"
+            >
+              Ad Banner Settings
+            </h2>
+            <div class="flex items-center justify-between">
+              <div>
+                <h3
+                  class="font-semibold text-heading-light dark:text-heading-dark"
+                >
+                  Show Ad Banner
+                </h3>
+                <p class="text-sm text-text-light dark:text-text-dark">
+                  Display promotional banners on the dashboard.
+                </p>
+              </div>
+              <label
+                class="relative inline-flex items-center cursor-pointer"
+                for="ad-banner"
+              >
+                <input
+                  checked=""
+                  class="sr-only peer"
+                  id="ad-banner"
+                  type="checkbox"
+                />
+                <div
+                  class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"
+                ></div>
+              </label>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

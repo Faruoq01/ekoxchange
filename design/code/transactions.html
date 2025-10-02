@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Eko Xchange Dashboard - Transactions</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#7C3AED",
+              "background-light": "#F8FAFC",
+              "background-dark": "#0F172A",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1E293B",
+              "text-light": "#64748B",
+              "text-dark": "#94A3B8",
+              "heading-light": "#0F172A",
+              "heading-dark": "#F1F5F9",
+              "border-light": "#E2E8F0",
+              "border-dark": "#334155",
+            },
+            fontFamily: {
+              display: ["Poppins", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.75rem",
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+    </style>
+  </head>
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex h-screen">
+      <aside
+        class="w-64 bg-card-light dark:bg-card-dark p-6 flex flex-col justify-between"
+      >
+        <div>
+          <div class="flex items-center gap-2 mb-10">
+            <div class="bg-yellow-400 p-2 rounded-full">
+              <span class="text-white text-2xl font-bold">E</span>
+            </div>
+            <span
+              class="text-xl font-semibold text-heading-light dark:text-heading-dark"
+              >Eko Xchange</span
+            >
+          </div>
+          <nav class="flex flex-col gap-2">
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">dashboard</span>
+              <span>Dashboard</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">group</span>
+              <span>Users</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">currency_bitcoin</span>
+              <span>Crypto</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">receipt_long</span>
+              <span>Transactions</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">bar_chart</span>
+              <span>Analytics</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">support_agent</span>
+              <span>Support</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined"
+                >admin_panel_settings</span
+              >
+              <span>Roles</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">card_giftcard</span>
+              <span>Gift Card</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-symbols-outlined">group_add</span>
+              <span>Referrals</span>
+            </a>
+          </nav>
+        </div>
+        <div>
+          <a
+            class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+            href="#"
+          >
+            <span class="material-symbols-outlined">settings</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </aside>
+      <main class="flex-1 p-6 lg:p-10 overflow-y-auto">
+        <header class="flex justify-between items-center mb-8">
+          <h1
+            class="text-3xl font-bold text-heading-light dark:text-heading-dark"
+          >
+            Transactions
+          </h1>
+          <div class="flex items-center gap-4">
+            <button
+              class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <div
+              class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-500"
+            >
+              <img
+                alt="User avatar"
+                class="rounded-full w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlUrdzmlIurWPF4fyBiq1V8kLAMMlA7M9mjI6oO_NAhT4prluxHNWRXqRW9TGo6fxIPrnXEs1ziZtugtIf2DWSxf6AcwtduzL77zB5bhJKAsJDNiA5VyQ2cF2YXLm4fz3Op7Ha9-3QoUCNkmBcg0-wVnFL3qgvgjohd2bOnDd4T92P_MeB0MNwBKeWy8PUp4-t9mfUi3AGspgW1EiDBpaubTZcA-ucsottyA7RgpGMIwSZfASHxjvMkRy5ib-4P0tyCPGvPdHtw"
+              />
+            </div>
+          </div>
+        </header>
+        <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg mb-8">
+          <div
+            class="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4"
+          >
+            <h2
+              class="text-2xl font-semibold text-heading-light dark:text-heading-dark"
+            >
+              Transaction History
+            </h2>
+            <div class="flex items-center gap-4">
+              <div class="relative">
+                <input
+                  class="bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-text-light dark:text-text-dark w-full md:w-64"
+                  placeholder="Search transactions..."
+                  type="text"
+                />
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-light dark:text-text-dark"
+                  >search</span
+                >
+              </div>
+              <button
+                class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+              >
+                <span class="material-symbols-outlined text-base"
+                  >download</span
+                >
+                Export
+              </button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr
+                  class="text-xs text-text-light dark:text-text-dark uppercase border-b border-border-light dark:border-border-dark"
+                >
+                  <th class="py-3 px-4 font-medium">Transaction ID</th>
+                  <th class="py-3 px-4 font-medium">User</th>
+                  <th class="py-3 px-4 font-medium">Type</th>
+                  <th class="py-3 px-4 font-medium">Asset</th>
+                  <th class="py-3 px-4 font-medium">Amount</th>
+                  <th class="py-3 px-4 font-medium">Date</th>
+                  <th class="py-3 px-4 font-medium">Status</th>
+                  <th class="py-3 px-4 font-medium text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody
+                class="divide-y divide-border-light dark:divide-border-dark"
+              >
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 font-mono text-xs">TXN758473659</td>
+                  <td class="py-4 px-4">
+                    <div class="flex items-center gap-3">
+                      <img
+                        alt="User Avatar"
+                        class="w-8 h-8 rounded-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlUrdzmlIurWPF4fyBiq1V8kLAMMlA7M9mjI6oO_NAhT4prluxHNWRXqRW9TGo6fxIPrnXEs1ziZtugtIf2DWSxf6AcwtduzL77zB5bhJKAsJDNiA5VyQ2cF2YXLm4fz3Op7Ha9-3QoUCNkmBcg0-wVnFL3qgvgjohd2bOnDd4T92P_MeB0MNwBKeWy8PUp4-t9mfUi3AGspgW1EiDBpaubTZcA-ucsottyA7RgpGMIwSZfASHxjvMkRy5ib-4P0tyCPGvPdHtw"
+                      />
+                      <div>
+                        <p class="font-medium">John Doe</p>
+                        <p class="text-xs text-text-light dark:text-text-dark">
+                          john.doe@example.com
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400"
+                      ><span class="material-symbols-outlined text-base"
+                        >login</span
+                      >Deposit</span
+                    >
+                  </td>
+                  <td class="py-4 px-4 font-medium">Bitcoin (BTC)</td>
+                  <td class="py-4 px-4">
+                    +0.5 BTC
+                    <p class="text-xs text-text-light dark:text-text-dark">
+                      ~$27,000
+                    </p>
+                  </td>
+                  <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                    2023-10-27 10:30 AM
+                  </td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300"
+                      >Completed</span
+                    >
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >visibility</span
+                      >
+                    </button>
+                  </td>
+                </tr>
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 font-mono text-xs">TXN847362510</td>
+                  <td class="py-4 px-4">
+                    <div class="flex items-center gap-3">
+                      <img
+                        alt="User Avatar"
+                        class="w-8 h-8 rounded-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGtR2tHieeqPQQ9ZFKnpzfNS9iiHhMDogaGGa_xFoGZIDQaFqvybU9K9dHGFRlGxFH1FwJ2CXWvuNMnGXeTch7kIarWc27CPBtzbRhLHZY4SkCV3OvvaJvdf0I5nA9BVmPJBly4C-mc0NxMYjbq2_4WJCbdr6JlVacItTFQ4pRuJiT7_8YPQYHtcKtdnzOe_nAV7bX4AyaOOd1ACHNCHeEzyd8ECWDNRH7obrzLKmzpLAewu1UhQlvnlzndS6x1PSpvRi_p9lyEg"
+                      />
+                      <div>
+                        <p class="font-medium">Jane Smith</p>
+                        <p class="text-xs text-text-light dark:text-text-dark">
+                          jane.smith@example.com
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="inline-flex items-center gap-1.5 text-red-600 dark:text-red-400"
+                      ><span class="material-symbols-outlined text-base"
+                        >logout</span
+                      >Withdrawal</span
+                    >
+                  </td>
+                  <td class="py-4 px-4 font-medium">Ethereum (ETH)</td>
+                  <td class="py-4 px-4">
+                    -2.0 ETH
+                    <p class="text-xs text-text-light dark:text-text-dark">
+                      ~$6,000
+                    </p>
+                  </td>
+                  <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                    2023-10-26 03:15 PM
+                  </td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-yellow-900 dark:text-yellow-300"
+                      >Pending</span
+                    >
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >visibility</span
+                      >
+                    </button>
+                  </td>
+                </tr>
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 font-mono text-xs">TXN936251748</td>
+                  <td class="py-4 px-4">
+                    <div class="flex items-center gap-3">
+                      <img
+                        alt="User Avatar"
+                        class="w-8 h-8 rounded-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVTS4QvdUt209B2Dr4rBWLbPZ4v0RX5Jt8LuOR6MNG2xN8NoOFZT66nALKoRZMJtSrjO40mz7UGuWqdgwpbRcZRJCgd_iJEUkiN_rpwb1e7vjpxjSxXimo8bpVRd7AUG57tSS3oCGOq2o0BRzoJVu9Thy31PJGoo16bcZiY2oCP6N4ZJ6Uy78mS0YOTVXDbrLy4Sz7LGGUUDVtxwP3Sb76LRPwOj5UzhlC6JAfu2Enj45GwhLl0ce2FapoBpTO_RNDDPkDHIms-g"
+                      />
+                      <div>
+                        <p class="font-medium">Mike Johnson</p>
+                        <p class="text-xs text-text-light dark:text-text-dark">
+                          mike.j@example.com
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="inline-flex items-center gap-1.5 text-purple-600 dark:text-purple-400"
+                      ><span class="material-symbols-outlined text-base"
+                        >swap_horiz</span
+                      >Trade</span
+                    >
+                  </td>
+                  <td class="py-4 px-4 font-medium">BTC to SOL</td>
+                  <td class="py-4 px-4">
+                    0.1 BTC / 540 SOL
+                    <p class="text-xs text-text-light dark:text-text-dark">
+                      ~$5,400
+                    </p>
+                  </td>
+                  <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                    2023-10-25 08:00 AM
+                  </td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300"
+                      >Completed</span
+                    >
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >visibility</span
+                      >
+                    </button>
+                  </td>
+                </tr>
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 font-mono text-xs">TXN102938475</td>
+                  <td class="py-4 px-4">
+                    <div class="flex items-center gap-3">
+                      <img
+                        alt="User Avatar"
+                        class="w-8 h-8 rounded-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMvWuBG5NhCqe7fah14_bWbxAK4P6QkFrEQyJfu1YfHM4mCMR9G2dDZWhpjnDhunYDMNO4Zpj0Mn2WBCY34drnV6KHOWYSIKlfA8caua6e-0wgyman6GXqGVAajd4GlsGeDHdtYt4u2td1aWdOAq4Ej7QDvi9zdDxKUlC4H-ffABxc5uDs8pCrXegKua5N5hxWjrU313bzgBBpi_i1JpeNHBnXF_eMie7SHGQmVzRYOM_pFC0DZMIwQ2V06biEotS19va4itJS2A"
+                      />
+                      <div>
+                        <p class="font-medium">Sarah Lee</p>
+                        <p class="text-xs text-text-light dark:text-text-dark">
+                          sarah.lee@example.com
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400"
+                      ><span class="material-symbols-outlined text-base"
+                        >login</span
+                      >Deposit</span
+                    >
+                  </td>
+                  <td class="py-4 px-4 font-medium">USDT (TRC20)</td>
+                  <td class="py-4 px-4">
+                    +5000 USDT
+                    <p class="text-xs text-text-light dark:text-text-dark">
+                      ~$5,000
+                    </p>
+                  </td>
+                  <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                    2023-10-24 11:45 AM
+                  </td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-red-900 dark:text-red-300"
+                      >Failed</span
+                    >
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >visibility</span
+                      >
+                    </button>
+                  </td>
+                </tr>
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 font-mono text-xs">TXN693827104</td>
+                  <td class="py-4 px-4">
+                    <div class="flex items-center gap-3">
+                      <img
+                        alt="User Avatar"
+                        class="w-8 h-8 rounded-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTgxzxuCQUmKZtHEer0BBDDtTT9ezF62d8q9ndrpYT6AseZXTbsUEF3onlqO5D9FUNTKzohqZnFDbrAwA4eoih1v3aVyMHzfkPEH79GkEnc94nKcmPTfUNKZhOlWN6Gn7CbU1U9spoPI9Vqwa1N2ZbtYuKHAs5qaaeqLsoop227QK-tPknOBIwYHPoamfPgMoCq8tYS8hpeUncjDNDEvem-rmijTQvjegD_Dd5q6dH436tx_7e0R63ECDhw_5FJABA0g6nR-C8eQ"
+                      />
+                      <div>
+                        <p class="font-medium">David Chen</p>
+                        <p class="text-xs text-text-light dark:text-text-dark">
+                          david.chen@example.com
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="inline-flex items-center gap-1.5 text-red-600 dark:text-red-400"
+                      ><span class="material-symbols-outlined text-base"
+                        >logout</span
+                      >Withdrawal</span
+                    >
+                  </td>
+                  <td class="py-4 px-4 font-medium">USDC (ERC20)</td>
+                  <td class="py-4 px-4">
+                    -1500 USDC
+                    <p class="text-xs text-text-light dark:text-text-dark">
+                      ~$1,500
+                    </p>
+                  </td>
+                  <td class="py-4 px-4 text-text-light dark:text-text-dark">
+                    2023-10-23 09:20 PM
+                  </td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300"
+                      >Completed</span
+                    >
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary dark:hover:text-white"
+                    >
+                      <span class="material-symbols-outlined text-base"
+                        >visibility</span
+                      >
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="flex justify-between items-center mt-6">
+            <p class="text-sm text-text-light dark:text-text-dark">
+              Showing 1 to 5 of 250 transactions
+            </p>
+            <div class="flex items-center gap-2">
+              <button
+                class="px-3 py-1 border border-border-light dark:border-border-dark rounded-md text-sm font-medium text-text-light dark:text-text-dark hover:bg-background-light dark:hover:bg-card-dark disabled:opacity-50"
+                disabled=""
+              >
+                Previous
+              </button>
+              <button
+                class="px-3 py-1 border border-border-light dark:border-border-dark rounded-md text-sm font-medium text-text-light dark:text-text-dark hover:bg-background-light dark:hover:bg-card-dark"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

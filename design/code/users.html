@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Eko Xchange Dashboard - Users</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#7C3AED",
+              "background-light": "#F8FAFC",
+              "background-dark": "#1E293B",
+              "card-light": "#FFFFFF",
+              "card-dark": "#334155",
+              "text-light": "#64748B",
+              "text-dark": "#CBD5E1",
+              "heading-light": "#1E293B",
+              "heading-dark": "#F1F5F9",
+            },
+            fontFamily: {
+              display: ["Poppins", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.75rem",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex h-screen">
+      <aside
+        class="w-64 bg-card-light dark:bg-card-dark p-6 flex flex-col justify-between"
+      >
+        <div>
+          <div class="flex items-center gap-2 mb-10">
+            <div class="bg-yellow-400 p-2 rounded-full">
+              <span class="text-white text-2xl font-bold">E</span>
+            </div>
+            <span
+              class="text-xl font-semibold text-heading-light dark:text-heading-dark"
+              >Eko Xchange</span
+            >
+          </div>
+          <nav class="flex flex-col gap-2">
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-icons">dashboard</span>
+              <span>Dashboard</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-lg"
+              href="#"
+            >
+              <span class="material-icons">people</span>
+              <span>Users</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-icons">currency_bitcoin</span>
+              <span>Crypto</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-icons">receipt_long</span>
+              <span>Transactions</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-icons">analytics</span>
+              <span>Analytics</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-icons">support_agent</span>
+              <span>Support</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-icons">admin_panel_settings</span>
+              <span>Roles</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-icons">card_giftcard</span>
+              <span>Gift Card</span>
+            </a>
+            <a
+              class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+              href="#"
+            >
+              <span class="material-icons">group_add</span>
+              <span>Referrals</span>
+            </a>
+          </nav>
+        </div>
+        <div>
+          <a
+            class="flex items-center gap-3 px-4 py-3 text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary rounded-lg"
+            href="#"
+          >
+            <span class="material-icons">settings</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </aside>
+      <main class="flex-1 p-6 lg:p-10 overflow-y-auto">
+        <header class="flex justify-between items-center mb-8">
+          <h1
+            class="text-3xl font-bold text-heading-light dark:text-heading-dark"
+          >
+            Users
+          </h1>
+          <div class="flex items-center gap-6">
+            <div class="relative w-72">
+              <span
+                class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-text-light dark:text-text-dark"
+                >search</span
+              >
+              <input
+                class="w-full bg-card-light dark:bg-card-dark border-none pl-10 pr-4 py-2 rounded-lg text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary"
+                placeholder="Search users..."
+                type="text"
+              />
+            </div>
+            <button
+              class="bg-primary text-white flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-primary/90"
+            >
+              <span class="material-icons">add</span>
+              <span>Add User</span>
+            </button>
+            <button class="text-text-light dark:text-text-dark">
+              <span class="material-icons">notifications</span>
+            </button>
+            <div
+              class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-500"
+            >
+              <img
+                alt="User avatar"
+                class="rounded-full w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlUrdzmlIurWPF4fyBiq1V8kLAMMlA7M9mjI6oO_NAhT4prluxHNWRXqRW9TGo6fxIPrnXEs1ziZtugtIf2DWSxf6AcwtduzL77zB5bhJKAsJDNiA5VyQ2cF2YXLm4fz3Op7Ha9-3QoUCNkmBcg0-wVnFL3qgvgjohd2bOnDd4T92P_MeB0MNwBKeWy8PUp4-t9mfUi3AGspgW1EiDBpaubTZcA-ucsottyA7RgpGMIwSZfASHxjvMkRy5ib-4P0tyCPGvPdHtw"
+              />
+            </div>
+          </div>
+        </header>
+        <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr
+                  class="text-xs text-text-light dark:text-text-dark uppercase border-b border-gray-200 dark:border-gray-700"
+                >
+                  <th class="py-3 px-4 font-medium">User</th>
+                  <th class="py-3 px-4 font-medium">Email</th>
+                  <th class="py-3 px-4 font-medium">Role</th>
+                  <th class="py-3 px-4 font-medium">Status</th>
+                  <th class="py-3 px-4 font-medium">Last Login</th>
+                  <th class="py-3 px-4 font-medium"></th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 flex items-center gap-3">
+                    <img
+                      alt="User avatar"
+                      class="w-10 h-10 rounded-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHFoanIMmn5gzi-q_c7N0oH4k7s0ZDp3FizegkbSeQCsYaamTA_xeR15tELjIk8VSwopNg7NKHaQmjzcRVndsQnt7r3Wi2Pd63iuqyDOB2TuNfeW-J9SthBeR_tv-mUDRubcS91TNkfLgyxiSP_ncnrtWwCIWfRL2QG9k8F2LZwEZWurf-G7MBZp-fQWkBjNnZg9QBxj1CWLSX-6v3dcW-6k9jM7pgR78ql686wm5bWxBLPw5JR1t5yCGWx1cs9MZkddSaSjAUnw"
+                    />
+                    <div>
+                      <p class="font-semibold">John Doe</p>
+                      <p class="text-xs text-text-light dark:text-text-dark">
+                        @johndoe
+                      </p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">john.doe@example.com</td>
+                  <td class="py-4 px-4">Admin</td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300"
+                      >Active</span
+                    >
+                  </td>
+                  <td class="py-4 px-4">2 hours ago</td>
+                  <td class="py-4 px-4 text-right">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary"
+                    >
+                      <span class="material-icons">more_vert</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 flex items-center gap-3">
+                    <img
+                      alt="User avatar"
+                      class="w-10 h-10 rounded-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_sla3cBBR3rnva97tFHvav2RwzCeysc4Yls6ns-BFJUce7d1h04tBctzgetShUviGDk-2wJ8qPWS3uGDrnq9Zg9bSLP3m15uzrnJY6bGbXp_pdTC0_CG3A0AZnUp_X_ulyb5FBslevOr0H_dchK2l09BPFGl2q7v5GqIeQEkVImvIH9MOH7buYyjKwxkr3aJWfXoASM0Rj4UTmODdj0fOTv_WbJRJ-ZUQPr_L4vDE31pkFNKWuFq07XfQPmGPzVDdca6cpEBiMQ"
+                    />
+                    <div>
+                      <p class="font-semibold">Jane Smith</p>
+                      <p class="text-xs text-text-light dark:text-text-dark">
+                        @janesmith
+                      </p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">jane.smith@example.com</td>
+                  <td class="py-4 px-4">Trader</td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300"
+                      >Active</span
+                    >
+                  </td>
+                  <td class="py-4 px-4">5 hours ago</td>
+                  <td class="py-4 px-4 text-right">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary"
+                    >
+                      <span class="material-icons">more_vert</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 flex items-center gap-3">
+                    <img
+                      alt="User avatar"
+                      class="w-10 h-10 rounded-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuC96LghzWsOAARdbyMmkZZ-9TqT_pVzajFPzr0_LPG5ngrtRn1xasipknFgYifDbgbqGw1s58JevxFov5nYXh1BHD8dxDlqa56jzQeWBD12Af416nJXIH5FL9L9GCTII6L1PJOJ1sG_Z0VW3-fxJvqmrV3HBh2zXUl7WWWNJQPaTqNsn-IQED4PtVZWwGXqoAYlyEoJvrh3Rs2d8X6N-GFIUiVLq58dE5k_RYUFD9ytdlCyESkkRP9nxXvOdEbuuHQysxipLs4FdA"
+                    />
+                    <div>
+                      <p class="font-semibold">Sam Wilson</p>
+                      <p class="text-xs text-text-light dark:text-text-dark">
+                        @samwilson
+                      </p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">sam.wilson@example.com</td>
+                  <td class="py-4 px-4">Analyst</td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-yellow-900 dark:text-yellow-300"
+                      >Pending</span
+                    >
+                  </td>
+                  <td class="py-4 px-4">1 day ago</td>
+                  <td class="py-4 px-4 text-right">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary"
+                    >
+                      <span class="material-icons">more_vert</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 flex items-center gap-3">
+                    <img
+                      alt="User avatar"
+                      class="w-10 h-10 rounded-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4CXJKtYOLiiiRbvlqHb31U83TM4pH8xXyZSoSOWSxZEs-PTmQOPF3E6S3gaZjnYDVjffMywXpYTk6CHCEUEOcZ3a2EqqPxNLhoGg8pdQ3-q6ZVVCFeJ4JizQrNxUo_VnwGRaJU2lh9cqxUX_ONs2772i3886AZmQnk29sM4lFKts7B-00kAfNMNvnWEnAbE1YGOpyAHyy75qBzpWgK6u0L1Hye2NJMq2seX41DjG-g4ZpDqJaiD_KxnMyXNz3VjOtBNH0ejqVIA"
+                    />
+                    <div>
+                      <p class="font-semibold">Alice Johnson</p>
+                      <p class="text-xs text-text-light dark:text-text-dark">
+                        @alicej
+                      </p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">alice.j@example.com</td>
+                  <td class="py-4 px-4">Support</td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-red-900 dark:text-red-300"
+                      >Inactive</span
+                    >
+                  </td>
+                  <td class="py-4 px-4">3 days ago</td>
+                  <td class="py-4 px-4 text-right">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary"
+                    >
+                      <span class="material-icons">more_vert</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="text-sm text-heading-light dark:text-heading-dark">
+                  <td class="py-4 px-4 flex items-center gap-3">
+                    <img
+                      alt="User avatar"
+                      class="w-10 h-10 rounded-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKOLdb4wJX1TYyOSw8yX-DFEiI64tUDVC2QVO3OmpAMdAuvOgVbb_q6JkEMblV2m-K9xlZiJH6IAQAKlt0iSfpX3KNy_kus6sBeRqL67oStX-N30hRjcmSUIES3po7n0fhznthJgzMEG6lVAFd-FMEGGPMkHr7hH8SFOjjbqA6VPeycfe-zRfdXZBmjdCXjIRAC6weieBc5QZDe0o1g_u8Kum0-Sgn3rJ42pH22xdWQNAQ1XeAOOpnP43MgBMhbuPMaft2HPauTw"
+                    />
+                    <div>
+                      <p class="font-semibold">Michael Brown</p>
+                      <p class="text-xs text-text-light dark:text-text-dark">
+                        @michaelb
+                      </p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">michael.b@example.com</td>
+                  <td class="py-4 px-4">Trader</td>
+                  <td class="py-4 px-4">
+                    <span
+                      class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300"
+                      >Active</span
+                    >
+                  </td>
+                  <td class="py-4 px-4">15 mins ago</td>
+                  <td class="py-4 px-4 text-right">
+                    <button
+                      class="text-text-light dark:text-text-dark hover:text-primary"
+                    >
+                      <span class="material-icons">more_vert</span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            class="flex justify-between items-center mt-6 text-sm text-text-light dark:text-text-dark"
+          >
+            <p>Showing 1 to 5 of 20 results</p>
+            <div class="flex items-center gap-2">
+              <button
+                class="px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                &lt;
+              </button>
+              <button class="px-3 py-1 rounded-md bg-primary text-white">
+                1
+              </button>
+              <button
+                class="px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                2
+              </button>
+              <button
+                class="px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                3
+              </button>
+              <button
+                class="px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                4
+              </button>
+              <button
+                class="px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                &gt;
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
