@@ -6,8 +6,12 @@ import Button from "../forms/button";
 import Input from "../forms/input";
 import Text from "../forms/text";
 import { loginSchema, LoginSchema } from "@/app/zod/login";
+import { useRouter } from "next/navigation";
+import { AppPages } from "@/app/assets/appages";
 
 const LoginForm = () => {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -22,8 +26,7 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (data: LoginSchema) => {
-    console.log("Form submitted", data);
-    // 🔥 Call your API or mutation here
+    router.push(AppPages.home.dashboard);
   };
 
   return (

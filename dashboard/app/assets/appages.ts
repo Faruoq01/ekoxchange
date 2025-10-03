@@ -6,15 +6,15 @@ export class AppPages {
   };
 
   static home = {
-    dashboard: "/dashboard",
-    users: "/users",
-    crypto: "/crypto",
-    transactions: "/transactions",
-    analytics: "/analytics",
-    support: "/support",
-    roles: "/roles",
-    giftcards: "/gift-cards",
-    referrals: "/referrals",
-    settings: "/settings",
+    dashboard: "/home/dashboard",
+    users: "/home/users",
+    crypto: "/home/crypto",
+    transactions: "/home/transactions",
+    analytics: "/home/analytics",
+    support: "/home/support",
+    roles: "/home/roles",
+    giftcards: "/home/gift-cards",
+    referrals: "/home/referrals",
+    settings: "/home/settings",
   };
 }
