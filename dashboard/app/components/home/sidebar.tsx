@@ -2,10 +2,12 @@
 
 import { AppPages } from "@/app/assets/appages";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-const NavItem = ({ label, icon, link, active = false }: any) => {
+const NavItem = ({ label, icon, link }: any) => {
   const router = useRouter();
+  const path = usePathname();
+
   const goToPage = () => {
     router.push(link);
   };
@@ -15,7 +17,7 @@ const NavItem = ({ label, icon, link, active = false }: any) => {
       onClick={goToPage}
       className={clsx(
         "flex items-center gap-3 px-3 py-2.5 rounded-lg transition text-sm select-none mb-[8px] cursor-pointer",
-        active
+        path === link
           ? "bg-primary/10 text-primary"
           : "text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary"
       )}
@@ -56,7 +58,6 @@ const navItems = [
     label: "Dashboard",
     icon: "dashboard",
     link: AppPages.home.dashboard,
-    active: true,
   },
   { label: "Users", icon: "people", link: AppPages.home.users },
   { label: "Crypto", icon: "currency_bitcoin", link: AppPages.home.crypto },
