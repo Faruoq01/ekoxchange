@@ -3,7 +3,7 @@ import React from "react";
 import clsx from "clsx";
 
 type TextProps = {
-  variant?: "heading" | "body" | "label" | "muted";
+  variant?: "heading" | "medium" | "body" | "label" | "muted";
   children: React.ReactNode;
   className?: string;
 };
@@ -21,6 +21,16 @@ const Text: React.FC<TextProps> = ({
         <h2
           className={clsx(
             "text-3xl font-bold mb-2 text-heading-light dark:text-heading-dark",
+            className
+          )}
+        >
+          {children}
+        </h2>
+      )}
+      {variant === "medium" && (
+        <h2
+          className={clsx(
+            "text-xl font-bold mb-2 text-heading-light dark:text-heading-dark",
             className
           )}
         >

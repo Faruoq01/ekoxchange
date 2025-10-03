@@ -17,7 +17,7 @@ const Button: React.FC<ButtonProps> = ({
     <button
       {...props}
       className={clsx(
-        "w-full flex justify-center py-3 px-4 rounded-lg text-sm font-medium transition",
+        "w-full flex justify-center rounded-lg text-sm font-medium transition",
         {
           "bg-primary text-white hover:bg-primary/90 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-primary transform hover:scale-105":
             variant === "primary",
