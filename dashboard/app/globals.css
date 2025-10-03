@@ -42,6 +42,16 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --color-primary: #7c3aed;
+  --color-background-light: var(--background-light);
+  --color-background-dark: var(--background-dark);
+  --color-card-light: var(--card-light);
+  --color-card-dark: var(--card-dark);
+  --color-text-light: var(--text-light);
+  --color-text-dark: var(--text-dark);
+  --color-heading-light: var(--heading-light);
+  --color-heading-dark: var(--heading-dark);
 }
 
 .gradient-bg {
@@ -81,6 +91,10 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --background-light: #f8fafc;
+  --card-light: #ffffff;
+  --text-light: #64748b;
+  --heading-light: #1e293b;
 }
 
 .dark {
@@ -115,11 +129,15 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --background-dark: #0f172a;
+  --card-dark: #1e293b;
+  --text-dark: #94a3b8;
+  --heading-dark: #f1f5f9;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   body {
     @apply bg-background text-foreground font-sans;
