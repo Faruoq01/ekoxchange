@@ -1,12 +1,30 @@
 "use client";
+import { motion } from "framer-motion";
 
 const Dashboard = () => {
+  // Reusable animation variants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
     <main className="flex-1 pb-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+        initial="hidden"
+        animate="visible"
+        transition={{ staggerChildren: 0.2 }}
+      >
+        {/* Left section */}
         <div className="lg:col-span-2 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gradient-to-br from-primary to-purple-600 p-6 rounded-lg text-white relative overflow-hidden">
+            {/* Earnings Card */}
+            <motion.div
+              variants={cardVariants}
+              transition={{ duration: 0.6 }}
+              className="bg-gradient-to-br from-primary to-purple-600 p-6 rounded-lg text-white relative overflow-hidden"
+            >
               <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full"></div>
               <div className="flex justify-between items-center mb-4">
                 <div className="p-3 bg-white/20 rounded-lg">
@@ -18,8 +36,14 @@ const Dashboard = () => {
               </div>
               <p className="text-3xl font-bold">$500.00</p>
               <p className="text-sm text-white/80">Total Earning</p>
-            </div>
-            <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-6 rounded-lg text-white relative overflow-hidden">
+            </motion.div>
+
+            {/* Orders Card */}
+            <motion.div
+              variants={cardVariants}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="bg-gradient-to-br from-cyan-500 to-blue-600 p-6 rounded-lg text-white relative overflow-hidden"
+            >
               <svg
                 className="absolute bottom-0 right-0 opacity-20"
                 fill="none"
@@ -50,9 +74,15 @@ const Dashboard = () => {
               </div>
               <p className="text-3xl font-bold">$961</p>
               <p className="text-sm text-white/80">Total Order</p>
-            </div>
+            </motion.div>
           </div>
-          <div className="bg-card-light dark:bg-card-dark p-6 rounded-lg">
+
+          {/* Growth Chart */}
+          <motion.div
+            variants={cardVariants}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-card-light dark:bg-card-dark p-6 rounded-lg"
+          >
             <div className="flex justify-between items-center mb-4">
               <div>
                 <p className="text-text-light dark:text-text-dark text-sm">
@@ -67,7 +97,13 @@ const Dashboard = () => {
                 <span className="material-icons text-base">expand_more</span>
               </button>
             </div>
-            <div className="h-64 flex items-end justify-between">
+            <motion.div
+              className="h-64 flex items-end justify-between"
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              style={{ transformOrigin: "bottom" }}
+            >
               <div
                 className="w-8 bg-gray-200 dark:bg-gray-700 rounded-t-md"
                 style={{ height: "25%" }}
@@ -108,11 +144,17 @@ const Dashboard = () => {
                 className="w-8 bg-primary rounded-t-md"
                 style={{ height: "20%" }}
               ></div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
+
+        {/* Right section */}
         <div className="space-y-6">
-          <div className="p-6 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 text-white">
+          <motion.div
+            variants={cardVariants}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="p-6 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 text-white"
+          >
             <div className="flex items-center gap-3">
               <div className="p-3 bg-white/20 rounded-lg">
                 <span className="material-icons">account_balance</span>
@@ -122,8 +164,13 @@ const Dashboard = () => {
                 <p className="text-sm text-white/80">Total Income</p>
               </div>
             </div>
-          </div>
-          <div className="p-6 rounded-lg bg-yellow-100 dark:bg-yellow-900/50">
+          </motion.div>
+
+          <motion.div
+            variants={cardVariants}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="p-6 rounded-lg bg-yellow-100 dark:bg-yellow-900/50"
+          >
             <div className="flex items-center gap-3">
               <div className="p-3 bg-yellow-400/30 rounded-lg text-yellow-600 dark:text-yellow-400">
                 <span className="material-icons">paid</span>
@@ -137,8 +184,13 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-          </div>
-          <div className="bg-card-light dark:bg-card-dark p-6 rounded-lg">
+          </motion.div>
+
+          <motion.div
+            variants={cardVariants}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="bg-card-light dark:bg-card-dark p-6 rounded-lg"
+          >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-heading-light dark:text-heading-dark">
                 Popular Stocks
@@ -147,7 +199,13 @@ const Dashboard = () => {
                 <span className="material-icons">more_horiz</span>
               </button>
             </div>
-            <div className="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg mb-4">
+            {/* Stocks Card */}
+            <motion.div
+              className="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg mb-4"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
               <div className="flex justify-between items-start">
                 <div>
                   <p className="font-semibold text-purple-800 dark:text-purple-200">
@@ -187,9 +245,16 @@ const Dashboard = () => {
                   </defs>
                 </svg>
               </div>
-            </div>
+            </motion.div>
+
+            {/* Other stocks */}
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.7 }}
+                className="flex justify-between items-center"
+              >
                 <div>
                   <p className="font-semibold text-heading-light dark:text-heading-dark">
                     Bajaj Finery
@@ -209,8 +274,14 @@ const Dashboard = () => {
                     1.5%
                   </p>
                 </div>
-              </div>
-              <div className="flex justify-between items-center">
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.8 }}
+                className="flex justify-between items-center"
+              >
                 <div>
                   <p className="font-semibold text-heading-light dark:text-heading-dark">
                     TTML
@@ -230,11 +301,11 @@ const Dashboard = () => {
                     2.5%
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </main>
   );
 };
