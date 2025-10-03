@@ -1,4 +1,6 @@
 "use client";
+import { AppImages } from "@/app/assets/appimages";
+import Image from "next/image";
 
 const Banner = () => {
   return (
@@ -7,10 +9,9 @@ const Banner = () => {
       <div className="absolute -left-20 -bottom-20 w-72 h-72 bg-white/10 rounded-full"></div>
       <div>
         <div className="flex items-center gap-3 mb-4">
-          <div className="bg-white/20 p-2 rounded-full">
-            <span className="material-icons text-white">currency_bitcoin</span>
+          <div className="relative w-[150px] h-[60px]">
+            <Image fill src={AppImages.logo} alt="icon" />
           </div>
-          <span className="text-2xl font-bold">Eko Xchange</span>
         </div>
         <h1 className="text-4xl font-bold leading-tight mb-4">
           Welcome to the Future of Crypto Trading.

@@ -1,8 +1,9 @@
 "use client";
-
+import Image from "next/image";
 import { AppPages } from "@/app/assets/appages";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
+import { AppImages } from "@/app/assets/appimages";
 
 const NavItem = ({ label, icon, link }: any) => {
   const router = useRouter();
@@ -34,12 +35,9 @@ const Sidebar = () => {
       <div>
         {/* Logo / Branding */}
         <div className="flex items-center gap-2 mb-10">
-          <div className="bg-yellow-400 p-2 rounded-full">
-            <span className="text-white text-2xl font-bold">E</span>
+          <div className="relative w-[110px] h-[45px]">
+            <Image fill src={AppImages.logo} alt="icon" />
           </div>
-          <span className="text-xl font-semibold text-heading-light dark:text-heading-dark">
-            Eko Xchange
-          </span>
         </div>
 
         {/* Navigation */}
