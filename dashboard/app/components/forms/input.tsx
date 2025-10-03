@@ -1,10 +1,12 @@
 "use client";
+
 import React from "react";
 import clsx from "clsx";
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   icon?: string;
   label?: string;
+  error?: string;
 };
 
 const Input: React.FC<InputProps> = ({
@@ -12,14 +14,15 @@ const Input: React.FC<InputProps> = ({
   label,
   id,
   className,
+  error,
   ...props
 }) => {
   return (
-    <div>
+    <div className="space-y-1">
       {label && (
         <label
           htmlFor={id}
-          className="block text-sm font-medium text-text-light dark:text-text-dark mb-2"
+          className="block text-sm font-medium text-text-light dark:text-text-dark"
         >
           {label}
         </label>
@@ -34,11 +37,13 @@ const Input: React.FC<InputProps> = ({
           id={id}
           {...props}
           className={clsx(
-            "w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600 pl-10 pr-4 py-3 rounded-lg text-heading-light dark:text-heading-dark focus:ring-2 focus:ring-primary focus:border-primary transition",
+            "w-full bg-background-light text-[13px] dark:bg-background-dark border border-gray-300 dark:border-gray-600 pl-10 pr-4 py-3 rounded-lg text-heading-light dark:text-heading-dark focus:outline-none focus:ring-0 transition",
+            error && "border-red-500",
             className
           )}
         />
       </div>
+      {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );
 };

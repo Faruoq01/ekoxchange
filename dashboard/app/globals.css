@@ -143,3 +143,24 @@
     @apply bg-background text-foreground font-sans;
   }
 }
+
+input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+select:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+a:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}

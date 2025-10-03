@@ -1,10 +1,31 @@
 "use client";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../forms/button";
 import Input from "../forms/input";
 import Text from "../forms/text";
+import { loginSchema, LoginSchema } from "@/app/zod/login";
 
 const LoginForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
+  });
+
+  const onSubmit = async (data: LoginSchema) => {
+    console.log("Form submitted", data);
+    // 🔥 Call your API or mutation here
+  };
+
   return (
     <div className="w-full md:w-1/2 bg-card-light dark:bg-card-dark p-8 sm:p-12 flex flex-col justify-center">
       <div className="w-full max-w-md mx-auto">
@@ -13,93 +34,42 @@ const LoginForm = () => {
           Enter your credentials to access your account.
         </Text>
 
-        <form className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <Input
             id="email"
-            name="email"
             type="email"
+            label="Username or Email"
             placeholder="you@example.com"
             icon="person"
-            label="Username or Email"
+            error={errors.email?.message}
+            {...register("email")}
           />
+
           <Input
             id="password"
-            name="password"
             type="password"
+            label="Password"
             placeholder="••••••••"
             icon="lock"
-            label="Password"
+            error={errors.password?.message}
+            {...register("password")}
           />
 
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                className="h-4 w-4 text-primary bg-background-light dark:bg-background-dark border-gray-300 dark:border-gray-600 rounded focus:ring-primary"
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-              />
-              <Text variant="label" className="ml-2">
-                Remember me
-              </Text>
-            </div>
-            <a
-              href="#"
-              className="text-sm font-medium text-primary hover:text-primary/80"
-            >
+            <div className="flex items-center"></div>
+            <div className="text-sm font-medium select-none text-primary hover:text-primary/80">
               Forgot your password?
-            </a>
+            </div>
           </div>
 
           <Button
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none transition-transform transform hover:scale-105"
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-0 transition-transform transform hover:scale-105"
             type="submit"
+            disabled={isSubmitting}
           >
-            Log in
+            {isSubmitting ? "Logging in..." : "Log in"}
           </Button>
         </form>
-
-        <div className="mt-8">
-          <div className="relative flex items-center">
-            <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-            <span className="px-2 bg-card-light dark:bg-card-dark text-sm text-text-light dark:text-text-dark absolute left-1/2 -translate-x-1/2">
-              Or continue with
-            </span>
-          </div>
-
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            <Button variant="social">
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                {/* Google Icon Path */}
-              </svg>
-              Google
-            </Button>
-            <Button variant="social">
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                {/* Facebook Icon Path */}
-              </svg>
-              Facebook
-            </Button>
-          </div>
-
-          <Text variant="body" className="mt-8 text-center">
-            Don&apos;t have an account?{" "}
-            <a
-              href="#"
-              className="font-medium text-primary hover:text-primary/80"
-            >
-              Sign up
-            </a>
-          </Text>
-        </div>
       </div>
     </div>
   );
