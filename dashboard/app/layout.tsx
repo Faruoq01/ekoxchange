@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Jost } from "next/font/google";
 import "./globals.css";
+import { ReduxProviders, ToasterProvider } from "./lib/providers";
 
 const jost = Jost({
   variable: "--font-jost",
@@ -25,7 +26,12 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={`${jost.variable} antialiased`}>{children}</body>
+      <body className={`${jost.variable} antialiased`}>
+        <ReduxProviders>
+          <ToasterProvider />
+          {children}
+        </ReduxProviders>
+      </body>
     </html>
   );
 }
