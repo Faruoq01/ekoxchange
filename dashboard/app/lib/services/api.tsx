@@ -2,7 +2,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { store } from "../redux/store";
 import { AppEnv } from "../env";
-import { logoutUserOut, setIsLoggedIn } from "../redux/slices/auth";
+import { logoutUserOut } from "../redux/slices/auth";
 
 const API = axios.create({
   baseURL: `${AppEnv.api.base_url}/api/v1`,
@@ -17,7 +17,6 @@ API.interceptors.response.use(
     if (error.response.data.statusCode === 401) {
       toast.error("Session expired");
       store.dispatch(logoutUserOut({}));
-      store.dispatch(setIsLoggedIn(false));
     } else {
       const message =
         error.response && error.response.data.message
