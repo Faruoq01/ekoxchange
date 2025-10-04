@@ -13,7 +13,7 @@ export class AppPages {
     analytics: "/home/analytics",
     support: "/home/support",
     roles: "/home/roles",
-    giftcards: "/home/gift-cards",
+    giftcards: "/home/giftcards",
     referrals: "/home/referrals",
     settings: "/home/settings",
   };

@@ -133,14 +133,14 @@ const Crypto = () => {
             Fee Management
           </Text>
 
-          <div className="w-[140px]">
+          <div>
             <Button
               variant="primary"
-              className="flex items-center gap-2 w-auto px-2 py-2.5 text-sm"
-              onClick={() => console.log("Add rate clicked")}
+              className="w-auto px-3 py-2.5 text-sm"
+              onClick={() => console.log("Add new user clicked")}
             >
               <Plus className="w-5 h-5" />
-              Add Fee
+              <span>Add Fee</span>
             </Button>
           </div>
         </div>
@@ -161,14 +161,14 @@ const Crypto = () => {
             Rates Management
           </Text>
 
-          <div className="w-[140px]">
+          <div>
             <Button
               variant="primary"
-              className="flex items-center gap-2 w-auto px-2 py-2.5 text-sm"
-              onClick={() => console.log("Add rate clicked")}
+              className="w-auto px-3 py-2.5 text-sm"
+              onClick={() => console.log("Add new user clicked")}
             >
               <Plus className="w-5 h-5" />
-              Add Rate
+              <span>Add Rate</span>
             </Button>
           </div>
         </div>

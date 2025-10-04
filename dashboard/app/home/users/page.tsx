@@ -17,14 +17,14 @@ const UserPage = () => {
             User Management
           </Text>
 
-          <div className="w-[120px]">
+          <div>
             <Button
               variant="primary"
-              className="flex items-center gap-2 w-auto px-2 py-2.5 text-sm"
+              className="w-auto px-3 py-2.5 text-sm"
               onClick={() => console.log("Add new user clicked")}
             >
               <Plus className="w-5 h-5" />
-              Add User
+              <span>Add User</span>
             </Button>
           </div>
         </div>

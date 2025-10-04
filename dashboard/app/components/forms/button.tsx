@@ -5,6 +5,7 @@ import clsx from "clsx";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary" | "social";
+  loading?: boolean;
 };
 
 const Button: React.FC<ButtonProps> = ({
@@ -12,33 +13,33 @@ const Button: React.FC<ButtonProps> = ({
   className,
   variant = "primary",
   disabled,
+  loading = false,
   ...props
 }) => {
+  const isDisabled = disabled || loading;
+
   return (
     <button
       {...props}
-      disabled={disabled}
+      disabled={isDisabled}
       className={clsx(
-        "w-full flex justify-center items-center rounded-lg text-sm font-medium transition relative overflow-hidden",
+        // 🔹 Force horizontal layout & center content
+        "inline-flex flex-row items-center justify-center gap-2",
+        "rounded-lg text-sm font-medium transition relative overflow-hidden",
         "focus:ring-2 focus:ring-offset-2 transform",
         {
           "bg-primary text-white hover:bg-primary/90 shadow-sm focus:ring-primary hover:scale-105":
-            variant === "primary" && !disabled,
+            variant === "primary" && !isDisabled,
           "border border-gray-300 dark:border-gray-600 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark hover:bg-gray-50 dark:hover:bg-gray-700":
             variant === "secondary" || variant === "social",
-          "opacity-70 cursor-not-allowed": disabled,
+          "opacity-70 cursor-not-allowed": isDisabled,
         },
         className
       )}
     >
       {/* Spinner */}
-      {disabled && (
-        <span
-          className={clsx(
-            "flex items-center justify-center mr-[10px]",
-            "animate-spin"
-          )}
-        >
+      {loading && (
+        <span className="animate-spin">
           <svg
             className="w-5 h-5 text-white dark:text-gray-300"
             xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +63,8 @@ const Button: React.FC<ButtonProps> = ({
         </span>
       )}
 
-      <span>{children}</span>
+      {/* Label + Icon */}
+      <span className="flex flex-row items-center gap-2">{children}</span>
     </button>
   );
 };
