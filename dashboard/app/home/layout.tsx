@@ -1,8 +1,13 @@
 "use client";
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Sidebar from "../components/home/sidebar";
 import Header from "../components/home/header";
+import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "../lib/redux/controls";
+import { useCallback, useEffect } from "react";
+import { AuthService } from "../lib/services/auth";
+import { setUser } from "../lib/redux/slices";
+import { AppPages } from "../assets/appages";
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();

@@ -1,6 +1,6 @@
 export class AppPages {
   static auth = {
-    login: "/login",
+    login: "/",
     forgotPassword: "/forgot-password",
     resetPassword: "/reset-password",
   };

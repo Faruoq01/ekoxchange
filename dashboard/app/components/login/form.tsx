@@ -9,7 +9,7 @@ import { loginSchema, LoginSchema } from "@/app/zod/login";
 import { useRouter } from "next/navigation";
 import { AuthService } from "@/app/lib/services/auth";
 import { useAppDispatch } from "@/app/lib/redux/controls";
-import { setUser } from "@/app/lib/redux/slices";
+import { setIsLogin, setUser } from "@/app/lib/redux/slices";
 import toast from "react-hot-toast";
 import { AppPages } from "@/app/assets/appages";
 
@@ -33,6 +33,7 @@ const LoginForm = () => {
     const { error, payload } = await AuthService.login(data);
     if (!error && payload) {
       dispatch(setUser(payload));
+      dispatch(setIsLogin(true));
       toast.success("User Authenticated Successfully!");
       router.push(AppPages.home.dashboard);
     }

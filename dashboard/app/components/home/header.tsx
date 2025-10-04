@@ -1,8 +1,11 @@
 "use client";
-
+import { useAppSelector } from "@/app/lib/redux/controls";
 import { motion } from "framer-motion";
 
 const Header = () => {
+  const user = useAppSelector((state) => state.auth.user);
+  console.log(user, "user");
+
   return (
     <motion.header
       initial={{ y: -40, opacity: 0 }}
