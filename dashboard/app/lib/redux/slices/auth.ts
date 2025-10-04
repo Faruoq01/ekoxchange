@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
+const status = Cookies.get("loda-payment-auth-status");
 
 const initialState: any = {
   user: {},
-  isLoggedIn: false,
+  isLoggedIn: status ? JSON.parse(status) : false,
 };
 
 const authReducer = createSlice({

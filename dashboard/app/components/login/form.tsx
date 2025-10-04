@@ -34,6 +34,7 @@ const LoginForm = () => {
     if (!error && payload) {
       dispatch(setUser(payload));
       dispatch(setIsLogin(true));
+      Cookies.set("loda-payment-auth-status", "true");
       toast.success("User Authenticated Successfully!");
       router.push(AppPages.home.dashboard);
     }
