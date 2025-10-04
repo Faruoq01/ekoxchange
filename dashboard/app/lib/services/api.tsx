@@ -6,6 +6,10 @@ import { logoutUserOut } from "../redux/slices/auth";
 
 const API = axios.create({
   baseURL: `${AppEnv.api.base_url}/api/v1`,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 API.interceptors.response.use(

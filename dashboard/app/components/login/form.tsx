@@ -7,10 +7,15 @@ import Input from "../forms/input";
 import Text from "../forms/text";
 import { loginSchema, LoginSchema } from "@/app/zod/login";
 import { useRouter } from "next/navigation";
+import { AuthService } from "@/app/lib/services/auth";
+import { useAppDispatch } from "@/app/lib/redux/controls";
+import { setUser } from "@/app/lib/redux/slices";
+import toast from "react-hot-toast";
 import { AppPages } from "@/app/assets/appages";
 
 const LoginForm = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -21,12 +26,16 @@ const LoginForm = () => {
     defaultValues: {
       email: "",
       password: "",
-      rememberMe: false,
     },
   });
 
   const onSubmit = async (data: LoginSchema) => {
-    router.push(AppPages.home.dashboard);
+    const { error, payload } = await AuthService.login(data);
+    if (!error && payload) {
+      dispatch(setUser(payload));
+      toast.success("User Authenticated Successfully!");
+      router.push(AppPages.home.dashboard);
+    }
   };
 
   return (
