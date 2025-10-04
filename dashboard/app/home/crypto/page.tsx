@@ -7,6 +7,7 @@ import { Plus } from "lucide-react";
 import React from "react";
 import { columns, Rate, rates } from "./_comp/table";
 import { Fee, feeColumns, fees } from "./_comp/fee";
+import { motion } from "framer-motion"; // <-- added
 
 // Types
 interface Wallet {
@@ -18,7 +19,7 @@ interface Wallet {
   img: string;
 }
 
-// Reusable WalletCard
+// Reusable WalletCard (animated)
 const WalletCard: React.FC<Wallet> = ({
   name,
   symbol,
@@ -27,7 +28,14 @@ const WalletCard: React.FC<Wallet> = ({
   change,
   img,
 }) => (
-  <div className="bg-card-light dark:bg-card-dark p-6 rounded-lg flex flex-col justify-between">
+  <motion.div
+    className="bg-card-light dark:bg-card-dark p-6 rounded-lg flex flex-col justify-between"
+    initial={{ opacity: 0, y: 12 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.45, ease: "easeOut" }}
+    whileHover={{ scale: 1.03 }}
+    whileTap={{ scale: 0.99 }}
+  >
     <div className="flex items-start justify-between mb-4">
       <div className="flex items-center gap-3">
         <img alt={name} className="w-10 h-10 rounded-full" src={img} />
@@ -53,12 +61,12 @@ const WalletCard: React.FC<Wallet> = ({
       </span>
     </div>
     <div>
-      <p className="text-lg font-bold text-heading-light dark:text-heading-dark">
+      <p className="text-lg font-bold dark:text-heading-dark text-gray-700">
         {amount}
       </p>
       <p className="text-text-light dark:text-text-dark">{value}</p>
     </div>
-  </div>
+  </motion.div>
 );
 
 const Crypto = () => {
@@ -117,9 +125,6 @@ const Crypto = () => {
     <main className="flex-1 mt-[10px]">
       {/* Wallets */}
       <div className="mb-8">
-        <Text variant="medium" className="mb-1">
-          Wallet Balances
-        </Text>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {wallets.map((wallet) => (
             <WalletCard key={wallet.symbol} {...wallet} />
