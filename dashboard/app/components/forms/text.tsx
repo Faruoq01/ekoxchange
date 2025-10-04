@@ -13,7 +13,7 @@ const Text: React.FC<TextProps> = ({
   children,
   className,
 }) => {
-  const base = "dark:text-text-dark text-text-light";
+  const base = "dark:text-text-dark text-text-light select-none";
 
   return (
     <>

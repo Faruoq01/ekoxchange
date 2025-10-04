@@ -19,7 +19,7 @@ export const AuthService = {
   },
   logout: async () => {
     try {
-      const response = await API.post(`/auth/logout`);
+      const response = await API.post(`/admin/auth/logout`);
       return { error: false, payload: response?.data };
     } catch (e: any) {
       return { error: true, payload: e.message };
