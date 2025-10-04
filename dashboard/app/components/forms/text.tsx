@@ -20,7 +20,7 @@ const Text: React.FC<TextProps> = ({
       {variant === "heading" && (
         <h2
           className={clsx(
-            "text-3xl font-bold mb-2 text-heading-light dark:text-heading-dark",
+            "text-3xl font-bold text-heading-light dark:text-heading-dark",
             className
           )}
         >
@@ -30,7 +30,7 @@ const Text: React.FC<TextProps> = ({
       {variant === "medium" && (
         <h2
           className={clsx(
-            "text-xl font-bold mb-2 text-heading-light dark:text-heading-dark",
+            "text-xl font-bold text-heading-light dark:text-heading-dark",
             className
           )}
         >
@@ -38,12 +38,10 @@ const Text: React.FC<TextProps> = ({
         </h2>
       )}
       {variant === "body" && (
-        <p className={clsx("mb-4", base, className)}>{children}</p>
+        <p className={clsx("", base, className)}>{children}</p>
       )}
       {variant === "label" && (
-        <label
-          className={clsx("block text-sm font-medium mb-2", base, className)}
-        >
+        <label className={clsx("block text-sm font-medium", base, className)}>
           {children}
         </label>
       )}

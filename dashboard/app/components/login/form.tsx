@@ -12,6 +12,7 @@ import { useAppDispatch } from "@/app/lib/redux/controls";
 import { setIsLogin, setUser } from "@/app/lib/redux/slices";
 import toast from "react-hot-toast";
 import { AppPages } from "@/app/assets/appages";
+import Cookies from "js-cookie";
 
 const LoginForm = () => {
   const router = useRouter();

@@ -18,7 +18,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   const getAuthUser = useCallback(async () => {
     const { error, payload } = await AuthService.getAuthUser();
     if (!error && payload) {
-      dispatch(setUser(payload.data));
+      dispatch(setUser(payload));
     }
   }, []);
 

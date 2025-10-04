@@ -1,10 +1,10 @@
 "use client";
 import { useAppSelector } from "@/app/lib/redux/controls";
 import { motion } from "framer-motion";
+import Text from "../forms/text";
 
 const Header = () => {
   const user = useAppSelector((state) => state.auth.user);
-  console.log(user, "user");
 
   return (
     <motion.header
@@ -58,17 +58,28 @@ const Header = () => {
         </motion.button>
 
         {/* Avatar */}
-        <motion.div
-          whileHover={{ rotate: 3, scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-500 overflow-hidden cursor-pointer"
-        >
-          <img
-            alt="User avatar"
-            className="rounded-full w-full h-full object-cover"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlUrdzmlIurWPF4fyBiq1V8kLAMMlA7M9mjI6oO_NAhT4prluxHNWRXqRW9TGo6fxIPrnXEs1ziZtugtIf2DWSxf6AcwtduzL77zB5bhJKAsJDNiA5VyQ2cF2YXLm4fz3Op7Ha9-3QoUCNkmBcg0-wVnFL3qgvgjohd2bOnDd4T92P_MeB0MNwBKeWy8PUp4-t9mfUi3AGspgW1EiDBpaubTZcA-ucsottyA7RgpGMIwSZfASHxjvMkRy5ib-4P0tyCPGvPdHtw"
-          />
-        </motion.div>
+        <div className="flex flex-row items-center">
+          <div>
+            <motion.div
+              whileHover={{ rotate: 3, scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-500 overflow-hidden cursor-pointer flex flex-row"
+            >
+              <img
+                alt="User avatar"
+                className="rounded-full w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlUrdzmlIurWPF4fyBiq1V8kLAMMlA7M9mjI6oO_NAhT4prluxHNWRXqRW9TGo6fxIPrnXEs1ziZtugtIf2DWSxf6AcwtduzL77zB5bhJKAsJDNiA5VyQ2cF2YXLm4fz3Op7Ha9-3QoUCNkmBcg0-wVnFL3qgvgjohd2bOnDd4T92P_MeB0MNwBKeWy8PUp4-t9mfUi3AGspgW1EiDBpaubTZcA-ucsottyA7RgpGMIwSZfASHxjvMkRy5ib-4P0tyCPGvPdHtw"
+              />
+            </motion.div>
+          </div>
+          <div className="ml-[10px]">
+            <Text variant="body" className="text-[#000]">
+              {Object.values(user).length !== 0
+                ? user?.firstname + " " + user?.lastname
+                : "Loading..."}
+            </Text>
+          </div>
+        </div>
       </motion.div>
     </motion.header>
   );
