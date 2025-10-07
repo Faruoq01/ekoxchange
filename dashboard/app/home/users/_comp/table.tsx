@@ -1,9 +1,7 @@
 "use client";
+import { Column } from "@/app/components/home/table";
 
-import Pagination from "@/app/components/home/pagination";
-import Table, { Column } from "@/app/components/home/table";
-
-export interface User {
+export interface AdminUser {
   id: number;
   name: string;
   username: string;
@@ -14,6 +12,16 @@ export interface User {
   avatar: string;
 }
 
+export interface WalletUser {
+  id: number;
+  name: string;
+  walletAddress: string;
+  balance: string;
+  status: string;
+  lastActive: string;
+  avatar: string;
+}
+
 const statusColors: Record<string, string> = {
   Active: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
   Pending:
@@ -21,13 +29,14 @@ const statusColors: Record<string, string> = {
   Inactive: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 };
 
-export const users: User[] = [
+/* --- Admin Users --- */
+export const users: AdminUser[] = [
   {
     id: 1,
     name: "John Doe",
     username: "@johndoe",
     email: "john.doe@example.com",
-    role: "Admin",
+    role: "Super Admin",
     status: "Active",
     lastLogin: "2 hours ago",
     avatar: "https://picsum.photos/200/200?1",
@@ -37,24 +46,37 @@ export const users: User[] = [
     name: "Jane Smith",
     username: "@janesmith",
     email: "jane.smith@example.com",
-    role: "Trader",
+    role: "Moderator",
     status: "Active",
     lastLogin: "5 hours ago",
     avatar: "https://picsum.photos/200/200?2",
   },
+];
+
+/* --- Wallet Users --- */
+export const walletUsers: WalletUser[] = [
   {
-    id: 3,
-    name: "Sam Wilson",
-    username: "@samwilson",
-    email: "sam.wilson@example.com",
-    role: "Analyst",
-    status: "Pending",
-    lastLogin: "1 day ago",
-    avatar: "https://picsum.photos/200/200?3",
+    id: 1,
+    name: "Alice Johnson",
+    walletAddress: "0xAbC123...789D",
+    balance: "1.25 ETH",
+    status: "Active",
+    lastActive: "1 hour ago",
+    avatar: "https://picsum.photos/200/200?5",
+  },
+  {
+    id: 2,
+    name: "Bob Williams",
+    walletAddress: "0x9876Ef...321A",
+    balance: "0.54 ETH",
+    status: "Inactive",
+    lastActive: "2 days ago",
+    avatar: "https://picsum.photos/200/200?6",
   },
 ];
 
-export const columns: Column<User>[] = [
+/* --- Column Configs --- */
+export const adminColumns: Column<AdminUser>[] = [
   {
     key: "name",
     header: "User",
@@ -92,10 +114,63 @@ export const columns: Column<User>[] = [
   { key: "lastLogin", header: "Last Login" },
   {
     key: "actions",
-    header: "",
+    header: "Actions",
     render: () => (
-      <button className="text-text-light dark:text-text-dark hover:text-primary">
-        <span className="material-icons">more_vert</span>
+      <button
+        className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
+        title="Actions"
+      >
+        <span className="material-icons text-[20px]">more_vert</span>
+      </button>
+    ),
+  },
+];
+
+/* --- Wallet Users Table --- */
+export const walletColumns: Column<WalletUser>[] = [
+  {
+    key: "name",
+    header: "User",
+    render: (user) => (
+      <div className="flex items-center gap-3">
+        <img
+          src={user.avatar}
+          alt="avatar"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div>
+          <p className="font-semibold">{user.name}</p>
+          <p className="text-xs text-text-light dark:text-text-dark">
+            {user.walletAddress}
+          </p>
+        </div>
+      </div>
+    ),
+  },
+  { key: "balance", header: "Balance" },
+  {
+    key: "status",
+    header: "Status",
+    render: (user) => (
+      <span
+        className={`text-xs font-medium px-2.5 py-1 rounded-full ${
+          statusColors[user.status]
+        }`}
+      >
+        {user.status}
+      </span>
+    ),
+  },
+  { key: "lastActive", header: "Last Active" },
+  {
+    key: "actions",
+    header: "Actions",
+    render: () => (
+      <button
+        className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
+        title="Actions"
+      >
+        <span className="material-icons text-[20px]">more_vert</span>
       </button>
     ),
   },

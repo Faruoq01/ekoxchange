@@ -83,8 +83,8 @@ const navItems = [
   { label: "Analytics", icon: "analytics", link: AppPages.home.analytics },
   { label: "Support", icon: "support_agent", link: AppPages.home.support },
   { label: "Roles", icon: "admin_panel_settings", link: AppPages.home.roles },
-  { label: "Gift Card", icon: "card_giftcard", link: AppPages.home.giftcards },
-  { label: "Referrals", icon: "group_add", link: AppPages.home.referrals },
+  // { label: "Gift Card", icon: "card_giftcard", link: AppPages.home.giftcards },
+  // { label: "Referrals", icon: "group_add", link: AppPages.home.referrals },
   { label: "Settings", icon: "settings", link: AppPages.home.settings },
 ];
 
