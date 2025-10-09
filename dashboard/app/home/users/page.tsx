@@ -17,7 +17,7 @@ export default function UserPage() {
   ];
 
   return (
-    <div className="p-4 md:p-6 bg-card-light dark:bg-card-dark rounded-lg mt-[20px]">
+    <div className="p-4 md:p-6 bg-card-light dark:bg-card-dark rounded-lg mt-[20px] mb-[30px]">
       {/* Header */}
       <div className="flex items-center justify-between mb-4 h-[50px]">
         <h1 className="text-xl font-bold text-text-light dark:text-text-dark">

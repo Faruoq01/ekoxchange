@@ -6,9 +6,9 @@ export interface AdminUser {
   name: string;
   username: string;
   email: string;
+  phone: string;
   role: string;
-  status: string;
-  lastLogin: string;
+  isActive: boolean;
   avatar: string;
 }
 
@@ -27,30 +27,6 @@ const statusColors: Record<string, string> = {
     "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
   Inactive: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 };
-
-/* --- Admin Users --- */
-export const users: AdminUser[] = [
-  {
-    id: 1,
-    name: "John Doe",
-    username: "@johndoe",
-    email: "john.doe@example.com",
-    role: "Super Admin",
-    status: "Active",
-    lastLogin: "2 hours ago",
-    avatar: "https://picsum.photos/200/200?1",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    username: "@janesmith",
-    email: "jane.smith@example.com",
-    role: "Moderator",
-    status: "Active",
-    lastLogin: "5 hours ago",
-    avatar: "https://picsum.photos/200/200?2",
-  },
-];
 
 /* --- Column Configs --- */
 export const adminColumns: Column<AdminUser>[] = [
@@ -74,6 +50,7 @@ export const adminColumns: Column<AdminUser>[] = [
     ),
   },
   { key: "email", header: "Email" },
+  { key: "phone", header: "Phone" },
   { key: "role", header: "Role" },
   {
     key: "status",
@@ -81,14 +58,13 @@ export const adminColumns: Column<AdminUser>[] = [
     render: (user) => (
       <span
         className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-          statusColors[user.status]
+          statusColors[user.isActive ? "Active" : "Inactive"]
         }`}
       >
-        {user.status}
+        {user.isActive ? "Active" : "Inactive"}
       </span>
     ),
   },
-  { key: "lastLogin", header: "Last Login" },
   {
     key: "actions",
     header: "Actions",

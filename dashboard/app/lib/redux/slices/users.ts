@@ -5,7 +5,10 @@ const initialState: any = {
     data: [],
     total: 0,
   },
-  adminUsers: [],
+  adminUsers: {
+    data: [],
+    total: 0,
+  },
   user: {
     firstname: "",
     lastname: "",

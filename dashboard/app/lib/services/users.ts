@@ -14,4 +14,17 @@ export const UserService = {
       return { error: true, payload: e.message };
     }
   },
+  getAdminUsers: async (skip: number, limit: number) => {
+    try {
+      const response = await API.get(
+        `admin/user/admin-users/get?skip=${skip}&limit=${limit}`,
+        {
+          withCredentials: true,
+        }
+      );
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };

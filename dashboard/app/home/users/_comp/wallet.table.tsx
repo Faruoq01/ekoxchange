@@ -14,7 +14,6 @@ const WalletTable = () => {
   const [limit, setLimit] = useState(30);
   const [loading, setLoading] = useState(false);
   const walletUsers = useAppSelector((state) => state.users.walletUsers);
-  console.log(walletUsers, "walletUsers");
 
   const getWalletUsers = useCallback(async () => {
     if (walletUsers?.data?.length > 0) return;
