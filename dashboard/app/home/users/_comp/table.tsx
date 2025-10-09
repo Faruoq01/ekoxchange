@@ -15,11 +15,10 @@ export interface AdminUser {
 export interface WalletUser {
   id: number;
   name: string;
-  walletAddress: string;
   balance: string;
   status: string;
-  lastActive: string;
   avatar: string;
+  isKYCDone: boolean;
 }
 
 const statusColors: Record<string, string> = {
@@ -50,28 +49,6 @@ export const users: AdminUser[] = [
     status: "Active",
     lastLogin: "5 hours ago",
     avatar: "https://picsum.photos/200/200?2",
-  },
-];
-
-/* --- Wallet Users --- */
-export const walletUsers: WalletUser[] = [
-  {
-    id: 1,
-    name: "Alice Johnson",
-    walletAddress: "0xAbC123...789D",
-    balance: "1.25 ETH",
-    status: "Active",
-    lastActive: "1 hour ago",
-    avatar: "https://picsum.photos/200/200?5",
-  },
-  {
-    id: 2,
-    name: "Bob Williams",
-    walletAddress: "0x9876Ef...321A",
-    balance: "0.54 ETH",
-    status: "Inactive",
-    lastActive: "2 days ago",
-    avatar: "https://picsum.photos/200/200?6",
   },
 ];
 
@@ -140,14 +117,25 @@ export const walletColumns: Column<WalletUser>[] = [
         />
         <div>
           <p className="font-semibold">{user.name}</p>
-          <p className="text-xs text-text-light dark:text-text-dark">
-            {user.walletAddress}
-          </p>
         </div>
       </div>
     ),
   },
-  { key: "balance", header: "Balance" },
+  { key: "email", header: "Email" },
+  { key: "createdAt", header: "Date Registered" },
+  {
+    key: "isKYCDone",
+    header: "Kyc Status",
+    render: (user) => (
+      <span
+        className={`text-xs font-medium px-2.5 py-1 rounded-full ${
+          statusColors[user.isKYCDone ? "Active" : "Inactive"]
+        }`}
+      >
+        {user.isKYCDone ? "Completed" : "Pending"}
+      </span>
+    ),
+  },
   {
     key: "status",
     header: "Status",
@@ -161,7 +149,6 @@ export const walletColumns: Column<WalletUser>[] = [
       </span>
     ),
   },
-  { key: "lastActive", header: "Last Active" },
   {
     key: "actions",
     header: "Actions",

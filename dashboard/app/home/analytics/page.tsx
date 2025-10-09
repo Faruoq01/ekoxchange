@@ -83,7 +83,7 @@ const Analytics = () => {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
             <Text variant="medium" className="mb-0">
-              Transaction Management
+              System Activity Logs
             </Text>
 
             {/* Filters */}

@@ -21,6 +21,7 @@ API.interceptors.response.use(
     if (error.response.data.statusCode === 401) {
       toast.error("Session expired");
       store.dispatch(logoutUserOut({}));
+      window.location.href = "/";
     } else {
       const message =
         error.response && error.response.data.message

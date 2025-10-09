@@ -2,26 +2,18 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
-import Pagination from "@/app/components/home/pagination";
-import Table from "@/app/components/home/table";
-import {
-  adminColumns,
-  AdminUser,
-  users,
-  walletColumns,
-  WalletUser,
-  walletUsers,
-} from "./_comp/table";
 import { Button } from "@/components/ui/button";
+import WalletTable from "./_comp/wallet.table";
+import UserTable from "./_comp/admin.table";
 
 export default function UserPage() {
-  const [activeTab, setActiveTab] = useState<"admin" | "wallet">("admin");
+  const [activeTab, setActiveTab] = useState<"admin" | "wallet">("wallet");
 
   const handleTabChange = (tab: "admin" | "wallet") => setActiveTab(tab);
 
   const tabs = [
-    { key: "admin", label: "Admin Users" },
     { key: "wallet", label: "Wallet Users" },
+    { key: "admin", label: "Admin Users" },
   ];
 
   return (
@@ -76,15 +68,9 @@ export default function UserPage() {
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.3 }}
         >
-          {activeTab === "admin" ? (
-            <Table<AdminUser> data={users} columns={adminColumns} />
-          ) : (
-            <Table<WalletUser> data={walletUsers} columns={walletColumns} />
-          )}
+          {activeTab === "admin" ? <UserTable /> : <WalletTable />}
         </motion.div>
       </AnimatePresence>
-
-      <Pagination total={30} perPage={30} currentPage={1} />
     </div>
   );
 }

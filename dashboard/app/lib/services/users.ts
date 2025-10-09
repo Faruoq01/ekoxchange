@@ -1,10 +1,10 @@
 import API from "./api";
 
 export const UserService = {
-  getAllUsers: async (skip: number, limit: number) => {
+  getWalletUsers: async (skip: number, limit: number) => {
     try {
       const response = await API.get(
-        `/users/admins?page=${skip}&limit=${limit}`,
+        `/admin/user/wallet-users/get?skip=${skip}&limit=${limit}`,
         {
           withCredentials: true,
         }
