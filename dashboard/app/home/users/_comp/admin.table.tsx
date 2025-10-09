@@ -53,7 +53,7 @@ const UserTable = () => {
   return (
     <Fragment>
       <Table<AdminUser> data={users} columns={adminColumns} loading={loading} />
-      <Pagination total={30} perPage={30} currentPage={1} />
+      <Pagination total={adminUsers?.total} perPage={30} currentPage={1} />
     </Fragment>
   );
 };

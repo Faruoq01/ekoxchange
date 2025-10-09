@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Button from "@/app/components/forms/button";
 import Text from "@/app/components/forms/text";
 import Pagination from "@/app/components/home/pagination";
@@ -8,6 +8,10 @@ import Table from "@/app/components/home/table";
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { Column } from "@/app/components/home/table";
+import { RoleService } from "@/app/lib/services/roles";
+import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
+import { setRoles } from "@/app/lib/redux/slices/roles";
+import { formatTimestamp } from "@/app/lib/utils";
 
 /* ------------------------------ Types ------------------------------ */
 export interface Role {
@@ -16,41 +20,6 @@ export interface Role {
   description: string;
   userCount: number;
 }
-
-/* ------------------------------ Dummy Data ------------------------------ */
-export const roles: Role[] = [
-  {
-    id: 1,
-    name: "Super Admin",
-    description:
-      "Full access to all system configurations and user management.",
-    userCount: 3,
-  },
-  {
-    id: 2,
-    name: "Administrator",
-    description: "Manages users, permissions, and high-level operations.",
-    userCount: 8,
-  },
-  {
-    id: 3,
-    name: "Moderator",
-    description: "Oversees content and ensures policy compliance.",
-    userCount: 12,
-  },
-  {
-    id: 4,
-    name: "Trader",
-    description: "Handles asset management and trading operations.",
-    userCount: 25,
-  },
-  {
-    id: 5,
-    name: "Analyst",
-    description: "Responsible for reporting, insights, and data monitoring.",
-    userCount: 10,
-  },
-];
 
 /* ------------------------------ Table Columns ------------------------------ */
 export const roleColumns: Column<Role>[] = [
@@ -103,8 +72,39 @@ export const roleColumns: Column<Role>[] = [
   },
 ];
 
-/* ------------------------------ Component ------------------------------ */
 const Roles = () => {
+  const dispatch = useAppDispatch();
+  const [skip, setSkip] = useState(0);
+  const [limit, setLimit] = useState(30);
+  const [loading, setLoading] = useState(false);
+  const roleList = useAppSelector((state) => state.roles.roleList);
+
+  const getRoleList = useCallback(async () => {
+    setLoading(true);
+    const { error, payload } = await RoleService.getRoles(skip, limit);
+    setLoading(false);
+    if (!error && payload) {
+      dispatch(setRoles(payload));
+    }
+  }, []);
+
+  useEffect(() => {
+    getRoleList();
+  }, [getRoleList]);
+
+  const getRoleData = () => {
+    return roleList?.map((item: any, index: number) => {
+      return {
+        id: index + 1,
+        name: item.name,
+        userCount: item.userCount,
+        dateCreated: item?.createdAt ? formatTimestamp(item?.createdAt) : "-",
+        dateModified: item?.updatedAt ? formatTimestamp(item?.updatedAt) : "-",
+      };
+    });
+  };
+
+  const roleRows = getRoleData();
   return (
     <main className="p-4 md:p-6 bg-card-light dark:bg-card-dark rounded-lg mt-[20px]">
       {/* Header */}
@@ -130,11 +130,11 @@ const Roles = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
-        <Table<Role> columns={roleColumns} data={roles} />
+        <Table<Role> columns={roleColumns} data={roleRows} loading={loading} />
 
         {/* Pagination */}
         <div className="mt-6">
-          <Pagination total={roles.length} perPage={5} currentPage={1} />
+          <Pagination total={roleRows.length} perPage={15} currentPage={1} />
         </div>
       </motion.div>
     </main>
