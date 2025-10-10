@@ -51,7 +51,7 @@ const DeleteModal = ({
         </h2>
         <Image
           onClick={() => setIsopen(false)}
-          src={"/home/close.svg"}
+          src={"/close.svg"}
           width={25}
           height={25}
           alt={"close icon"}

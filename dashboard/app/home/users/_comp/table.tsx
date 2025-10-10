@@ -1,5 +1,6 @@
 "use client";
 import { Column } from "@/app/components/home/table";
+import DeleteModal from "@/app/components/modals/delete";
 import { Modal } from "@/app/components/modals/modalskin";
 import UpdateUser from "@/app/components/modals/updateuser";
 import { useAppDispatch } from "@/app/lib/redux/controls";
@@ -83,11 +84,20 @@ export const adminColumns: Column<AdminUser>[] = [
     render: (user) => {
       const dispatch = useAppDispatch();
       const [isOpen, setIsopen] = useState(false);
+      const [isDelete, setIsDelete] = useState(false);
 
       const editUser = () => {
         const data = JSON.parse(user?.rawData);
         dispatch(setSingleAdminUser(data));
         setIsopen(true);
+      };
+
+      const deleteModal = async () => {
+        setIsDelete(true);
+      };
+
+      const deleteUser = async () => {
+        return { error: true, payload: "" };
       };
 
       return (
@@ -109,7 +119,10 @@ export const adminColumns: Column<AdminUser>[] = [
               >
                 Edit user
               </div>
-              <div className="py-[5px] border-b select-none hover:bg-gray-50 px-[10px]">
+              <div
+                onClick={deleteModal}
+                className="py-[5px] border-b select-none hover:bg-gray-50 px-[10px]"
+              >
                 Delete user
               </div>
               <div className="py-[5px] select-none hover:bg-gray-50 px-[10px]">
@@ -119,6 +132,13 @@ export const adminColumns: Column<AdminUser>[] = [
           </Popover>
           <Modal isOpen={isOpen}>
             <UpdateUser setIsopen={setIsopen} />
+          </Modal>
+          <Modal isOpen={isDelete}>
+            <DeleteModal
+              title="Warning!"
+              setIsopen={setIsDelete}
+              onDelete={() => deleteUser()}
+            />
           </Modal>
         </Fragment>
       );
