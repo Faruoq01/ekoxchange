@@ -1,51 +1,56 @@
-"use client";
-
 import React from "react";
-import clsx from "clsx";
+import { UseFormRegister } from "react-hook-form";
 
-type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
-  icon?: string;
-  label?: string;
-  error?: string;
-};
+interface CurrencyInputProps {
+  label: string;
+  name: string;
+  placeholder?: string;
+  register?: UseFormRegister<any>;
+  formErrors: any;
+  type: string;
+  isFiat?: boolean;
+  isPercent?: boolean;
+}
 
-const Input: React.FC<InputProps> = ({
-  icon,
+const InputText: React.FC<CurrencyInputProps> = ({
   label,
-  id,
-  className,
-  error,
-  ...props
+  name,
+  placeholder = "Enter text",
+  register,
+  formErrors,
+  type,
+  isFiat,
+  isPercent,
 }) => {
   return (
-    <div className="space-y-1">
-      {label && (
-        <label
-          htmlFor={id}
-          className="block text-sm font-medium text-text-light dark:text-text-dark"
-        >
-          {label}
-        </label>
-      )}
-      <div className="relative">
-        {icon && (
-          <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-text-light dark:text-text-dark">
-            {icon}
-          </span>
+    <div className="flex flex-col space-y-1">
+      <label
+        htmlFor={name}
+        className="font-semibold text-[12px] text-black text-left"
+      >
+        {label}
+      </label>
+      <div className="flex flex-row items-center px-[15px] py-[8px] rounded-md border shadow-sm">
+        {isFiat && <span className="text-gray-500 text-sm mr-[10px]">₦</span>}
+        {isPercent && (
+          <span className="text-gray-500 text-sm mr-[10px]">%</span>
         )}
         <input
-          id={id}
-          {...props}
-          className={clsx(
-            "w-full bg-background-light text-[13px] dark:bg-background-dark border border-gray-300 dark:border-gray-600 pl-10 pr-4 py-3 rounded-lg text-heading-light dark:text-heading-dark focus:outline-none focus:ring-0 transition",
-            error && "border-red-500",
-            className
-          )}
+          type={type}
+          id={name}
+          {...(register ? register(name) : {})}
+          placeholder={placeholder}
+          style={{ padding: "0px" }}
+          className="w-full text-[12px] px-[0px] placeholder:text-gray-500 outline-none border-none focus:outline-none focus:ring-0 focus:border-transparent"
         />
       </div>
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {formErrors[name] && (
+        <p className="text-red-600 mb-[10px] text-[10px]">
+          {formErrors[name]["message"]}
+        </p>
+      )}
     </div>
   );
 };
 
-export default Input;
+export default InputText;
