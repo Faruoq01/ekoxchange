@@ -2,7 +2,13 @@
 import Image from "next/image";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
 import { UserService } from "@/app/lib/services/user";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
@@ -16,6 +22,8 @@ import { MultiSelect } from "../forms/multiselect";
 import { RegistrationFormValues, registrationSchema } from "@/app/zod/register";
 import InputText from "../forms/input";
 import CustomButton from "../forms/custombut";
+import { RoleService } from "@/app/lib/services/roles";
+import { setRoles } from "@/app/lib/redux/slices/roles";
 
 const CreateUser = ({
   setIsopen,
@@ -24,6 +32,7 @@ const CreateUser = ({
 }) => {
   const dispatch = useAppDispatch();
   const reload = useAppSelector((state) => state.users.reload);
+  const roleList = useAppSelector((state) => state.roles.roleList);
 
   const {
     register,
@@ -49,6 +58,14 @@ const CreateUser = ({
 
   const onSubmit = async (data: any) => {
     console.log(data, "data");
+    if (
+      data?.roleIds?.includes("super_admin_virtual_id") &&
+      data?.roleIds?.length > 1
+    ) {
+      return toast.error(
+        "When super admin role is selected, no other role should be added"
+      );
+    }
     // const { error, payload } = await UserService.createUser(data);
     // if (!error && payload) {
     //   setIsopen(false);
@@ -57,6 +74,27 @@ const CreateUser = ({
     // }
   };
 
+  const getRoleList = useCallback(async () => {
+    const { error, payload } = await RoleService.getRoles(0, 100);
+    if (!error && payload) {
+      dispatch(setRoles(payload));
+    }
+  }, []);
+
+  useEffect(() => {
+    getRoleList();
+  }, [getRoleList]);
+
+  const rolesInput = () => {
+    return roleList?.map((item: any) => {
+      return {
+        id: item?.name === "Super Admin" ? "super_admin_virtual_id" : item?.id,
+        name: item?.name,
+      };
+    });
+  };
+
+  const roleSelect = rolesInput();
   return (
     <div className="w-[80%] md:max-w-[400px] bg-gray-50 px-[15px] py-[15px] shadow-md">
       <div className="flex flex-row justify-between">
@@ -135,7 +173,7 @@ const CreateUser = ({
               render={({ field }) => (
                 <MultiSelect
                   title="Select Roles"
-                  list={roles}
+                  list={roleSelect}
                   value={Array.isArray(field.value) ? field.value : []}
                   onChange={field.onChange}
                   error={errors.roleIds?.message}
