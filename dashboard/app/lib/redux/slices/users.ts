@@ -15,6 +15,7 @@ const initialState: any = {
     email: "",
     phone: "",
   },
+  singleAdminUser: {},
   reload: false,
 };
 
@@ -31,12 +32,20 @@ const userReducer = createSlice({
     setSingleUser: (state, action) => {
       state.user = action.payload;
     },
+    setSingleAdminUser: (state, action) => {
+      state.singleAdminUser = action.payload;
+    },
     setReload: (state, action) => {
       state.reload = action.payload;
     },
   },
 });
 
-export const { setWalletUserList, setAdminUserList, setSingleUser, setReload } =
-  userReducer.actions;
+export const {
+  setWalletUserList,
+  setAdminUserList,
+  setSingleUser,
+  setReload,
+  setSingleAdminUser,
+} = userReducer.actions;
 export default userReducer.reducer;

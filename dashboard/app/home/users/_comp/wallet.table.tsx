@@ -43,6 +43,7 @@ const WalletTable = () => {
         isKYCDone: data?.isKYCDone,
         status: data?.status,
         avatar: "https://picsum.photos/200/200?5",
+        rawData: JSON.stringify(data),
       };
     });
   };

@@ -1,5 +1,15 @@
 "use client";
 import { Column } from "@/app/components/home/table";
+import { Modal } from "@/app/components/modals/modalskin";
+import UpdateUser from "@/app/components/modals/updateuser";
+import { useAppDispatch } from "@/app/lib/redux/controls";
+import { setSingleAdminUser } from "@/app/lib/redux/slices/users";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Fragment, useState } from "react";
 
 export interface AdminUser {
   id: number;
@@ -10,6 +20,7 @@ export interface AdminUser {
   role: string;
   isActive: boolean;
   avatar: string;
+  rawData: string;
 }
 
 export interface WalletUser {
@@ -19,6 +30,7 @@ export interface WalletUser {
   status: string;
   avatar: string;
   isKYCDone: boolean;
+  rawData: string;
 }
 
 const statusColors: Record<string, string> = {
@@ -68,14 +80,49 @@ export const adminColumns: Column<AdminUser>[] = [
   {
     key: "actions",
     header: "Actions",
-    render: () => (
-      <button
-        className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
-        title="Actions"
-      >
-        <span className="material-icons text-[20px]">more_vert</span>
-      </button>
-    ),
+    render: (user) => {
+      const dispatch = useAppDispatch();
+      const [isOpen, setIsopen] = useState(false);
+
+      const editUser = () => {
+        const data = JSON.parse(user?.rawData);
+        dispatch(setSingleAdminUser(data));
+        setIsopen(true);
+      };
+
+      return (
+        <Fragment>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
+                title="Actions"
+              >
+                <span className="material-icons text-[20px]">more_vert</span>
+              </button>
+            </PopoverTrigger>
+
+            <PopoverContent className="max-w-[130px] text-[12px]">
+              <div
+                onClick={editUser}
+                className="py-[5px] border-b select-none hover:bg-gray-50 px-[10px]"
+              >
+                Edit user
+              </div>
+              <div className="py-[5px] border-b select-none hover:bg-gray-50 px-[10px]">
+                Delete user
+              </div>
+              <div className="py-[5px] select-none hover:bg-gray-50 px-[10px]">
+                Change status
+              </div>
+            </PopoverContent>
+          </Popover>
+          <Modal isOpen={isOpen}>
+            <UpdateUser setIsopen={setIsopen} />
+          </Modal>
+        </Fragment>
+      );
+    },
   },
 ];
 

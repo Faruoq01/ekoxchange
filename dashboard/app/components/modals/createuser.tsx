@@ -2,21 +2,11 @@
 import Image from "next/image";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
-import { UserService } from "@/app/lib/services/user";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
 import { setReload } from "@/app/lib/redux/slices/users";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import Input from "../forms/input";
-import Button from "../forms/button";
-import Text from "../forms/text";
 import { SelectComponent } from "../forms/select";
 import { MultiSelect } from "../forms/multiselect";
 import { RegistrationFormValues, registrationSchema } from "@/app/zod/register";
@@ -24,6 +14,7 @@ import InputText from "../forms/input";
 import CustomButton from "../forms/custombut";
 import { RoleService } from "@/app/lib/services/roles";
 import { setRoles } from "@/app/lib/redux/slices/roles";
+import { UserService } from "@/app/lib/services/users";
 
 const CreateUser = ({
   setIsopen,
