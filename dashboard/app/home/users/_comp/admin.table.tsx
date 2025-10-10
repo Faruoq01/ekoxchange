@@ -14,9 +14,9 @@ const UserTable = () => {
   const [limit, setLimit] = useState(30);
   const [loading, setLoading] = useState(false);
   const adminUsers = useAppSelector((state) => state.users.adminUsers);
+  const reload = useAppSelector((state) => state.users.reload);
 
   const getAdminUsers = useCallback(async () => {
-    if (adminUsers?.data?.length > 0) return;
     setLoading(true);
     const { error, payload } = await UserService.getAdminUsers(skip, limit);
     setLoading(false);
@@ -27,11 +27,11 @@ const UserTable = () => {
       };
       dispatch(setAdminUserList(walletData));
     }
-  }, []);
+  }, [reload]);
 
   useEffect(() => {
     getAdminUsers();
-  }, [getAdminUsers]);
+  }, [getAdminUsers, reload]);
 
   const walletRows = () => {
     return adminUsers?.data?.map((data: any, index: number) => {

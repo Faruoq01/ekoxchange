@@ -14,9 +14,9 @@ const WalletTable = () => {
   const [limit, setLimit] = useState(30);
   const [loading, setLoading] = useState(false);
   const walletUsers = useAppSelector((state) => state.users.walletUsers);
+  const reload = useAppSelector((state) => state.users.reload);
 
   const getWalletUsers = useCallback(async () => {
-    if (walletUsers?.data?.length > 0) return;
     setLoading(true);
     const { error, payload } = await UserService.getWalletUsers(skip, limit);
     setLoading(false);
@@ -27,11 +27,11 @@ const WalletTable = () => {
       };
       dispatch(setWalletUserList(walletData));
     }
-  }, []);
+  }, [reload]);
 
   useEffect(() => {
     getWalletUsers();
-  }, [getWalletUsers]);
+  }, [getWalletUsers, reload]);
 
   const walletRows = () => {
     return walletUsers?.data?.map((data: any, index: number) => {

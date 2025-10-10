@@ -4,16 +4,19 @@ export const UserService = {
   createUser: async (params: any) => {
     try {
       const url =
-        params.roles === "superAdmin"
-          ? "/users/super-admin/create"
-          : "/users/admin/create";
+        params.roleIds[0] === "super_admin_virtual_id"
+          ? "/admin/user/super-admin/create"
+          : "/admin/user/admin-user/create";
 
       const payload = {
         firstname: params.firstname,
         lastname: params.lastname,
         phone: params?.phone,
         email: params.email,
-        password: params.password,
+        gender: params?.gender,
+        ...(params.roleIds[0] !== "super_admin_virtual_id" && {
+          roleIds: params.roleIds,
+        }),
       };
 
       const response = await API.post(url, payload, {

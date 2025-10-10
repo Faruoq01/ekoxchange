@@ -11,7 +11,6 @@ import CreateUser from "@/app/components/modals/createuser";
 export default function UserPage() {
   const [isOpen, setIsopen] = useState(false);
   const [activeTab, setActiveTab] = useState<"admin" | "wallet">("wallet");
-
   const handleTabChange = (tab: "admin" | "wallet") => setActiveTab(tab);
 
   const tabs = [

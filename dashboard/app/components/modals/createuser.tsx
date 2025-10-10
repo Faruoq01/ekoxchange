@@ -51,13 +51,7 @@ const CreateUser = ({
     },
   });
 
-  const roles = [
-    { id: "superAdmin", name: "Super Admin" },
-    { id: "admin", name: "Admin" },
-  ];
-
   const onSubmit = async (data: any) => {
-    console.log(data, "data");
     if (
       data?.roleIds?.includes("super_admin_virtual_id") &&
       data?.roleIds?.length > 1
@@ -66,12 +60,12 @@ const CreateUser = ({
         "When super admin role is selected, no other role should be added"
       );
     }
-    // const { error, payload } = await UserService.createUser(data);
-    // if (!error && payload) {
-    //   setIsopen(false);
-    //   dispatch(setReload(!reload));
-    //   toast.success("User created Successfully!");
-    // }
+    const { error, payload } = await UserService.createUser(data);
+    if (!error && payload) {
+      setIsopen(false);
+      dispatch(setReload(!reload));
+      toast.success("User created Successfully!");
+    }
   };
 
   const getRoleList = useCallback(async () => {
