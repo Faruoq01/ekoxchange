@@ -43,7 +43,7 @@ const UserTable = () => {
         phone: data?.phone,
         role: data?.roles?.length === 0 ? "Super Admin" : "Admin User",
         isActive: data?.isActive,
-        avatar: "https://picsum.photos/200/200?1",
+        avatar: `https://picsum.photos/200/200?${index + 2}`,
         rawData: JSON.stringify(data),
       };
     });

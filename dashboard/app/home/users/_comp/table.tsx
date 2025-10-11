@@ -3,6 +3,7 @@ import { Column } from "@/app/components/home/table";
 import DeleteModal from "@/app/components/modals/delete";
 import { Modal } from "@/app/components/modals/modalskin";
 import UpdateUser from "@/app/components/modals/updateuser";
+import UserDetailsModal from "@/app/components/modals/user.details";
 import { useAppDispatch } from "@/app/lib/redux/controls";
 import { setSingleAdminUser } from "@/app/lib/redux/slices/users";
 import {
@@ -85,11 +86,18 @@ export const adminColumns: Column<AdminUser>[] = [
       const dispatch = useAppDispatch();
       const [isOpen, setIsopen] = useState(false);
       const [isDelete, setIsDelete] = useState(false);
+      const [isDetails, setIsDetails] = useState(false);
 
       const editUser = () => {
         const data = JSON.parse(user?.rawData);
         dispatch(setSingleAdminUser(data));
         setIsopen(true);
+      };
+
+      const viewDetails = () => {
+        const data = JSON.parse(user?.rawData);
+        dispatch(setSingleAdminUser(data));
+        setIsDetails(true);
       };
 
       const deleteModal = async () => {
@@ -115,31 +123,40 @@ export const adminColumns: Column<AdminUser>[] = [
             <PopoverContent className="max-w-[130px] text-[12px]">
               <div
                 onClick={editUser}
-                className="py-[5px] border-b select-none hover:bg-gray-50 px-[10px]"
+                className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]"
               >
                 Edit user
               </div>
               <div
-                onClick={deleteModal}
-                className="py-[5px] border-b select-none hover:bg-gray-50 px-[10px]"
+                onClick={viewDetails}
+                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
               >
-                Delete user
+                View Details
               </div>
-              <div className="py-[5px] select-none hover:bg-gray-50 px-[10px]">
+
+              {/* <div
+                onClick={deleteModal}
+                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
+              >
                 Change status
-              </div>
+              </div> */}
             </PopoverContent>
           </Popover>
           <Modal isOpen={isOpen}>
             <UpdateUser setIsopen={setIsopen} />
           </Modal>
-          <Modal isOpen={isDelete}>
+          {isDetails && (
+            <Modal isOpen={isDetails}>
+              <UserDetailsModal setIsDetails={setIsDetails} />
+            </Modal>
+          )}
+          {/* <Modal isOpen={isDelete}>
             <DeleteModal
               title="Warning!"
               setIsopen={setIsDelete}
               onDelete={() => deleteUser()}
             />
-          </Modal>
+          </Modal> */}
         </Fragment>
       );
     },

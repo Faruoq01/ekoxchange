@@ -88,4 +88,17 @@ export const UserService = {
       return { error: true, payload: e.message };
     }
   },
+  changeStatus: async (id: string, isActive: boolean) => {
+    try {
+      const url = isActive
+        ? `/admin/user/admin-user/deactivate/${id}`
+        : `/admin/user/admin-user/activate/${id}`;
+      const response = await API.put(url, {
+        withCredentials: true,
+      });
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };
