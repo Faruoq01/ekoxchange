@@ -101,4 +101,19 @@ export const UserService = {
       return { error: true, payload: e.message };
     }
   },
+  changeWalletUserStatus: async (id: string, isActive: boolean) => {
+    try {
+      const url = `/admin/user/status/${id}`;
+      const response = await API.put(
+        url,
+        { isActive },
+        {
+          withCredentials: true,
+        }
+      );
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };

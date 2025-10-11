@@ -42,6 +42,7 @@ const WalletTable = () => {
         createdAt: formatTimestamp(data?.createdAt),
         isKYCDone: data?.isKYCDone,
         status: data?.status,
+        isActive: data?.isActive,
         avatar: `https://picsum.photos/200/200?${index + 2}`,
         rawData: JSON.stringify(data),
       };
