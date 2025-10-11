@@ -17,7 +17,8 @@ import { formatTimestamp } from "@/app/lib/utils";
 export interface Role {
   id: number;
   name: string;
-  description: string;
+  dateCreated: string;
+  dateModified: string;
   userCount: number;
 }
 
@@ -33,11 +34,20 @@ export const roleColumns: Column<Role>[] = [
     ),
   },
   {
-    key: "description",
-    header: "Description",
+    key: "dateCreated",
+    header: "Date Created",
     render: (role) => (
       <p className="text-sm text-text-light dark:text-text-dark">
-        {role.description}
+        {role.dateCreated}
+      </p>
+    ),
+  },
+  {
+    key: "dateModified",
+    header: "Date Updated",
+    render: (role) => (
+      <p className="text-sm text-text-light dark:text-text-dark">
+        {role.dateModified}
       </p>
     ),
   },
@@ -98,8 +108,12 @@ const Roles = () => {
         id: index + 1,
         name: item.name,
         userCount: item.userCount,
-        dateCreated: item?.createdAt ? formatTimestamp(item?.createdAt) : "-",
-        dateModified: item?.updatedAt ? formatTimestamp(item?.updatedAt) : "-",
+        dateCreated: item?.createdAt
+          ? formatTimestamp(item?.createdAt)
+          : "System generated",
+        dateModified: item?.updatedAt
+          ? formatTimestamp(item?.updatedAt)
+          : "System generated",
       };
     });
   };
