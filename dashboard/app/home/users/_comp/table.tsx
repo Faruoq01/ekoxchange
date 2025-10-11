@@ -216,27 +216,12 @@ export const walletColumns: Column<WalletUser>[] = [
     render: (user) => {
       const dispatch = useAppDispatch();
       const [isOpen, setIsopen] = useState(false);
-      const [isDelete, setIsDelete] = useState(false);
       const [isDetails, setIsDetails] = useState(false);
-
-      const editUser = () => {
-        const data = JSON.parse(user?.rawData);
-        dispatch(setSingleAdminUser(data));
-        setIsopen(true);
-      };
 
       const viewDetails = () => {
         const data = JSON.parse(user?.rawData);
         dispatch(setSingleAdminUser(data));
         setIsDetails(true);
-      };
-
-      const deleteModal = async () => {
-        setIsDelete(true);
-      };
-
-      const deleteUser = async () => {
-        return { error: true, payload: "" };
       };
 
       return (
@@ -251,13 +236,7 @@ export const walletColumns: Column<WalletUser>[] = [
               </button>
             </PopoverTrigger>
 
-            <PopoverContent className="max-w-[130px] text-[12px]">
-              <div
-                onClick={editUser}
-                className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]"
-              >
-                Edit user
-              </div>
+            <PopoverContent className="max-w-[150px] text-[12px]">
               <div
                 onClick={viewDetails}
                 className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
@@ -265,29 +244,22 @@ export const walletColumns: Column<WalletUser>[] = [
                 View Details
               </div>
 
-              {/* <div
-                onClick={deleteModal}
-                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
-              >
-                Change status
-              </div> */}
+              <div className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]">
+                Lock Account
+              </div>
+              <div className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]">
+                Reset Password
+              </div>
+              <div className="py-[6px] select-none hover:bg-gray-50 px-[10px]">
+                Reset 2FA
+              </div>
             </PopoverContent>
           </Popover>
-          <Modal isOpen={isOpen}>
-            <UpdateUser setIsopen={setIsopen} />
-          </Modal>
           {isDetails && (
             <Modal isOpen={isDetails}>
               <WalletUserDetails setIsDetails={setIsDetails} />
             </Modal>
           )}
-          {/* <Modal isOpen={isDelete}>
-            <DeleteModal
-              title="Warning!"
-              setIsopen={setIsDelete}
-              onDelete={() => deleteUser()}
-            />
-          </Modal> */}
         </Fragment>
       );
     },

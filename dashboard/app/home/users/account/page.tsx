@@ -1,7 +1,7 @@
 "use client";
 
 const UpdateAdminUsers = () => {
-  return <div>UpdateAdminUsers</div>;
+  return <div>User Account Manager here</div>;
 };
 
 export default UpdateAdminUsers;
