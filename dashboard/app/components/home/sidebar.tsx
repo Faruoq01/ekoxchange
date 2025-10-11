@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { AppImages } from "@/app/assets/appimages";
 import { motion } from "framer-motion";
 
-const NavItem = ({ label, icon, link }: any) => {
+const NavItem = ({ label, icon, link, pages }: any) => {
   const router = useRouter();
   const path = usePathname();
 
@@ -21,7 +21,7 @@ const NavItem = ({ label, icon, link }: any) => {
       whileTap={{ scale: 0.98 }}
       className={clsx(
         "flex items-center gap-3 px-3 py-2.5 rounded-lg transition text-sm select-none mb-[8px] cursor-pointer",
-        path === link
+        path === link || pages?.includes(path)
           ? "bg-primary/10 text-primary"
           : "text-text-light dark:text-text-dark hover:bg-primary/10 hover:text-primary"
       )}
@@ -72,20 +72,56 @@ const Sidebar = () => {
 };
 
 const navItems = [
-  { label: "Dashboard", icon: "dashboard", link: AppPages.home.dashboard },
-  { label: "Users", icon: "people", link: AppPages.home.users },
-  { label: "Crypto", icon: "currency_bitcoin", link: AppPages.home.crypto },
+  {
+    label: "Dashboard",
+    icon: "dashboard",
+    link: AppPages.home.dashboard,
+    pages: [],
+  },
+  {
+    label: "Users",
+    icon: "people",
+    link: AppPages.home.users.index,
+    pages: [],
+  },
+  {
+    label: "Crypto",
+    icon: "currency_bitcoin",
+    link: AppPages.home.crypto,
+    pages: [],
+  },
   {
     label: "Transactions",
     icon: "receipt_long",
     link: AppPages.home.transactions,
+    pages: [],
   },
-  { label: "Analytics", icon: "analytics", link: AppPages.home.analytics },
-  { label: "Support", icon: "support_agent", link: AppPages.home.support },
-  { label: "Roles", icon: "admin_panel_settings", link: AppPages.home.roles },
+  {
+    label: "Analytics",
+    icon: "analytics",
+    link: AppPages.home.analytics,
+    pages: [],
+  },
+  {
+    label: "Support",
+    icon: "support_agent",
+    link: AppPages.home.support,
+    pages: [],
+  },
+  {
+    label: "Roles",
+    icon: "admin_panel_settings",
+    link: AppPages.home.roles,
+    pages: [],
+  },
   // { label: "Gift Card", icon: "card_giftcard", link: AppPages.home.giftcards },
   // { label: "Referrals", icon: "group_add", link: AppPages.home.referrals },
-  { label: "Settings", icon: "settings", link: AppPages.home.settings },
+  {
+    label: "Settings",
+    icon: "settings",
+    link: AppPages.home.settings,
+    pages: [],
+  },
 ];
 
 export default Sidebar;

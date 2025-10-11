@@ -1,9 +1,7 @@
 "use client";
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../forms/button";
-import Input from "../forms/input";
 import Text from "../forms/text";
 import { loginSchema, LoginSchema } from "@/app/zod/login";
 import { useRouter } from "next/navigation";
@@ -13,6 +11,7 @@ import { setIsLogin, setUser } from "@/app/lib/redux/slices";
 import toast from "react-hot-toast";
 import { AppPages } from "@/app/assets/appages";
 import Cookies from "js-cookie";
+import InputText from "../forms/input";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -50,24 +49,21 @@ const LoginForm = () => {
         </Text>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <Input
-            id="email"
-            type="email"
-            label="Username or Email"
+          <InputText
+            label="Email"
+            name="email"
+            type="text"
+            register={register}
+            formErrors={errors}
             placeholder="you@example.com"
-            icon="person"
-            error={errors.email?.message}
-            {...register("email")}
           />
-
-          <Input
-            id="password"
-            type="password"
+          <InputText
             label="Password"
-            placeholder="••••••••"
-            icon="lock"
-            error={errors.password?.message}
-            {...register("password")}
+            name="password"
+            type="password"
+            register={register}
+            formErrors={errors}
+            placeholder="*********"
           />
 
           <div className="flex items-center justify-between">

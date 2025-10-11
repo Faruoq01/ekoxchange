@@ -7,7 +7,10 @@ export class AppPages {
 
   static home = {
     dashboard: "/home/dashboard",
-    users: "/home/users",
+    users: {
+      index: "/home/users",
+      account: "/home/users/account",
+    },
     crypto: "/home/crypto",
     transactions: "/home/transactions",
     analytics: "/home/analytics",

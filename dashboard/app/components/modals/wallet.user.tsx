@@ -6,12 +6,15 @@ import { UserService } from "@/app/lib/services/users";
 import { Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 import { Copy } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { AppPages } from "@/app/assets/appages";
 
 const WalletUserDetails = ({
   setIsDetails,
 }: {
   setIsDetails: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.users.singleAdminUser);
   const reload = useAppSelector((state) => state.users.reload);
@@ -99,6 +102,10 @@ const WalletUserDetails = ({
       value: tronAddress,
     },
   ];
+
+  const goToAccount = () => {
+    router.push(AppPages.home.users.account);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
@@ -243,7 +250,10 @@ const WalletUserDetails = ({
             Send Message
           </button>
 
-          <button className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-5 py-2 rounded-lg text-sm font-medium hover:opacity-90 shadow-md transition-all">
+          <button
+            onClick={goToAccount}
+            className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-5 py-2 rounded-lg text-sm font-medium hover:opacity-90 shadow-md transition-all"
+          >
             View Wallet Account
           </button>
         </div>

@@ -2,11 +2,6 @@
 import { useAppSelector } from "@/app/lib/redux/controls";
 import { motion } from "framer-motion";
 import Text from "../forms/text";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import LogoutPopover from "./logout";
 
 const Header = () => {
