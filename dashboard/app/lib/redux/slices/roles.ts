@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: any = {
   roleList: [],
+  singleRole: {},
   permissionList: [],
   reload: false,
 };
@@ -13,6 +14,9 @@ const roleReducer = createSlice({
     setRoles: (state, action) => {
       state.roleList = action.payload;
     },
+    setSingleRole: (state, action) => {
+      state.singleRole = action.payload;
+    },
     setPermissions: (state, action) => {
       state.permissionList = action.payload;
     },
@@ -22,5 +26,6 @@ const roleReducer = createSlice({
   },
 });
 
-export const { setRoles, setPermissions, setReload } = roleReducer.actions;
+export const { setRoles, setPermissions, setSingleRole, setReload } =
+  roleReducer.actions;
 export default roleReducer.reducer;
