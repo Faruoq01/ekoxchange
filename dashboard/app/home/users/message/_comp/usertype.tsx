@@ -1,15 +1,9 @@
-"use client";
-import React from "react";
-
 interface Props {
   userType: "admin" | "wallet";
   setUserType: (type: "admin" | "wallet") => void;
 }
 
-export const UserTypeSelector: React.FC<Props> = ({
-  userType,
-  setUserType,
-}) => {
+export default function UserTypeSelector({ userType, setUserType }: Props) {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-3">
@@ -41,4 +35,4 @@ export const UserTypeSelector: React.FC<Props> = ({
       </div>
     </div>
   );
-};
+}
