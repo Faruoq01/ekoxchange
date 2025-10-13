@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
       "cryptologos.cc",
       "coin-images.coingecko.com",
       "upload.wikimedia.org",
+      "lh3.googleusercontent.com",
     ],
   },
 };

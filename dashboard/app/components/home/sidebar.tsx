@@ -111,8 +111,8 @@ const navItems = [
   {
     label: "Roles",
     icon: "admin_panel_settings",
-    link: AppPages.home.roles,
-    pages: [],
+    link: AppPages.home.roles.index,
+    pages: [AppPages.home.roles.create, AppPages.home.roles.edit],
   },
   // { label: "Gift Card", icon: "card_giftcard", link: AppPages.home.giftcards },
   // { label: "Referrals", icon: "group_add", link: AppPages.home.referrals },

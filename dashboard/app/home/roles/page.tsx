@@ -12,6 +12,8 @@ import { RoleService } from "@/app/lib/services/roles";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
 import { setRoles } from "@/app/lib/redux/slices/roles";
 import { formatTimestamp } from "@/app/lib/utils";
+import { AppPages } from "@/app/assets/appages";
+import { useRouter } from "next/navigation";
 
 /* ------------------------------ Types ------------------------------ */
 export interface Role {
@@ -83,6 +85,7 @@ export const roleColumns: Column<Role>[] = [
 ];
 
 const Roles = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(30);
@@ -118,6 +121,10 @@ const Roles = () => {
     });
   };
 
+  const goToCreateRole = () => {
+    router.push(AppPages.home.roles.create);
+  };
+
   const roleRows = getRoleData();
   return (
     <main className="p-4 md:p-6 bg-card-light dark:bg-card-dark rounded-lg mt-[20px]">
@@ -130,7 +137,7 @@ const Roles = () => {
         <Button
           variant="primary"
           className="w-auto px-3 py-2.5 text-sm"
-          onClick={() => console.log("Add new role clicked")}
+          onClick={goToCreateRole}
         >
           <Plus className="w-5 h-5" />
           <span>Add Role</span>

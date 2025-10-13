@@ -15,7 +15,11 @@ export class AppPages {
     transactions: "/home/transactions",
     analytics: "/home/analytics",
     support: "/home/support",
-    roles: "/home/roles",
+    roles: {
+      index: "/home/roles",
+      create: "/home/roles/create",
+      edit: "/home/roles/edit",
+    },
     giftcards: "/home/giftcards",
     referrals: "/home/referrals",
     settings: "/home/settings",
