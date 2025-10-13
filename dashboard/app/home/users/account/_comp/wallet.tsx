@@ -37,6 +37,20 @@ export default function WalletBalances() {
 
   const wallets = walletUserBalances?.length ? walletUserBalances : [];
 
+  /** Format balance in a readable way per token type **/
+  const formatBalance = (balance: string, symbol: string): string => {
+    const num = parseFloat(balance);
+    if (isNaN(num) || num === 0) return "0.00";
+
+    let decimals = 4;
+    if (symbol === "BTC") decimals = 8;
+    else if (symbol === "ETH" || symbol === "SOL") decimals = 6;
+    else if (symbol === "USDT" || symbol === "USDC") decimals = 2;
+    else if (num < 1) decimals = 6;
+
+    return num.toFixed(decimals).replace(/\.?0+$/, "");
+  };
+
   return (
     <motion.section
       className="bg-transparent"
@@ -55,28 +69,24 @@ export default function WalletBalances() {
       {loading ? (
         <div className="flex flex-col items-center justify-center h-64">
           <motion.div
-            className="relative w-12 h-12"
             animate={{ rotate: 360 }}
             transition={{
               repeat: Infinity,
               duration: 1.2,
               ease: "linear",
             }}
+            className="relative w-12 h-12"
           >
-            <div className="absolute inset-0 rounded-full border-4 border-t-primary border-gray-200 dark:border-gray-700" />
+            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-purple-500 border-r-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.7)]" />
+            <div className="absolute inset-2 rounded-full border-2 border-gray-200 dark:border-gray-700" />
           </motion.div>
-
           <motion.p
-            className="mt-4 text-gray-600 dark:text-gray-400 text-sm font-medium"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{
-              duration: 0.8,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="mt-4 text-gray-500 dark:text-gray-400 text-sm font-medium tracking-wide"
           >
-            Fetching your wallet balances...
+            Loading balances...
           </motion.p>
         </div>
       ) : wallets.length === 0 ? (
@@ -118,13 +128,14 @@ export default function WalletBalances() {
                 {/* Balance */}
                 <div className="mt-6">
                   <p className="text-xl font-bold bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
-                    {parseFloat(wallet.balance).toLocaleString()}{" "}
+                    {formatBalance(wallet.balance, wallet.symbol)}{" "}
                     {wallet.symbol}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                     ≈ $
                     {Number(wallet.usdValue).toLocaleString(undefined, {
                       minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
                     })}
                   </p>
                 </div>
