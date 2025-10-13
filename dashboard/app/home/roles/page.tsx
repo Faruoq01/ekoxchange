@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useCallback, useEffect, useState } from "react";
 import Button from "@/app/components/forms/button";
 import Text from "@/app/components/forms/text";
@@ -19,7 +18,7 @@ import { useRouter } from "next/navigation";
 export interface Role {
   id: number;
   name: string;
-  dateCreated: string;
+  description: string;
   dateModified: string;
   userCount: number;
 }
@@ -36,17 +35,17 @@ export const roleColumns: Column<Role>[] = [
     ),
   },
   {
-    key: "dateCreated",
-    header: "Date Created",
+    key: "description",
+    header: "Description",
     render: (role) => (
       <p className="text-sm text-text-light dark:text-text-dark">
-        {role.dateCreated}
+        {role.description}
       </p>
     ),
   },
   {
     key: "dateModified",
-    header: "Date Updated",
+    header: "Date Modified",
     render: (role) => (
       <p className="text-sm text-text-light dark:text-text-dark">
         {role.dateModified}
@@ -111,9 +110,7 @@ const Roles = () => {
         id: index + 1,
         name: item.name,
         userCount: item.userCount,
-        dateCreated: item?.createdAt
-          ? formatTimestamp(item?.createdAt)
-          : "System generated",
+        description: item.description,
         dateModified: item?.updatedAt
           ? formatTimestamp(item?.updatedAt)
           : "System generated",
