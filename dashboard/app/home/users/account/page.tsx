@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
@@ -7,6 +7,8 @@ import KYCDocumentsTab from "./_comp/kyc";
 import UserActivityLogs from "./_comp/activity";
 import WalletBalances from "./_comp/wallet";
 import TransactionHistory from "./_comp/transactions";
+import { useAppSelector } from "@/app/lib/redux/controls";
+import { AppPages } from "@/app/assets/appages";
 
 const tabs = [
   { label: "KYC Documents", component: KYCDocumentsTab },
@@ -17,10 +19,18 @@ const tabs = [
 
 const UpdateAdminUsers = () => {
   const [activeTab, setActiveTab] = useState("KYC Documents");
+  const user = useAppSelector((state) => state.users.user);
+  console.log(user, "user");
   const router = useRouter();
 
   const ActiveComponent =
     tabs.find((t) => t.label === activeTab)?.component || KYCDocumentsTab;
+
+  useEffect(() => {
+    if (Object.values(user).length === 0) {
+      router.push(AppPages.home.users.index);
+    }
+  }, [user]);
 
   return (
     <main className="flex-1 overflow-y-auto mt-[20px] mb-[50px]">

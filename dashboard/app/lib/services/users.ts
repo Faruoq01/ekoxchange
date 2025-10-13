@@ -116,4 +116,40 @@ export const UserService = {
       return { error: true, payload: e.message };
     }
   },
+  getWalletUserLogs: async (id: string, skip: number, limit: number) => {
+    try {
+      const response = await API.get(
+        `audit/logs/${id}/list?skip=${skip}&limit=${limit}`,
+        {
+          withCredentials: true,
+        }
+      );
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
+  getWalletUserBalances: async (id: string) => {
+    try {
+      const response = await API.get(`admin/user/wallet-users/${id}/get`, {
+        withCredentials: true,
+      });
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
+  getWalletUserTransactions: async (id: string) => {
+    try {
+      const response = await API.get(
+        `/dashboard/admin/user-transactions/${id}/get`,
+        {
+          withCredentials: true,
+        }
+      );
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };

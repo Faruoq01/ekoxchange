@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
-import { setReload } from "@/app/lib/redux/slices/users";
+import { setReload, setSingleUser } from "@/app/lib/redux/slices/users";
 import { UserService } from "@/app/lib/services/users";
 import { Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
@@ -104,6 +104,7 @@ const WalletUserDetails = ({
   ];
 
   const goToAccount = () => {
+    dispatch(setSingleUser(user));
     router.push(AppPages.home.users.account);
   };
 

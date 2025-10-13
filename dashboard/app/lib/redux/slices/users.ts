@@ -9,13 +9,11 @@ const initialState: any = {
     data: [],
     total: 0,
   },
-  user: {
-    firstname: "",
-    lastname: "",
-    email: "",
-    phone: "",
-  },
+  user: {},
   singleAdminUser: {},
+  walletUserLogs: [],
+  walletUserBalances: [],
+  walletUsersTransactions: [],
   reload: false,
 };
 
@@ -35,6 +33,15 @@ const userReducer = createSlice({
     setSingleAdminUser: (state, action) => {
       state.singleAdminUser = action.payload;
     },
+    setWalletUserLogs: (state, action) => {
+      state.walletUserLogs = action.payload;
+    },
+    setWalletUserBalances: (state, action) => {
+      state.walletUserBalances = action.payload;
+    },
+    setWalletUserTransactions: (state, action) => {
+      state.walletUsersTransactions = action.payload;
+    },
     setReload: (state, action) => {
       state.reload = action.payload;
     },
@@ -47,5 +54,8 @@ export const {
   setSingleUser,
   setReload,
   setSingleAdminUser,
+  setWalletUserLogs,
+  setWalletUserBalances,
+  setWalletUserTransactions,
 } = userReducer.actions;
 export default userReducer.reducer;

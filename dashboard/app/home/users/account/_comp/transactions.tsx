@@ -1,196 +1,180 @@
+"use client";
+
 import { motion } from "framer-motion";
+import { Copy, ExternalLink } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
 
 interface Transaction {
-  id: string;
-  type: string;
-  date: string;
-  amount: string;
-  status: "Completed" | "Pending" | "Failed";
+  _id: string;
+  name: string;
+  symbol: string;
+  logo: string;
+  balance: string;
+  from: string;
+  to: string;
+  txid: string;
+  blockTimestamp: string;
 }
 
-const transactions: Transaction[] = [
-  {
-    id: "#TXN12345678",
-    type: "Deposit",
-    date: "2024-07-28 14:30",
-    amount: "+ 0.5 BTC",
-    status: "Completed",
-  },
-  {
-    id: "#TXN12345679",
-    type: "Withdrawal",
-    date: "2024-07-27 10:15",
-    amount: "- 10.0 ETH",
-    status: "Pending",
-  },
-  {
-    id: "#TXN12345680",
-    type: "Trade",
-    date: "2024-07-26 18:45",
-    amount: "BTC/USDT",
-    status: "Completed",
-  },
-  {
-    id: "#TXN12345681",
-    type: "Deposit",
-    date: "2024-07-25 09:00",
-    amount: "+ 1,000 USDT",
-    status: "Completed",
-  },
-  {
-    id: "#TXN12345682",
-    type: "Withdrawal",
-    date: "2024-07-24 12:00",
-    amount: "- 500 SOL",
-    status: "Failed",
-  },
-  {
-    id: "#TXN12345683",
-    type: "Trade",
-    date: "2024-07-23 20:30",
-    amount: "ETH/BTC",
-    status: "Completed",
-  },
-  {
-    id: "#TXN12345684",
-    type: "Deposit",
-    date: "2024-07-22 11:55",
-    amount: "+ 250,000 TRX",
-    status: "Completed",
-  },
-];
+interface BalanceGroup {
+  date: string;
+  transactions: Transaction[];
+}
 
 export default function TransactionHistory() {
-  const statusColor = (status: Transaction["status"]) => {
-    switch (status) {
-      case "Completed":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
-      case "Pending":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
-      case "Failed":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
-      default:
-        return "";
-    }
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const handleCopy = async (text: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopied(text);
+    setTimeout(() => setCopied(null), 2000);
   };
 
+  // Example data
+  const balances: BalanceGroup[] = [
+    {
+      date: "July 28, 2024",
+      transactions: [
+        {
+          _id: "1",
+          name: "Bitcoin",
+          symbol: "BTC",
+          logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
+          balance: "+0.50 BTC",
+          from: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+          to: "",
+          txid: "f4184fc596403b9d638783c7d973b4e41e33d26a8c3d52a2814c3e803c7e8f56",
+          blockTimestamp: "2024-07-28T10:45:00Z",
+        },
+        {
+          _id: "2",
+          name: "Ethereum",
+          symbol: "ETH",
+          logo: "https://etherscan.io/images/svg/brands/ethereum-original.svg",
+          balance: "-2.00 ETH",
+          from: "",
+          to: "0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe",
+          txid: "0x5a0b54d5e147de9a3a9afd5e4d2b8de15c7e0b54d5e147de9a3a9afd5e4d2b8d",
+          blockTimestamp: "2024-07-28T09:12:00Z",
+        },
+      ],
+    },
+  ];
+
   return (
-    <motion.section
-      className="bg-card-light dark:bg-card-dark rounded-xl"
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-    >
-      <header className="flex items-center justify-between mb-4">
-        <h4 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-100">
-          Transaction History
-        </h4>
-      </header>
+    <div className="bg-card-light dark:bg-card-dark">
+      {balances.map((group, index) => (
+        <section key={index} className="space-y-3">
+          <h4 className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wide pb-1">
+            {group.date}
+          </h4>
 
-      {/* Desktop Table */}
-      <div className="hidden md:block overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800">
-            <tr>
-              {["Transaction ID", "Type", "Date", "Amount", "Status"].map(
-                (heading) => (
-                  <th
-                    key={heading}
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider"
-                  >
-                    {heading}
-                  </th>
-                )
-              )}
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-800">
-            {transactions.map((txn, i) => (
-              <motion.tr
-                key={txn.id}
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-              >
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                  {txn.id}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-                  {txn.type}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-                  {txn.date}
-                </td>
-                <td
-                  className={`px-6 py-4 whitespace-nowrap text-sm ${
-                    txn.amount.startsWith("+")
-                      ? "text-green-600 dark:text-green-500"
-                      : txn.amount.startsWith("-")
-                      ? "text-red-600 dark:text-red-500"
-                      : "text-gray-700 dark:text-gray-300"
-                  }`}
-                >
-                  {txn.amount}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor(
-                      txn.status
-                    )}`}
-                  >
-                    {txn.status}
-                  </span>
-                </td>
-              </motion.tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Mobile Cards */}
-      <div className="grid gap-4 md:hidden">
-        {transactions.map((txn, i) => (
-          <motion.div
-            key={txn.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
-            className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm"
-          >
-            <div className="flex justify-between items-center mb-2">
-              <span className="font-semibold text-gray-900 dark:text-gray-100">
-                {txn.type}
-              </span>
-              <span
-                className={`px-2 text-xs rounded-full ${statusColor(
-                  txn.status
-                )}`}
-              >
-                {txn.status}
-              </span>
-            </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-              <strong>ID:</strong> {txn.id}
-            </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-              <strong>Date:</strong> {txn.date}
-            </p>
-            <p
-              className={`text-sm font-medium ${
-                txn.amount.startsWith("+")
-                  ? "text-green-600 dark:text-green-500"
-                  : txn.amount.startsWith("-")
-                  ? "text-red-600 dark:text-red-500"
-                  : "text-gray-700 dark:text-gray-300"
-              }`}
+          {group.transactions.map((tx, i) => (
+            <motion.div
+              key={tx._id}
+              whileHover={{ scale: 1.01 }}
+              transition={{ type: "spring", stiffness: 200, damping: 14 }}
+              className="relative flex items-center gap-4 p-3 bg-white dark:bg-gray-900 border rounded-[5px] hover:shadow-md transition-all"
             >
-              {txn.amount}
-            </p>
-          </motion.div>
-        ))}
-      </div>
-    </motion.section>
+              {/* Stripe accent */}
+              <span
+                className={`absolute left-0 top-0 h-full w-1 rounded-l-xl ${
+                  tx.balance.startsWith("-") ? "bg-red-500" : "bg-green-500"
+                }`}
+              />
+
+              {/* Logo */}
+              <div className="relative w-[45px] h-[45px] rounded-full ml-[5px] mr-[5px]">
+                <Image src={tx.logo} alt={tx.symbol} fill />
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-center">
+                  <h5 className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
+                    {tx.balance.startsWith("-")
+                      ? `Sent ${tx.symbol}`
+                      : `Received ${tx.symbol}`}
+                  </h5>
+                  <p
+                    className={`text-xs font-semibold ${
+                      tx.balance.startsWith("-")
+                        ? "text-red-600 dark:text-red-400"
+                        : "text-green-600 dark:text-green-400"
+                    }`}
+                  >
+                    {tx.balance}
+                  </p>
+                </div>
+
+                <div className="mt-1.5 text-xs text-gray-600 dark:text-gray-400 space-y-0.5">
+                  {tx.from && (
+                    <p className="truncate">
+                      <span className="text-gray-500 dark:text-gray-500">
+                        From:
+                      </span>{" "}
+                      <span className="font-mono text-gray-700 dark:text-gray-300">
+                        {tx.from.slice(0, 10)}...
+                      </span>
+                      <button
+                        onClick={() => handleCopy(tx.from)}
+                        className="ml-1 text-gray-400 hover:text-blue-500"
+                      >
+                        <Copy className="w-3 h-3 inline" />
+                      </button>
+                    </p>
+                  )}
+                  {tx.to && (
+                    <p className="truncate">
+                      <span className="text-gray-500 dark:text-gray-500">
+                        To:
+                      </span>{" "}
+                      <span className="font-mono text-gray-700 dark:text-gray-300">
+                        {tx.to.slice(0, 10)}...
+                      </span>
+                      <button
+                        onClick={() => handleCopy(tx.to)}
+                        className="ml-1 text-gray-400 hover:text-blue-500"
+                      >
+                        <Copy className="w-3 h-3 inline" />
+                      </button>
+                    </p>
+                  )}
+                  <p className="truncate">
+                    <span className="text-gray-500 dark:text-gray-500">
+                      TxID:
+                    </span>{" "}
+                    <span className="font-mono text-gray-700 dark:text-gray-300">
+                      {tx.txid.slice(0, 10)}...
+                    </span>
+                    <a
+                      href={`https://etherscan.io/tx/${tx.txid}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-1 text-gray-400 hover:text-blue-500"
+                    >
+                      <ExternalLink className="w-3 h-3 inline" />
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </section>
+      ))}
+
+      {/* Copy feedback */}
+      {copied && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          className="fixed bottom-6 right-6 bg-green-600 text-white px-3 py-2 rounded-md shadow-md text-xs"
+        >
+          Copied!
+        </motion.div>
+      )}
+    </div>
   );
 }
