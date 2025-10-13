@@ -1,127 +1,275 @@
 "use client";
-import { useState } from "react";
-import Image from "next/image";
+
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RoleService } from "@/app/lib/services/roles";
+import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
+import { setPermissions } from "@/app/lib/redux/slices/roles";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { AppPages } from "@/app/assets/appages";
+
+/** ✅ Validation Schema */
+const RoleSchema = z.object({
+  roleName: z.string().min(2, "Role name is required"),
+  roleDescription: z.string().min(2, "Description is required"),
+  permissionIds: z.array(z.string()).min(1, "Select at least one permission"),
+});
+
+type RoleFormData = z.infer<typeof RoleSchema>;
 
 export default function CreateRolePage() {
-  const [roleName, setRoleName] = useState("");
-  const [permissions, setPermissions] = useState<Record<string, boolean>>({});
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const permissionGroups = useAppSelector(
+    (state) => state.roles.permissionList
+  );
 
+  const [selectedPermissions, setSelectedPermissions] = useState<
+    Record<string, boolean>
+  >({});
+  const [selectAllState, setSelectAllState] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  /** React Hook Form setup */
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<RoleFormData>({
+    resolver: zodResolver(RoleSchema),
+    defaultValues: {
+      roleName: "",
+      roleDescription: "",
+      permissionIds: [],
+    },
+  });
+
+  const permissionIds = watch("permissionIds");
+
+  /** Fetch all permissions */
+  const getAllPermissions = useCallback(async () => {
+    const { error, payload } = await RoleService.getPermissions();
+    if (!error && payload?.permissions) {
+      dispatch(setPermissions(payload.permissions));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    getAllPermissions();
+  }, [getAllPermissions]);
+
+  /** Toggle individual permission */
   const handlePermissionToggle = (id: string) => {
-    setPermissions((prev) => ({ ...prev, [id]: !prev[id] }));
+    const isChecked = selectedPermissions[id];
+    const updated = { ...selectedPermissions, [id]: !isChecked };
+    setSelectedPermissions(updated);
+
+    const current = permissionIds || [];
+    if (isChecked) {
+      setValue(
+        "permissionIds",
+        current.filter((pid) => pid !== id),
+        { shouldValidate: true }
+      );
+    } else {
+      setValue("permissionIds", [...current, id], { shouldValidate: true });
+    }
   };
 
-  const permissionGroups = [
-    {
-      title: "Users Management",
-      permissions: [
-        { id: "user-view", label: "View Users" },
-        { id: "user-create", label: "Create Users" },
-        { id: "user-edit", label: "Edit Users" },
-        { id: "user-delete", label: "Delete Users" },
-      ],
-    },
-    {
-      title: "Crypto Management",
-      permissions: [
-        { id: "crypto-view", label: "View Coins" },
-        { id: "crypto-add", label: "Add Coins" },
-        { id: "crypto-edit", label: "Edit Coins" },
-        { id: "crypto-delist", label: "Delist Coins" },
-      ],
-    },
-    {
-      title: "Transactions",
-      permissions: [
-        { id: "tx-view", label: "View Transactions" },
-        { id: "tx-approve", label: "Approve" },
-        { id: "tx-reject", label: "Reject" },
-        { id: "tx-export", label: "Export Data" },
-      ],
-    },
-  ];
+  /** Toggle Select All in a group */
+  const handleSelectAll = (groupName: string, perms: any[]) => {
+    const allSelected = selectAllState[groupName];
+    const updatedSelectAll = { ...selectAllState, [groupName]: !allSelected };
+    setSelectAllState(updatedSelectAll);
 
-  const handleCreate = () => {
-    const selectedPermissions = Object.keys(permissions).filter(
-      (key) => permissions[key]
-    );
-    console.log("Creating role:", { roleName, selectedPermissions });
+    const updatedPermissions = { ...selectedPermissions };
+    const current = new Set(permissionIds);
+
+    if (allSelected) {
+      // Unselect all in this group
+      perms.forEach((perm) => {
+        delete updatedPermissions[perm.id];
+        current.delete(perm.id);
+      });
+    } else {
+      // Select all in this group
+      perms.forEach((perm) => {
+        updatedPermissions[perm.id] = true;
+        current.add(perm.id);
+      });
+    }
+
+    setSelectedPermissions(updatedPermissions);
+    setValue("permissionIds", Array.from(current), { shouldValidate: true });
+  };
+
+  /** Handle form submit */
+  const onSubmit = async (data: RoleFormData) => {
+    const payload = {
+      name: data.roleName.trim(),
+      description: data.roleDescription.trim(),
+      permissionIds: data.permissionIds,
+    };
+
+    console.log("🚀 Payload:", payload);
+
+    // const { error, payload: response } = await RoleService.createRole(payload);
+    // if (!error && response) {
+    //   toast.success("Role created successfully!");
+    //   router.push(AppPages.home.roles.index);
+    // }
   };
 
   return (
     <main className="flex-1 overflow-y-auto rounded-xl bg-background-light dark:bg-background-dark mt-[20px] mb-[50px]">
-      {/* Form Container */}
-      <section className="bg-card-light dark:bg-card-dark p-8 rounded-xl mx-auto">
-        {/* Role Name */}
-        <div className="mb-10">
-          <label
-            htmlFor="role-name"
-            className="block text-sm font-medium text-text-light dark:text-text-dark mb-2"
-          >
-            Role Name
-          </label>
-          <input
-            id="role-name"
-            type="text"
-            placeholder="e.g. Content Manager"
-            value={roleName}
-            onChange={(e) => setRoleName(e.target.value)}
-            className="w-full bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg px-4 py-3 text-heading-light dark:text-heading-dark focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
-          />
-        </div>
+      <section className="bg-card-light dark:bg-card-dark p-6 rounded-xl mx-auto">
+        <h1 className="text-lg font-bold text-gray-700 mb-8">
+          Create New Role
+        </h1>
 
-        {/* Permissions */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-heading-light dark:text-heading-dark mb-6">
-            Assign Permissions
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {permissionGroups.map((group) => (
-              <div
-                key={group.title}
-                className="border border-border-light dark:border-border-dark p-6 rounded-lg hover:shadow-md transition"
-              >
-                <h3 className="font-semibold text-lg text-heading-light dark:text-heading-dark mb-4">
-                  {group.title}
-                </h3>
-
-                <div className="space-y-4">
-                  {group.permissions.map((perm) => (
-                    <label
-                      key={perm.id}
-                      className="flex items-center cursor-pointer group"
-                    >
-                      <input
-                        type="checkbox"
-                        id={perm.id}
-                        checked={permissions[perm.id] || false}
-                        onChange={() => handlePermissionToggle(perm.id)}
-                        className="form-checkbox h-5 w-5 rounded text-primary focus:ring-primary/50 border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark transition"
-                      />
-                      <span className="ml-3 text-sm text-text-light dark:text-text-dark group-hover:text-primary transition-colors">
-                        {perm.label}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            ))}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Role Name */}
+          <div>
+            <label
+              htmlFor="role-name"
+              className="block text-sm font-medium text-text-light dark:text-text-dark mb-2"
+            >
+              Role Name
+            </label>
+            <input
+              id="role-name"
+              type="text"
+              placeholder="e.g. Administrator"
+              {...register("roleName")}
+              className="w-full text-[12px] rounded-[5px] bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark px-4 py-[10px] text-heading-light dark:text-heading-dark focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+            />
+            {errors.roleName && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.roleName.message}
+              </p>
+            )}
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-end mt-12 gap-4">
-          <button className="w-[100px] h-[40px] px-[10px] text-[12px] border border-primary text-primary rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-card-dark/60 transition-colors">
-            Cancel
-          </button>
-          <button
-            onClick={handleCreate}
-            className="bg-primary text-white h-[40px] px-[10px] text-[12px] rounded-lg font-semibold hover:bg-primary/90 transition-colors flex items-center gap-1"
-          >
-            <span className="material-symbols-outlined">add</span>
-            <span>Create Role</span>
-          </button>
-        </div>
+          {/* Role Description */}
+          <div>
+            <label
+              htmlFor="role-description"
+              className="block text-sm font-medium text-text-light dark:text-text-dark mb-2"
+            >
+              Description
+            </label>
+            <textarea
+              id="role-description"
+              rows={3}
+              placeholder="Describe this role and its responsibilities..."
+              {...register("roleDescription")}
+              className="w-full text-[12px] bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-[5px] px-4 py-3 text-heading-light dark:text-heading-dark focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+            />
+            {errors.roleDescription && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.roleDescription.message}
+              </p>
+            )}
+          </div>
+
+          {/* Permissions */}
+          <div>
+            <h2 className="text-lg font-semibold text-gray-700 py-[5px]">
+              Assign Permissions
+            </h2>
+            <hr className="mb-8" />
+
+            {permissionGroups ? (
+              <div className="space-y-8">
+                {Object.entries(permissionGroups).map(
+                  ([groupName, perms]: any) => {
+                    const allSelected = perms.every(
+                      (perm: any) => selectedPermissions[perm.id]
+                    );
+
+                    return (
+                      <div key={groupName}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-[600] text-md text-gray-500 capitalize">
+                            {groupName} Permissions
+                          </h3>
+                          <button
+                            type="button"
+                            onClick={() => handleSelectAll(groupName, perms)}
+                            className="text-xs text-primary font-semibold hover:underline"
+                          >
+                            {allSelected ? "Unselect All" : "Select All"}
+                          </button>
+                        </div>
+
+                        <ul className="space-y-3 border border-border-light dark:border-border-dark rounded-lg p-4">
+                          {perms.map((perm: any) => (
+                            <li
+                              key={perm.id}
+                              className="flex items-start justify-between border-b border-border-light dark:border-border-dark last:border-0 py-2"
+                            >
+                              <div className="flex items-start gap-3">
+                                <input
+                                  type="checkbox"
+                                  checked={
+                                    selectedPermissions[perm.id] || false
+                                  }
+                                  onChange={() =>
+                                    handlePermissionToggle(perm.id)
+                                  }
+                                  className="mt-1 h-3 w-3 bg-primary text-primary border-border-light dark:border-border-dark rounded focus:ring-primary/50"
+                                />
+                                <p className="text-sm text-text-light dark:text-text-dark">
+                                  {perm.description}
+                                </p>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+            ) : (
+              <p className="text-gray-500">Loading permissions...</p>
+            )}
+
+            {errors.permissionIds && (
+              <p className="text-red-500 text-xs mt-2">
+                {errors.permissionIds.message}
+              </p>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end mt-12 gap-4">
+            <button
+              type="button"
+              disabled={isSubmitting}
+              className="w-[100px] h-[40px] px-[10px] text-[12px] border border-primary text-primary rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-card-dark/60 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-primary text-white h-[40px] px-[10px] text-[12px] rounded-lg font-semibold hover:bg-primary/90 transition-colors flex items-center gap-1"
+            >
+              <span className="material-symbols-outlined">
+                {isSubmitting ? "hourglass_empty" : "add"}
+              </span>
+              <span>{isSubmitting ? "Creating..." : "Create Role"}</span>
+            </button>
+          </div>
+        </form>
       </section>
     </main>
   );
