@@ -19,6 +19,7 @@ export const RoleService = {
   },
   updateRole: async (id: string, param: any) => {
     try {
+      console.log(id, param);
       const response = await API.post(`roles/update/${id}`, param);
       return { error: false, payload: response?.data };
     } catch (e: any) {

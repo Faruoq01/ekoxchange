@@ -27,8 +27,6 @@ export default function EditRolePage() {
     (state) => state.roles.permissionList
   );
   const selectedRole = useAppSelector((state) => state.roles.singleRole);
-  console.log(selectedRole, "selectedRole");
-
   const [selectedPermissions, setSelectedPermissions] = useState<
     Record<string, boolean>
   >({});
@@ -49,7 +47,7 @@ export default function EditRolePage() {
     defaultValues: {
       roleName: selectedRole?.name,
       roleDescription: selectedRole?.description,
-      permissionIds: selectedRole?.permissionIds,
+      permissionIds: selectedRole?.permissionIds || [],
     },
   });
 
@@ -66,6 +64,20 @@ export default function EditRolePage() {
   useEffect(() => {
     getAllPermissions();
   }, [getAllPermissions]);
+
+  /** ✅ Prepopulate selected permissions for editing */
+  useEffect(() => {
+    if (selectedRole && selectedRole.permissionIds?.length > 0) {
+      const preselected: Record<string, boolean> = {};
+      selectedRole.permissionIds.forEach((id: string) => {
+        preselected[id] = true;
+      });
+      setSelectedPermissions(preselected);
+      setValue("permissionIds", selectedRole.permissionIds, {
+        shouldValidate: true,
+      });
+    }
+  }, [selectedRole, setValue]);
 
   /** Toggle individual permission */
   const handlePermissionToggle = (id: string) => {
@@ -95,13 +107,11 @@ export default function EditRolePage() {
     const current = new Set(permissionIds);
 
     if (allSelected) {
-      // Unselect all in this group
       perms.forEach((perm) => {
         delete updatedPermissions[perm.id];
         current.delete(perm.id);
       });
     } else {
-      // Select all in this group
       perms.forEach((perm) => {
         updatedPermissions[perm.id] = true;
         current.add(perm.id);
@@ -112,12 +122,20 @@ export default function EditRolePage() {
     setValue("permissionIds", Array.from(current), { shouldValidate: true });
   };
 
+  /** Submit form */
   const onSubmit = async (data: RoleFormData) => {
-    const { error, payload } = await RoleService.updateRole(
+    const payload = {
+      name: data.roleName.trim(),
+      description: data.roleDescription.trim(),
+      permissionIds: data.permissionIds,
+    };
+    console.log(payload, "payload");
+
+    const { error, payload: response } = await RoleService.updateRole(
       selectedRole._id,
-      data
+      payload
     );
-    if (!error && payload) {
+    if (!error && response) {
       toast.success("Role updated successfully!");
       router.push(AppPages.home.roles.index);
     }
@@ -128,18 +146,19 @@ export default function EditRolePage() {
     router.back();
   };
 
+  /** Redirect if no selected role */
   useEffect(() => {
-    if (Object.values(selectedRole).length === 0) {
+    if (!selectedRole || Object.keys(selectedRole).length === 0) {
       router.push(AppPages.home.roles.index);
     }
-  }, [selectedRole]);
+  }, [selectedRole, router]);
 
   return (
     <main className="flex-1 overflow-y-auto rounded-xl bg-background-light dark:bg-background-dark mt-[20px] mb-[50px]">
       <section className="bg-card-light dark:bg-card-dark p-6 rounded-xl mx-auto">
         {/* Header with Back Button */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-lg font-bold text-gray-700">Create New Role</h1>
+          <h1 className="text-lg font-bold text-gray-700">Edit Role</h1>
           <button
             type="button"
             onClick={handleBack}
@@ -290,9 +309,9 @@ export default function EditRolePage() {
               className="bg-primary text-white h-[40px] px-[10px] text-[12px] rounded-lg font-semibold hover:bg-primary/90 transition-colors flex items-center gap-1"
             >
               <span className="material-symbols-outlined">
-                {isSubmitting ? "hourglass_empty" : "add"}
+                {isSubmitting ? "hourglass_empty" : "save"}
               </span>
-              <span>{isSubmitting ? "Creating..." : "Create Role"}</span>
+              <span>{isSubmitting ? "Updating..." : "Update Role"}</span>
             </button>
           </div>
         </form>

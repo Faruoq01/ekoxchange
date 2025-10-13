@@ -76,6 +76,7 @@ export const roleColumns: Column<Role>[] = [
 
         const params = JSON.parse(user?.data);
         const details = {
+          id: params?.id,
           name: params?.name,
           description: params?.description,
           permissionIds: params?.permissionIds,
