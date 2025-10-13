@@ -108,6 +108,11 @@ const WalletUserDetails = ({
     router.push(AppPages.home.users.account);
   };
 
+  const sendMessage = () => {
+    dispatch(setSingleUser(user));
+    router.push(AppPages.home.users.message);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="relative bg-gradient-to-br from-white/90 to-slate-100 dark:from-slate-900/95 dark:to-slate-800/95 rounded-2xl shadow-2xl w-full max-w-2xl p-6 animate-fadeIn border border-white/10 max-h-[90vh] overflow-y-auto">
@@ -247,7 +252,10 @@ const WalletUserDetails = ({
             {isActive ? "Suspend User" : "Activate User"}
           </button>
 
-          <button className="bg-gradient-to-r from-primary to-purple-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:opacity-90 shadow-md transition-all">
+          <button
+            onClick={sendMessage}
+            className="bg-gradient-to-r from-primary to-purple-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:opacity-90 shadow-md transition-all"
+          >
             Send Message
           </button>
 

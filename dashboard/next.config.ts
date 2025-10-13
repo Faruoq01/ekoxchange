@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       "coin-images.coingecko.com",
       "upload.wikimedia.org",
       "lh3.googleusercontent.com",
+      "i.pravatar.cc",
     ],
   },
 };

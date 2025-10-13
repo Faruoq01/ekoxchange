@@ -82,7 +82,7 @@ const navItems = [
     label: "Users",
     icon: "people",
     link: AppPages.home.users.index,
-    pages: [AppPages.home.users.account],
+    pages: [AppPages.home.users.account, AppPages.home.users.message],
   },
   {
     label: "Crypto",

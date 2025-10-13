@@ -10,6 +10,7 @@ export class AppPages {
     users: {
       index: "/home/users",
       account: "/home/users/account",
+      message: "/home/users/message",
     },
     crypto: "/home/crypto",
     transactions: "/home/transactions",
