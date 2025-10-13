@@ -118,21 +118,35 @@ export default function CreateRolePage() {
       permissionIds: data.permissionIds,
     };
 
-    console.log("🚀 Payload:", payload);
+    const { error, payload: response } = await RoleService.createRole(payload);
+    if (!error && response) {
+      toast.success("Role created successfully!");
+      router.push(AppPages.home.roles.index);
+    }
+  };
 
-    // const { error, payload: response } = await RoleService.createRole(payload);
-    // if (!error && response) {
-    //   toast.success("Role created successfully!");
-    //   router.push(AppPages.home.roles.index);
-    // }
+  /** Go back handler */
+  const handleBack = () => {
+    router.back();
   };
 
   return (
     <main className="flex-1 overflow-y-auto rounded-xl bg-background-light dark:bg-background-dark mt-[20px] mb-[50px]">
       <section className="bg-card-light dark:bg-card-dark p-6 rounded-xl mx-auto">
-        <h1 className="text-lg font-bold text-gray-700 mb-8">
-          Create New Role
-        </h1>
+        {/* Header with Back Button */}
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-lg font-bold text-gray-700">Create New Role</h1>
+          <button
+            type="button"
+            onClick={handleBack}
+            className="flex items-center gap-1 text-[12px] text-primary font-semibold transition"
+          >
+            <span className="material-symbols-outlined text-[10px]">
+              arrow_back
+            </span>
+            Back
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Role Name */}
@@ -251,6 +265,14 @@ export default function CreateRolePage() {
 
           {/* Action Buttons */}
           <div className="flex justify-end mt-12 gap-4">
+            <button
+              type="button"
+              onClick={handleBack}
+              disabled={isSubmitting}
+              className="w-[100px] h-[40px] px-[10px] text-[12px] border border-gray-400 text-gray-600 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-card-dark/60 transition-colors"
+            >
+              Back
+            </button>
             <button
               type="button"
               disabled={isSubmitting}

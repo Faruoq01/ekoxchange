@@ -38,7 +38,7 @@ export const roleColumns: Column<Role>[] = [
     key: "description",
     header: "Description",
     render: (role) => (
-      <p className="text-sm text-text-light dark:text-text-dark">
+      <p className="text-sm text-text-light dark:text-text-dark text-left">
         {role.description}
       </p>
     ),
@@ -124,7 +124,7 @@ const Roles = () => {
 
   const roleRows = getRoleData();
   return (
-    <main className="p-4 md:p-6 bg-card-light dark:bg-card-dark rounded-lg mt-[20px]">
+    <main className="p-4 md:p-6 bg-card-light dark:bg-card-dark rounded-lg mt-[20px] mb-[50px]">
       {/* Header */}
       <div className="flex items-center justify-between mb-[20px] bg-white">
         <Text variant="medium" className="mb-0">

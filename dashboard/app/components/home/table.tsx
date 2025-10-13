@@ -132,7 +132,7 @@ const Table = <T extends { id: string | number }>({
                 <span className="text-sm font-medium text-text-light dark:text-text-dark">
                   {col.header}
                 </span>
-                <span className="text-sm text-heading-light dark:text-heading-dark">
+                <span className="text-sm text-heading-light dark:text-heading-dark max-w-[170px]">
                   {col.render
                     ? col.render(rowData)
                     : String(rowData[col.key as keyof T])}
