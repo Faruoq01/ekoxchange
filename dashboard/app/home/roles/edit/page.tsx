@@ -129,10 +129,9 @@ export default function EditRolePage() {
       description: data.roleDescription.trim(),
       permissionIds: data.permissionIds,
     };
-    console.log(payload, "payload");
 
     const { error, payload: response } = await RoleService.updateRole(
-      selectedRole._id,
+      selectedRole.id,
       payload
     );
     if (!error && response) {
