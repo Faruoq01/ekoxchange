@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
       "upload.wikimedia.org",
       "lh3.googleusercontent.com",
       "i.pravatar.cc",
+      "source.unsplash.com",
+    ],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "source.unsplash.com",
+      },
     ],
   },
 };

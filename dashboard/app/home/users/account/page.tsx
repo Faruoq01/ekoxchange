@@ -20,7 +20,6 @@ const tabs = [
 const UpdateAdminUsers = () => {
   const [activeTab, setActiveTab] = useState("KYC Documents");
   const user = useAppSelector((state) => state.users.user);
-  console.log(user, "user");
   const router = useRouter();
 
   const ActiveComponent =
