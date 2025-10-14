@@ -1,12 +1,12 @@
 "use client";
 import { Column } from "@/app/components/home/table";
-import DeleteModal from "@/app/components/modals/delete";
 import { Modal } from "@/app/components/modals/modalskin";
 import UpdateUser from "@/app/components/modals/updateuser";
 import UserDetailsModal from "@/app/components/modals/user.details";
 import WalletUserDetails from "@/app/components/modals/wallet.user";
 import { useAppDispatch } from "@/app/lib/redux/controls";
 import { setSingleAdminUser } from "@/app/lib/redux/slices/users";
+import { Badge } from "@/components/ui/badge";
 import {
   Popover,
   PopoverContent,
@@ -35,6 +35,16 @@ export interface WalletUser {
   isKYCDone: boolean;
   rawData: string;
 }
+
+const badgeColors = [
+  "bg-pink-100 text-pink-800 border border-pink-200",
+  "bg-blue-100 text-blue-800 border border-blue-200",
+  "bg-green-100 text-green-800 border border-green-200",
+  "bg-purple-100 text-purple-800 border border-purple-200",
+  "bg-yellow-100 text-yellow-800 border border-yellow-200",
+  "bg-orange-100 text-orange-800 border border-orange-200",
+  "bg-cyan-100 text-cyan-800 border border-cyan-200",
+];
 
 const statusColors: Record<string, string> = {
   Active: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
@@ -66,7 +76,37 @@ export const adminColumns: Column<AdminUser>[] = [
   },
   { key: "email", header: "Email" },
   { key: "phone", header: "Phone" },
-  { key: "role", header: "Role" },
+  {
+    key: "role",
+    header: "Role",
+    render: (user) => {
+      const data = JSON.parse(user.rawData);
+      const roles = data?.roles ?? [];
+
+      if (!roles.length) {
+        return (
+          <Badge className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[10px] py-0.5 px-2 rounded-full shadow-sm">
+            Super Admin
+          </Badge>
+        );
+      }
+
+      return (
+        <div className="flex flex-wrap gap-1">
+          {roles.map((role: any, i: number) => (
+            <Badge
+              key={i}
+              className={`${
+                badgeColors[i % badgeColors.length]
+              } text-[10px] py-0.5 px-2 rounded-full shadow-sm`}
+            >
+              {role?.name || "Admin User"}
+            </Badge>
+          ))}
+        </div>
+      );
+    },
+  },
   {
     key: "status",
     header: "Status",
@@ -86,7 +126,6 @@ export const adminColumns: Column<AdminUser>[] = [
     render: (user) => {
       const dispatch = useAppDispatch();
       const [isOpen, setIsopen] = useState(false);
-      const [isDelete, setIsDelete] = useState(false);
       const [isDetails, setIsDetails] = useState(false);
 
       const editUser = () => {
@@ -99,14 +138,6 @@ export const adminColumns: Column<AdminUser>[] = [
         const data = JSON.parse(user?.rawData);
         dispatch(setSingleAdminUser(data));
         setIsDetails(true);
-      };
-
-      const deleteModal = async () => {
-        setIsDelete(true);
-      };
-
-      const deleteUser = async () => {
-        return { error: true, payload: "" };
       };
 
       return (
@@ -134,30 +165,18 @@ export const adminColumns: Column<AdminUser>[] = [
               >
                 View Details
               </div>
-
-              {/* <div
-                onClick={deleteModal}
-                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
-              >
-                Change status
-              </div> */}
             </PopoverContent>
           </Popover>
+
           <Modal isOpen={isOpen}>
             <UpdateUser setIsopen={setIsopen} />
           </Modal>
+
           {isDetails && (
             <Modal isOpen={isDetails}>
               <UserDetailsModal setIsDetails={setIsDetails} />
             </Modal>
           )}
-          {/* <Modal isOpen={isDelete}>
-            <DeleteModal
-              title="Warning!"
-              setIsopen={setIsDelete}
-              onDelete={() => deleteUser()}
-            />
-          </Modal> */}
         </Fragment>
       );
     },

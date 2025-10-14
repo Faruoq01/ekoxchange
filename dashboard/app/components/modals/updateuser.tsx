@@ -22,6 +22,7 @@ const UpdateUser = ({
   setIsopen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
   const reload = useAppSelector((state) => state.users.reload);
   const roleList = useAppSelector((state) => state.roles.roleList);
   const singleAdminUser = useAppSelector(
@@ -46,6 +47,12 @@ const UpdateUser = ({
   });
 
   const onSubmit = async (data: RegistrationFormValues) => {
+    if (
+      user?.userType === "ADMIN_USER" &&
+      singleAdminUser?.userType === "SUPER_ADMIN_USER"
+    ) {
+      toast.error("You cannot update a super admin record");
+    }
     if (
       data?.roleIds?.includes("super_admin_virtual_id") &&
       data?.roleIds?.length > 1
