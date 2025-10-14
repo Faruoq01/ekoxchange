@@ -1,15 +1,15 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { X, Users, Loader2 } from "lucide-react";
+import { useSelector } from "react-redux";
 import { UserService } from "@/app/lib/services/users";
 
 interface User {
   id: string;
   name: string;
   username: string;
-  avatar: string;
+  avatar?: string | null;
   type: "admin" | "wallet";
   isAll?: boolean;
 }
@@ -32,70 +32,94 @@ export default function RecipientSelector({
   const [search, setSearch] = useState("");
   const [skip, setSkip] = useState(0);
   const limit = 10;
-
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // ✅ Fetch users with explicit skip argument
-  const fetchUsers = async (initial = false, customSkip?: number) => {
+  // ✅ Redux preselected user
+  const { singleAdminUser, singleWalletUser } = useSelector(
+    (state: any) => state.users
+  );
+
+  // ✅ Fetch users from API
+  const fetchUsers = async (initial = false) => {
     try {
       if (initial) setLoading(true);
       else setLoadingMore(true);
 
-      const currentSkip = customSkip ?? skip;
-
       const res =
         userType === "admin"
-          ? await UserService.getAdminUsers(currentSkip, limit)
-          : await UserService.getWalletUsers(currentSkip, limit);
+          ? await UserService.getAdminUsers(initial ? 0 : skip, limit)
+          : await UserService.getWalletUsers(initial ? 0 : skip, limit);
 
       if (!res.error) {
         const rawUsers = res.payload?.data || [];
-
-        const newUsers = rawUsers.map((u: any, i: number) => {
-          const avatar =
-            u?.avatar && typeof u.avatar === "string" && u.avatar.trim() !== ""
-              ? u.avatar
-              : `https://source.unsplash.com/random/200x200?face&sig=${
-                  currentSkip + i + Math.floor(Math.random() * 10000)
-                }`;
-
-          return {
-            id: u.id || u._id || `${userType}-${currentSkip + i}`,
-            name:
-              `${u.firstname ?? ""} ${u.lastname ?? ""}`.trim() ||
-              "Unnamed User",
-            username:
-              u.email ||
-              u.phone ||
-              u.id ||
-              `unknown-${userType}-${currentSkip + i}`,
-            avatar,
-            type: userType,
-          };
-        });
+        const newUsers = rawUsers.map((u: any, i: number) => ({
+          id: u.id || u._id || `${userType}-${skip + i}`,
+          name:
+            `${u.firstname ?? ""} ${u.lastname ?? ""}`.trim() || "Unnamed User",
+          username: u.email || u.phone || u.id || `unknown-${skip + i}`,
+          avatar: `https://picsum.photos/200/200?${i + 2}`,
+          type: userType,
+        }));
 
         setUsers((prev) => (initial ? newUsers : [...prev, ...newUsers]));
-        setSkip(currentSkip + limit);
+        setSkip((prev) => (initial ? limit : prev + limit));
       }
     } catch (err) {
-      console.error("Failed to fetch users:", err);
+      console.error("Error fetching users:", err);
     } finally {
       setLoading(false);
       setLoadingMore(false);
     }
   };
 
-  // ✅ Refetch when userType changes (clean reset)
+  // ✅ Reset and refetch when userType changes
   useEffect(() => {
     setUsers([]);
     setSkip(0);
-    fetchUsers(true, 0);
+    fetchUsers(true);
   }, [userType]);
 
-  // ✅ Filter users by search term
+  // ✅ Preselect from Redux if available
+  useEffect(() => {
+    if (userType === "admin" && singleAdminUser?._id) {
+      const pre = {
+        id: singleAdminUser._id,
+        name: `${singleAdminUser.firstname ?? ""} ${
+          singleAdminUser.lastname ?? ""
+        }`.trim(),
+        username:
+          singleAdminUser.email || singleAdminUser.phone || singleAdminUser._id,
+        avatar: `https://picsum.photos/200/200?${0 + 2}`,
+        type: "admin" as const,
+      };
+      setSelectedUsers((prev) => {
+        const exists = prev.some((u) => u.username === pre.username);
+        return exists ? prev : [...prev, pre];
+      });
+    } else if (userType === "wallet" && singleWalletUser?._id) {
+      const pre = {
+        id: singleWalletUser._id,
+        name: `${singleWalletUser.firstname ?? ""} ${
+          singleWalletUser.lastname ?? ""
+        }`.trim(),
+        username:
+          singleWalletUser.email ||
+          singleWalletUser.phone ||
+          singleWalletUser._id,
+        avatar: `https://picsum.photos/200/200?${1 + 2}`,
+        type: "wallet" as const,
+      };
+      setSelectedUsers((prev) => {
+        const exists = prev.some((u) => u.username === pre.username);
+        return exists ? prev : [...prev, pre];
+      });
+    }
+  }, [singleAdminUser, singleWalletUser, userType]);
+
+  // ✅ Search filter
   const filtered = users.filter((u) => {
-    const name = u?.name?.toLowerCase?.() || "";
-    const username = u?.username?.toLowerCase?.() || "";
+    const name = u.name?.toLowerCase?.() || "";
+    const username = u.username?.toLowerCase?.() || "";
     const term = search.toLowerCase();
     return (
       (name.includes(term) || username.includes(term)) &&
@@ -135,9 +159,8 @@ export default function RecipientSelector({
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(e.target as Node)
-      ) {
+      )
         setDropdownOpen(false);
-      }
     };
     document.addEventListener("mousedown", handleOutside);
     return () => document.removeEventListener("mousedown", handleOutside);
@@ -148,6 +171,7 @@ export default function RecipientSelector({
       <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">
         Recipient
       </label>
+
       <div className="relative">
         {/* Selected Users */}
         <div
@@ -174,7 +198,6 @@ export default function RecipientSelector({
                     width={24}
                     height={24}
                     className="rounded-full object-cover"
-                    unoptimized
                   />
                 )}
                 <span className="text-sm font-medium truncate max-w-[100px]">
@@ -190,7 +213,6 @@ export default function RecipientSelector({
               </div>
             ))}
 
-          {/* Search Input */}
           <input
             type="text"
             placeholder="Add more users..."
@@ -206,7 +228,6 @@ export default function RecipientSelector({
         {/* Dropdown */}
         {dropdownOpen && (
           <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-            {/* Select All */}
             <button
               type="button"
               onClick={handleSelectAll}
@@ -236,7 +257,6 @@ export default function RecipientSelector({
                       width={32}
                       height={32}
                       className="rounded-full object-cover"
-                      unoptimized
                     />
                     <div>
                       <p className="font-semibold text-sm text-gray-800 dark:text-gray-100">
@@ -281,7 +301,6 @@ export default function RecipientSelector({
                         </>
                       )}
                     </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-primary opacity-0 group-hover:opacity-20 transition-opacity"></div>
                   </button>
                 </div>
               </>
