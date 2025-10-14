@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import Button from "@/app/components/forms/button";
 import Text from "@/app/components/forms/text";
 import Pagination from "@/app/components/home/pagination";
@@ -9,11 +9,17 @@ import { motion } from "framer-motion";
 import { Column } from "@/app/components/home/table";
 import { RoleService } from "@/app/lib/services/roles";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
-import { setRoles, setSingleRole } from "@/app/lib/redux/slices/roles";
+import {
+  setReload,
+  setRoles,
+  setSingleRole,
+} from "@/app/lib/redux/slices/roles";
 import { formatTimestamp } from "@/app/lib/utils";
 import { AppPages } from "@/app/assets/appages";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { Modal } from "@/app/components/modals/modalskin";
+import DeleteModal from "@/app/components/modals/delete";
 
 /* ------------------------------ Types ------------------------------ */
 export interface Role {
@@ -66,43 +72,7 @@ export const roleColumns: Column<Role>[] = [
   {
     key: "actions",
     header: "Actions",
-    render: (user) => {
-      const router = useRouter();
-      const dispatch = useAppDispatch();
-
-      const goToEditRole = () => {
-        if (user?.name === "Super Admin")
-          return toast.error("Super Admin role cannot be modified");
-
-        const params = JSON.parse(user?.data);
-        const details = {
-          id: params?.id,
-          name: params?.name,
-          description: params?.description,
-          permissionIds: params?.permissionIds,
-        };
-        dispatch(setSingleRole(details));
-        router.push(AppPages.home.roles.edit);
-      };
-
-      return (
-        <div className="flex items-center gap-2">
-          <button
-            onClick={goToEditRole}
-            className="text-gray-500 hover:text-primary transition"
-            title="Edit Role"
-          >
-            <span className="material-icons text-[20px]">edit</span>
-          </button>
-          <button
-            className="text-gray-500 hover:text-red-500 transition"
-            title="Delete Role"
-          >
-            <span className="material-icons text-[20px]">delete</span>
-          </button>
-        </div>
-      );
-    },
+    render: (role) => <RoleActions role={role} />,
   },
 ];
 
@@ -180,6 +150,70 @@ const Roles = () => {
         </div>
       </motion.div>
     </main>
+  );
+};
+
+/* ----------------------------- Action Cell ----------------------------- */
+const RoleActions: React.FC<{ role: Role }> = ({ role }) => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const reload = useAppSelector((state) => state.roles.reload);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const goToEditRole = () => {
+    if (role.name === "Super Admin")
+      return toast.error("Super Admin role cannot be modified");
+
+    const params = JSON.parse(role.data);
+    const details = {
+      id: params?.id,
+      name: params?.name,
+      description: params?.description,
+      permissionIds: params?.permissionIds,
+    };
+    dispatch(setSingleRole(details));
+    router.push(AppPages.home.roles.edit);
+  };
+
+  const handleDelete = () => {
+    const params = JSON.parse(role.data);
+    return RoleService.deleteRoles(params._id);
+  };
+
+  const refreshHandler = (reloadState: boolean) => {
+    dispatch(setReload(reloadState));
+  };
+
+  return (
+    <Fragment>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={goToEditRole}
+          className="text-gray-500 hover:text-primary transition"
+          title="Edit Role"
+        >
+          <span className="material-icons text-[20px]">edit</span>
+        </button>
+        <button
+          onClick={() => setIsOpen(true)}
+          className="text-gray-500 hover:text-red-500 transition"
+          title="Delete Role"
+        >
+          <span className="material-icons text-[20px]">delete</span>
+        </button>
+      </div>
+
+      <Modal isOpen={isOpen}>
+        <DeleteModal
+          setIsopen={setIsOpen}
+          title="Confirm Delete"
+          message="Are you sure you want to delete this role? This action cannot be undone."
+          onDelete={handleDelete}
+          refreshHandler={refreshHandler}
+          reloadState={reload}
+        />
+      </Modal>
+    </Fragment>
   );
 };
 

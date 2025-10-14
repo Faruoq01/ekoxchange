@@ -34,4 +34,12 @@ export const RoleService = {
       return { error: true, payload: e.message };
     }
   },
+  deleteRoles: async (id: string) => {
+    try {
+      const response = await API.delete(`/roles/delete/${id}`);
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };

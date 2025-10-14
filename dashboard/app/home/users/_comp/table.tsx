@@ -82,15 +82,26 @@ export const adminColumns: Column<AdminUser>[] = [
     render: (user) => {
       const data = JSON.parse(user.rawData);
       const roles = data?.roles ?? [];
+      const isSuperAdmin = data?.isSuperAdmin ?? false;
 
+      // 🟣 If the user has no roles
       if (!roles.length) {
-        return (
-          <Badge className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[10px] py-0.5 px-2 rounded-full shadow-sm">
-            Super Admin
-          </Badge>
-        );
+        if (isSuperAdmin) {
+          return (
+            <Badge className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[10px] py-0.5 px-2 rounded-full shadow-sm">
+              Super Admin
+            </Badge>
+          );
+        } else {
+          return (
+            <Badge className="bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-[10px] py-0.5 px-2 rounded-full shadow-sm">
+              No Role
+            </Badge>
+          );
+        }
       }
 
+      // 🟢 If the user has roles
       return (
         <div className="flex flex-wrap gap-1">
           {roles.map((role: any, i: number) => (
