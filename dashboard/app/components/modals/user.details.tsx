@@ -1,8 +1,13 @@
 "use client";
-
+import { AppPages } from "@/app/assets/appages";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
-import { setReload } from "@/app/lib/redux/slices/users";
+import {
+  setReload,
+  setSingleAdminUser,
+  setSingleWalletUser,
+} from "@/app/lib/redux/slices/users";
 import { UserService } from "@/app/lib/services/users";
+import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -11,6 +16,7 @@ const UserDetailsModal = ({
 }: {
   setIsDetails: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.users.singleAdminUser);
   const reload = useAppSelector((state) => state.users.reload);
@@ -59,6 +65,12 @@ const UserDetailsModal = ({
     } finally {
       setIsLoading(false); // 👈 Stop loading
     }
+  };
+
+  const sendMessage = () => {
+    dispatch(setSingleAdminUser(user));
+    dispatch(setSingleWalletUser({}));
+    router.push(AppPages.home.users.message);
   };
 
   return (
@@ -176,7 +188,10 @@ const UserDetailsModal = ({
             ) : null}
             {isActive ? "Suspend User" : "Activate User"}
           </button>
-          <button className="bg-primary text-white px-6 py-2 rounded-lg text-sm hover:bg-primary/90">
+          <button
+            onClick={sendMessage}
+            className="bg-primary text-white px-6 py-2 rounded-lg text-sm hover:bg-primary/90"
+          >
             Send Message
           </button>
         </div>

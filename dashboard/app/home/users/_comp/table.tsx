@@ -273,10 +273,6 @@ export const walletColumns: Column<WalletUser>[] = [
               >
                 View Details
               </div>
-
-              <div className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]">
-                Lock Account
-              </div>
               <div className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]">
                 Reset Password
               </div>

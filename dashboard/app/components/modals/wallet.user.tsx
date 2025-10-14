@@ -1,7 +1,12 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
-import { setReload, setSingleUser } from "@/app/lib/redux/slices/users";
+import {
+  setReload,
+  setSingleAdminUser,
+  setSingleUser,
+  setSingleWalletUser,
+} from "@/app/lib/redux/slices/users";
 import { UserService } from "@/app/lib/services/users";
 import { Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
@@ -109,7 +114,8 @@ const WalletUserDetails = ({
   };
 
   const sendMessage = () => {
-    dispatch(setSingleUser(user));
+    dispatch(setSingleWalletUser(user));
+    dispatch(setSingleAdminUser({}));
     router.push(AppPages.home.users.message);
   };
 
