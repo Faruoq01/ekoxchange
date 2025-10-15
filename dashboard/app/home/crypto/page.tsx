@@ -1,16 +1,14 @@
 "use client";
-import Button from "@/app/components/forms/button";
-import Text from "@/app/components/forms/text";
-import Pagination from "@/app/components/home/pagination";
-import Table from "@/app/components/home/table";
-import { Plus } from "lucide-react";
-import React from "react";
-import { columns, Rate, rates } from "./_comp/table";
-import { Fee, feeColumns, fees } from "./_comp/fee";
-import { motion } from "framer-motion"; // <-- added
+import React, { useCallback, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CryptoService } from "@/app/lib/services/crypto";
+import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
+import { setWalletBalances } from "@/app/lib/redux/slices/crypto";
+import FeeTable from "./_comp/fee.table";
+import RateTable from "./_comp/rate.table";
 
-// Types
-interface Wallet {
+interface WalletCardProps {
   name: string;
   symbol: string;
   amount: string;
@@ -19,8 +17,7 @@ interface Wallet {
   img: string;
 }
 
-// Reusable WalletCard (animated)
-const WalletCard: React.FC<Wallet> = ({
+const WalletCard: React.FC<WalletCardProps> = ({
   name,
   symbol,
   amount,
@@ -69,124 +66,67 @@ const WalletCard: React.FC<Wallet> = ({
   </motion.div>
 );
 
-const Crypto = () => {
-  const wallets: Wallet[] = [
-    {
-      name: "Bitcoin",
-      symbol: "BTC",
-      amount: "3.529020 BTC",
-      value: "$190,500.55",
-      change: "+1.5%",
-      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
-    },
-    {
-      name: "Ethereum",
-      symbol: "ETH",
-      amount: "15.253 ETH",
-      value: "$45,750.22",
-      change: "-0.8%",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJDn0ojTITvcdAzMsfBMJaZC4STaDHzduleQ&s",
-    },
-    {
-      name: "Solana",
-      symbol: "SOL",
-      amount: "250.75 SOL",
-      value: "$25,075.00",
-      change: "+3.2%",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQty1ptcBSY-tfLh_dAW_FS1GLSClUiFQTZqA&s",
-    },
-    {
-      name: "Tron",
-      symbol: "TRX",
-      amount: "250.75 TRX",
-      value: "$25,075.00",
-      change: "+3.2%",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBsWaz0K2kxYpSFMhQ2pPdBcnOwpQHWYEyzw&s",
-    },
-    {
-      name: "Tether",
-      symbol: "USDT",
-      amount: "5,000 USDT",
-      value: "$5,000.00",
-      change: "0.0%",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBcmKcHrJcPR_wk4REQeUaEdX7fHVi3uePPw&s",
-    },
-    {
-      name: "USD Coin",
-      symbol: "USDC",
-      amount: "5,000 USDC",
-      value: "$5,000.00",
-      change: "0.0%",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ43MuDqq54iD1ZCRL_uthAPkfwSSL-J5qI_Q&s",
-    },
-  ];
+const WalletCardSkeleton = () => (
+  <div className="bg-card-light dark:bg-card-dark p-6 rounded-lg flex flex-col justify-between">
+    <div className="flex items-start justify-between mb-4">
+      <div className="flex items-center gap-3">
+        <Skeleton className="w-10 h-10 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-3 w-16" />
+        </div>
+      </div>
+      <Skeleton className="h-4 w-10" />
+    </div>
+    <div className="space-y-2">
+      <Skeleton className="h-5 w-24" />
+      <Skeleton className="h-4 w-20" />
+    </div>
+  </div>
+);
+
+const Crypto: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const walletBalances = useAppSelector((state) => state.crypto.walletBalances);
+  const [loading, setLoading] = React.useState(true);
+
+  const getWalletBalances = useCallback(async () => {
+    setLoading(true);
+    const { error, payload } = await CryptoService.getWalletBalances();
+    if (!error && payload) dispatch(setWalletBalances(payload?.balances));
+    setLoading(false);
+  }, [dispatch]);
+
+  useEffect(() => {
+    getWalletBalances();
+  }, [getWalletBalances]);
 
   return (
     <main className="flex-1 mt-[10px]">
-      {/* Wallets */}
+      {/* Wallet Balances */}
       <div className="mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {wallets.map((wallet) => (
-            <WalletCard key={wallet.symbol} {...wallet} />
-          ))}
+          {loading
+            ? Array.from({ length: 4 }).map((_, index) => (
+                <WalletCardSkeleton key={index} />
+              ))
+            : walletBalances?.map((wallet: any, index: number) => (
+                <WalletCard
+                  key={wallet.id || `${wallet.symbol}-${index}`}
+                  name={wallet.name}
+                  symbol={wallet.symbol}
+                  amount={`${wallet.balance} ${wallet.symbol}`}
+                  value={`$${Number(wallet.usdValue).toFixed(2)}`}
+                  change="0.0%"
+                  img={wallet.logo}
+                />
+              ))}
         </div>
       </div>
 
-      <main className="flex-1 overflow-y-auto mt-[40px]">
-        <div className="flex items-end justify-between mb-[10px]">
-          <Text variant="medium" className="mb-0">
-            Fee Management
-          </Text>
-
-          <div>
-            <Button
-              variant="primary"
-              className="w-auto px-3 py-2.5 text-sm"
-              onClick={() => console.log("Add new user clicked")}
-            >
-              <Plus className="w-5 h-5" />
-              <span>Add Fee</span>
-            </Button>
-          </div>
-        </div>
-        <div className="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-md">
-          {/* Table (responsive: table on desktop, cards on mobile) */}
-          <Table<Fee> columns={feeColumns} data={fees} />
-
-          {/* Pagination */}
-          <div className="mt-6">
-            <Pagination total={20} perPage={5} currentPage={1} />
-          </div>
-        </div>
-      </main>
-
-      <main className="flex-1 overflow-y-auto mt-[40px] mb-[50px]">
-        <div className="flex items-center justify-between mb-[10px]">
-          <Text variant="medium" className="mt-3">
-            Rates Management
-          </Text>
-
-          <div>
-            <Button
-              variant="primary"
-              className="w-auto px-3 py-2.5 text-sm"
-              onClick={() => console.log("Add new user clicked")}
-            >
-              <Plus className="w-5 h-5" />
-              <span>Add Rate</span>
-            </Button>
-          </div>
-        </div>
-        <div className="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-md">
-          {/* Table (responsive: table on desktop, cards on mobile) */}
-          <Table<Rate> columns={columns} data={rates} />
-
-          {/* Pagination */}
-          <div className="mt-6">
-            <Pagination total={20} perPage={5} currentPage={1} />
-          </div>
-        </div>
-      </main>
+      {/* Fee & Rate Tables */}
+      <FeeTable />
+      <RateTable />
     </main>
   );
 };
