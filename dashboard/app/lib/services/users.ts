@@ -148,4 +148,14 @@ export const UserService = {
       return { error: true, payload: e.message };
     }
   },
+  sendMessage: async (params: any) => {
+    try {
+      const response = await API.post(`admin/user/messaging`, params, {
+        withCredentials: true,
+      });
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };

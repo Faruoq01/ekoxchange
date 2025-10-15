@@ -12,6 +12,9 @@ import UserTypeSelector from "./_comp/usertype";
 import RecipientSelector from "./_comp/recipient";
 import MessageForm from "./_comp/form";
 import Actions from "./_comp/actions";
+import { UserService } from "@/app/lib/services/users";
+import toast from "react-hot-toast";
+import { AppPages } from "@/app/assets/appages";
 
 // ✅ Validation schema
 const messageSchema = z.object({
@@ -128,12 +131,20 @@ export default function SendMessagePage() {
 
   // ✅ Submit handler
   const onSubmit = async (data: MessageFormValues) => {
-    const payload = {
-      emails: data.selectedUsers.map((user) => user.username),
+    const params = {
+      recipients: data.selectedUsers.map((user) => ({
+        email: user.username,
+        name: user?.name,
+      })),
       subject: data.subject,
       message: data.message,
     };
-    console.log("✅ Valid form data:", payload);
+
+    const { error, payload } = await UserService.sendMessage(params);
+    if (!error && payload) {
+      toast.success("message sent successfully!");
+      router.push(AppPages.home.users.index);
+    }
   };
 
   return (
