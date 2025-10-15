@@ -51,7 +51,7 @@ const SelectComponentBase = ({
   return (
     <Fragment>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="w-full flex flex-row bg-white items-center text-[12px] px-[15px] py-[8px] rounded-md border shadow-sm">
+        <SelectTrigger className="w-full flex flex-row bg-white items-center text-[12px] px-[15px] py-[8px] rounded-md border">
           <SelectValue placeholder={title} />
         </SelectTrigger>
 

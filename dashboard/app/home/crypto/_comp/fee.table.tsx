@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, Fragment } from "react";
 import { Plus } from "lucide-react";
 import Button from "@/app/components/forms/button";
 import Text from "@/app/components/forms/text";
@@ -8,8 +8,11 @@ import Pagination from "@/app/components/home/pagination";
 import Table from "@/app/components/home/table";
 import { CryptoService } from "@/app/lib/services/crypto";
 import { feeColumns, Fee } from "./fee";
+import { Modal } from "@/app/components/modals/modalskin";
+import CreateTransactionRule from "@/app/components/modals/feemodal";
 
 const FeeTable: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [fees, setFees] = useState<Fee[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -63,28 +66,33 @@ const FeeTable: React.FC = () => {
   }, [fetchFees]);
 
   return (
-    <section className="flex-1 overflow-y-auto mt-10">
-      <header className="flex items-end justify-between mb-3">
-        <Text variant="medium" className="mb-0">
-          Fee Management
-        </Text>
-        <Button
-          variant="primary"
-          className="flex items-center gap-2 px-3 py-2.5 text-sm"
-          onClick={() => console.log("Add new fee clicked")}
-        >
-          <Plus className="w-5 h-5" />
-          Add Fee
-        </Button>
-      </header>
+    <Fragment>
+      <section className="flex-1 overflow-y-auto mt-10">
+        <header className="flex items-end justify-between mb-3">
+          <Text variant="medium" className="mb-0">
+            Fee Management
+          </Text>
+          <Button
+            variant="primary"
+            className="flex items-center gap-2 px-3 py-2.5 text-sm"
+            onClick={() => setIsOpen(true)}
+          >
+            <Plus className="w-5 h-5" />
+            Add Fee
+          </Button>
+        </header>
 
-      <div className="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-md">
-        <Table<Fee> columns={feeColumns} data={fees} loading={loading} />
-        <div className="mt-6">
-          <Pagination total={total} perPage={perPage} currentPage={page} />
+        <div className="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-md">
+          <Table<Fee> columns={feeColumns} data={fees} loading={loading} />
+          <div className="mt-6">
+            <Pagination total={total} perPage={perPage} currentPage={page} />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+      <Modal isOpen={isOpen}>
+        <CreateTransactionRule setIsopen={setIsOpen} />
+      </Modal>
+    </Fragment>
   );
 };
 

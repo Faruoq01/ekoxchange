@@ -110,17 +110,29 @@ const Crypto: React.FC = () => {
             ? Array.from({ length: 4 }).map((_, index) => (
                 <WalletCardSkeleton key={index} />
               ))
-            : walletBalances?.map((wallet: any, index: number) => (
-                <WalletCard
-                  key={wallet.id || `${wallet.symbol}-${index}`}
-                  name={wallet.name}
-                  symbol={wallet.symbol}
-                  amount={`${wallet.balance} ${wallet.symbol}`}
-                  value={`$${Number(wallet.usdValue).toFixed(2)}`}
-                  change="0.0%"
-                  img={wallet.logo}
-                />
-              ))}
+            : walletBalances?.map((wallet: any, index: number) => {
+                const formattedBalance = formatBalance(
+                  wallet.balance,
+                  wallet.symbol
+                );
+                return (
+                  <WalletCard
+                    key={wallet.id || `${wallet.symbol}-${index}`}
+                    name={wallet.name}
+                    symbol={wallet.symbol}
+                    amount={`${formattedBalance} ${wallet.symbol}`}
+                    value={`$${Number(wallet.usdValue).toLocaleString(
+                      undefined,
+                      {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }
+                    )}`}
+                    change="0.0%"
+                    img={wallet.logo}
+                  />
+                );
+              })}
         </div>
       </div>
 
@@ -129,6 +141,19 @@ const Crypto: React.FC = () => {
       <RateTable />
     </main>
   );
+};
+
+const formatBalance = (balance: string, symbol: string): string => {
+  const num = parseFloat(balance);
+  if (isNaN(num) || num === 0) return "0.00";
+
+  let decimals = 4;
+  if (symbol === "BTC") decimals = 8;
+  else if (symbol === "ETH" || symbol === "SOL") decimals = 6;
+  else if (symbol === "USDT" || symbol === "USDC") decimals = 2;
+  else if (num < 1) decimals = 6;
+
+  return num.toFixed(decimals).replace(/\.?0+$/, "");
 };
 
 export default Crypto;

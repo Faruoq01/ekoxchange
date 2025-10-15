@@ -10,6 +10,9 @@ interface CurrencyInputProps {
   type: string;
   isFiat?: boolean;
   isPercent?: boolean;
+  bgColor?: string; // ✅ New: background color override
+  className?: string; // ✅ New: extra custom styles
+  inputClassName?: string; // ✅ Optional: inner input customization
 }
 
 const InputText: React.FC<CurrencyInputProps> = ({
@@ -21,6 +24,9 @@ const InputText: React.FC<CurrencyInputProps> = ({
   type,
   isFiat,
   isPercent,
+  bgColor = "bg-white", // default background
+  className = "",
+  inputClassName = "",
 }) => {
   return (
     <div className="flex flex-col space-y-1">
@@ -30,7 +36,10 @@ const InputText: React.FC<CurrencyInputProps> = ({
       >
         {label}
       </label>
-      <div className="flex flex-row items-center px-[15px] py-[8px] rounded-md border shadow-sm">
+
+      <div
+        className={`flex flex-row items-center px-[15px] py-[8px] rounded-md border ${bgColor} ${className}`}
+      >
         {isFiat && <span className="text-gray-500 text-sm mr-[10px]">₦</span>}
         {isPercent && (
           <span className="text-gray-500 text-sm mr-[10px]">%</span>
@@ -40,10 +49,10 @@ const InputText: React.FC<CurrencyInputProps> = ({
           id={name}
           {...(register ? register(name) : {})}
           placeholder={placeholder}
-          style={{ padding: "0px" }}
-          className="w-full text-[12px] px-[0px] placeholder:text-gray-500 outline-none border-none focus:outline-none focus:ring-0 focus:border-transparent"
+          className={`w-full text-[12px] px-[0px] placeholder:text-gray-500 outline-none border-none focus:outline-none focus:ring-0 focus:border-transparent ${inputClassName}`}
         />
       </div>
+
       {formErrors[name] && (
         <p className="text-red-600 mb-[10px] text-[10px]">
           {formErrors[name]["message"]}
