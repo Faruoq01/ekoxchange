@@ -158,4 +158,30 @@ export const UserService = {
       return { error: true, payload: e.message };
     }
   },
+  reset2fa: async (id: string) => {
+    try {
+      const response = await API.patch(
+        `/admin/settings/wallet-user/${id}/reset2fa`,
+        {
+          withCredentials: true,
+        }
+      );
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
+  resetPassword: async (id: string) => {
+    try {
+      const response = await API.patch(
+        `/admin/settings/wallet-user/${id}/password`,
+        {
+          withCredentials: true,
+        }
+      );
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };

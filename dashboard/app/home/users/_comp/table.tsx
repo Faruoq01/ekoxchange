@@ -1,11 +1,13 @@
 "use client";
 import { Column } from "@/app/components/home/table";
+import ConfirmModal from "@/app/components/modals/confirmation";
 import { Modal } from "@/app/components/modals/modalskin";
 import UpdateUser from "@/app/components/modals/updateuser";
 import UserDetailsModal from "@/app/components/modals/user.details";
 import WalletUserDetails from "@/app/components/modals/wallet.user";
 import { useAppDispatch } from "@/app/lib/redux/controls";
 import { setSingleAdminUser } from "@/app/lib/redux/slices/users";
+import { UserService } from "@/app/lib/services/users";
 import { Badge } from "@/components/ui/badge";
 import {
   Popover,
@@ -13,6 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Fragment, useState } from "react";
+import toast from "react-hot-toast";
 
 export interface AdminUser {
   id: number;
@@ -245,13 +248,37 @@ export const walletColumns: Column<WalletUser>[] = [
     header: "Actions",
     render: (user) => {
       const dispatch = useAppDispatch();
-      const [isOpen, setIsopen] = useState(false);
+      const [loading, setLoading] = useState(false);
       const [isDetails, setIsDetails] = useState(false);
+      const [resetPassword, setResetPassword] = useState(false);
+      const [reset2fa, setReset2fa] = useState(false);
 
       const viewDetails = () => {
         const data = JSON.parse(user?.rawData);
         dispatch(setSingleAdminUser(data));
         setIsDetails(true);
+      };
+
+      const handleConfirmPassword = async () => {
+        const data = JSON.parse(user?.rawData);
+        setLoading(true);
+        const { error, payload } = await UserService.resetPassword(data?.id);
+        setLoading(false);
+        if (!error && payload) {
+          setResetPassword(false);
+          toast.success("Password reset successfully!");
+        }
+      };
+
+      const handleConfirm2fa = async () => {
+        const data = JSON.parse(user?.rawData);
+        setLoading(true);
+        const { error, payload } = await UserService.reset2fa(data?.id);
+        setLoading(false);
+        if (!error && payload) {
+          setReset2fa(false);
+          toast.success("2FA reset successfully!");
+        }
       };
 
       return (
@@ -273,10 +300,16 @@ export const walletColumns: Column<WalletUser>[] = [
               >
                 View Details
               </div>
-              <div className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]">
+              <div
+                onClick={() => setResetPassword(true)}
+                className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]"
+              >
                 Reset Password
               </div>
-              <div className="py-[6px] select-none hover:bg-gray-50 px-[10px]">
+              <div
+                onClick={() => setReset2fa(true)}
+                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
+              >
                 Reset 2FA
               </div>
             </PopoverContent>
@@ -284,6 +317,30 @@ export const walletColumns: Column<WalletUser>[] = [
           {isDetails && (
             <Modal isOpen={isDetails}>
               <WalletUserDetails setIsDetails={setIsDetails} />
+            </Modal>
+          )}
+          {resetPassword && (
+            <Modal isOpen={resetPassword}>
+              <ConfirmModal
+                title="Reset Password"
+                message="A system generated password would be sent to this user to login and reset within 30mins."
+                confirmText="Yes, Reset"
+                loading={loading}
+                onConfirm={handleConfirmPassword}
+                onCancel={() => setResetPassword(false)}
+              />
+            </Modal>
+          )}
+          {reset2fa && (
+            <Modal isOpen={reset2fa}>
+              <ConfirmModal
+                title="Reset 2FA"
+                message="A new 2FA code would be generated and sent to a user to use with google authenticator."
+                confirmText="Yes, Reset"
+                loading={loading}
+                onConfirm={handleConfirm2fa}
+                onCancel={() => setReset2fa(false)}
+              />
             </Modal>
           )}
         </Fragment>
