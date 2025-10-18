@@ -1,15 +1,18 @@
 "use client";
 import { Column } from "@/app/components/home/table";
+import ConfirmModal from "@/app/components/modals/confirmation";
 import { Modal } from "@/app/components/modals/modalskin";
 import UpdateCryptoRate from "@/app/components/modals/updaterate";
-import { useAppDispatch } from "@/app/lib/redux/controls";
-import { setSingleRate } from "@/app/lib/redux/slices/crypto";
+import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
+import { setReloadRate, setSingleRate } from "@/app/lib/redux/slices/crypto";
+import { CryptoService } from "@/app/lib/services/crypto";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Fragment, useState } from "react";
+import toast from "react-hot-toast";
 
 // --- Types
 export interface Rate {
@@ -71,11 +74,26 @@ export const columns: Column<Rate>[] = [
     render: (user) => {
       const dispatch = useAppDispatch();
       const [editRate, setEditRate] = useState(false);
+      const [deleteRate, setDeleteRate] = useState(false);
+      const [loading, setLoading] = useState(false);
+      const reloadRate = useAppSelector((state) => state.crypto.reloadRate);
 
       const handleFeeEdit = () => {
         const data = JSON.parse(user?.rawData);
         dispatch(setSingleRate(data));
         setEditRate(true);
+      };
+
+      const handleDelete = async () => {
+        const data = JSON.parse(user?.rawData);
+        setLoading(true);
+        const { error, payload } = await CryptoService.deleteRate(data?.id);
+        setLoading(false);
+        if (!error && payload) {
+          setDeleteRate(false);
+          dispatch(setReloadRate(!reloadRate));
+          toast.success("Rate deleted successfully!");
+        }
       };
 
       return (
@@ -98,7 +116,7 @@ export const columns: Column<Rate>[] = [
                 Edit Rate
               </div>
               <div
-                // onClick={() => setResetPassword(true)}
+                onClick={() => setDeleteRate(true)}
                 className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
               >
                 Delete
@@ -108,6 +126,18 @@ export const columns: Column<Rate>[] = [
           {editRate && (
             <Modal isOpen={editRate}>
               <UpdateCryptoRate setIsopen={setEditRate} />
+            </Modal>
+          )}
+          {deleteRate && (
+            <Modal isOpen={deleteRate}>
+              <ConfirmModal
+                title="Delete Record!"
+                message="This record would be deleted permanently and this action cannot be undone."
+                confirmText="Yes, Reset"
+                loading={loading}
+                onConfirm={handleDelete}
+                onCancel={() => setDeleteRate(false)}
+              />
             </Modal>
           )}
         </Fragment>

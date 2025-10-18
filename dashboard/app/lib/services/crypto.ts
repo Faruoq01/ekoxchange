@@ -53,6 +53,14 @@ export const CryptoService = {
       return { error: true, payload: e.message };
     }
   },
+  deleteFee: async (id: string) => {
+    try {
+      const response = await API.delete(`/fee-manager/delete/${id}`);
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
   createRate: async (params: any) => {
     try {
       const response = await API.post(`/rate-manager/create`, params);
@@ -64,6 +72,14 @@ export const CryptoService = {
   updateRate: async (id: string, params: any) => {
     try {
       const response = await API.put(`/rate-manager/update/${id}`, params);
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
+  deleteRate: async (id: string) => {
+    try {
+      const response = await API.delete(`/rate-manager/delete/${id}`);
       return { error: false, payload: response?.data };
     } catch (e: any) {
       return { error: true, payload: e.message };
