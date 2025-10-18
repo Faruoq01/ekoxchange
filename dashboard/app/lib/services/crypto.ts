@@ -29,4 +29,20 @@ export const CryptoService = {
       return { error: true, payload: e.message };
     }
   },
+  getCryptoAsset: async (skip: number, limit: number) => {
+    try {
+      const response = await API.get(`chain/tokens/list/${skip}/${limit}`);
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
+  createFee: async (params: any) => {
+    try {
+      const response = await API.post(`/fee-manager/create`, params);
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };

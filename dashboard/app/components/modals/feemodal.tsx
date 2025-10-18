@@ -19,15 +19,17 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import { CryptoService } from "@/app/lib/services/crypto";
+import { setCryptoList, setReloadFee } from "@/app/lib/redux/slices/crypto";
 
 // ✅ Schema
 const transactionSchema = z.object({
-  transactionType: z.enum(["Buy", "Sell"]),
+  transactionType: z.enum(["Buy", "Sell", "Send", "Swap"]),
   cryptoAsset: z.string().nonempty("Select a crypto asset"),
   isPercentage: z.boolean(),
-  percentageAmount: z.number().min(0).optional(),
-  fixedAmount: z.number().min(0).optional(),
-  threshold: z.number().min(0, "Threshold must be greater than 0"),
+  percentageAmount: z.string().min(0).optional(),
+  fixedAmount: z.string().min(0).optional(),
+  threshold: z.string().min(0, "Threshold must be greater than 0"),
   userLevel: z.string().nonempty("User level is required"),
   effectiveDate: z.string().min(1, { message: "Crypto asset is required" }),
 });
@@ -41,6 +43,7 @@ const CreateTransactionRule = ({
 }) => {
   const dispatch = useAppDispatch();
   const cryptoList = useAppSelector((state) => state.crypto.cryptoList);
+  const reloadFee = useAppSelector((state) => state.crypto.reloadFee);
 
   const {
     register,
@@ -54,9 +57,9 @@ const CreateTransactionRule = ({
       transactionType: "Sell",
       cryptoAsset: "",
       isPercentage: true,
-      percentageAmount: 3,
-      fixedAmount: 0,
-      threshold: 1000,
+      percentageAmount: "5",
+      fixedAmount: "0",
+      threshold: "1000",
       userLevel: "Verified",
       effectiveDate: new Date().toISOString().split("T")[0],
     },
@@ -66,38 +69,47 @@ const CreateTransactionRule = ({
 
   // ✅ Load Crypto List
   const getCryptoList = useCallback(async () => {
-    // const { error, payload } = await CryptoService.getCryptoAssets(0, 100);
-    // if (!error && payload) {
-    //   dispatch(setCryptoList(payload));
-    // }
+    const { error, payload } = await CryptoService.getCryptoAsset(0, 100);
+    if (!error && payload) {
+      const tokenLists = payload?.map((item: any) => ({
+        id: item?._id,
+        name: `${item?.name} ( ${item?.symbol} --> ${item?.chain?.name} )`,
+      }));
+      dispatch(setCryptoList(tokenLists));
+    }
   }, [dispatch]);
 
   useEffect(() => {
     getCryptoList();
   }, [getCryptoList]);
 
-  const cryptoSelect = cryptoList?.map((c: any) => ({
-    id: c.id,
-    name: c.symbol ? `${c.name} (${c.symbol})` : c.name,
-  }));
-
   const onSubmit = async (data: TransactionRuleFormValues) => {
     // Enforce one type of amount
     if (
       data.isPercentage &&
-      (!data.percentageAmount || data.percentageAmount <= 0)
+      (!data.percentageAmount || parseFloat(data.percentageAmount) <= 0)
     ) {
       return toast.error("Enter a valid percentage amount");
     }
-    if (!data.isPercentage && (!data.fixedAmount || data.fixedAmount <= 0)) {
+    if (
+      !data.isPercentage &&
+      (!data.fixedAmount || parseFloat(data.fixedAmount) <= 0)
+    ) {
       return toast.error("Enter a valid fixed amount");
     }
 
-    // const { error, payload } = await CryptoService.createTransactionRule(data);
-    // if (!error && payload) {
-    //   setIsopen(false);
-    //   toast.success("Transaction rule created successfully!");
-    // }
+    if (data.effectiveDate) {
+      data.effectiveDate = new Date(data.effectiveDate)
+        .toISOString()
+        .split("T")[0];
+    }
+
+    const { error, payload } = await CryptoService.createFee(data);
+    if (!error && payload) {
+      setIsopen(false);
+      dispatch(setReloadFee(!reloadFee));
+      toast.success("Fee rule created successfully!");
+    }
   };
 
   return (
@@ -128,6 +140,8 @@ const CreateTransactionRule = ({
                 list={[
                   { id: "Buy", name: "Buy" },
                   { id: "Sell", name: "Sell" },
+                  { id: "Send", name: "Send" },
+                  { id: "Swap", name: "Swap" },
                 ]}
                 value={field.value}
                 onChange={field.onChange}
@@ -143,7 +157,7 @@ const CreateTransactionRule = ({
             render={({ field }) => (
               <SelectComponent
                 title="Select Crypto Asset"
-                list={cryptoSelect ?? []}
+                list={cryptoList}
                 value={field.value}
                 onChange={field.onChange}
                 error={errors.cryptoAsset?.message}
@@ -205,9 +219,9 @@ const CreateTransactionRule = ({
               <SelectComponent
                 title="Select User Level"
                 list={[
+                  { id: "Basic", name: "Basic" },
                   { id: "Verified", name: "Verified" },
-                  { id: "Unverified", name: "Unverified" },
-                  { id: "KYC", name: "KYC" },
+                  { id: "VIP", name: "VIP" },
                 ]}
                 value={field.value}
                 onChange={field.onChange}
@@ -250,9 +264,8 @@ const CreateTransactionRule = ({
                         selected={selectedDate}
                         // convert Date → string when saving
                         onSelect={(date) =>
-                          field.onChange(date ? date.toISOString() : "")
+                          field.onChange(date ? format(date, "yyyy-MM-dd") : "")
                         }
-                        initialFocus
                       />
                     </PopoverContent>
                   </Popover>
@@ -271,7 +284,7 @@ const CreateTransactionRule = ({
       <div className="pt-[10px] flex justify-start">
         <CustomButton
           isLoading={isSubmitting}
-          callback={handleSubmit(onSubmit)}
+          callback={() => handleSubmit(onSubmit)()}
           title="Proceed"
           icon="save"
           style="rounded-[0px] bg-purple-500"

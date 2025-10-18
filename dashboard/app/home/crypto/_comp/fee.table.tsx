@@ -10,6 +10,7 @@ import { CryptoService } from "@/app/lib/services/crypto";
 import { feeColumns, Fee } from "./fee";
 import { Modal } from "@/app/components/modals/modalskin";
 import CreateTransactionRule from "@/app/components/modals/feemodal";
+import { useAppSelector } from "@/app/lib/redux/controls";
 
 const FeeTable: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +18,7 @@ const FeeTable: React.FC = () => {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const reloadFee = useAppSelector((state) => state.crypto.reloadFee);
 
   const perPage = 30;
 
@@ -59,11 +61,11 @@ const FeeTable: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [page]);
+  }, [page, reloadFee]);
 
   useEffect(() => {
     fetchFees();
-  }, [fetchFees]);
+  }, [fetchFees, reloadFee]);
 
   return (
     <Fragment>
