@@ -60,6 +60,7 @@ const RateTable = () => {
             dateRange: `${startDate} - ${endDate}`,
             status: item.status || "Inactive",
             lastUpdated: updatedAt,
+            rawData: JSON.stringify(item),
           };
         }
       );

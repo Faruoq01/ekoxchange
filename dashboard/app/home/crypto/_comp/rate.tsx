@@ -1,10 +1,15 @@
 "use client";
 import { Column } from "@/app/components/home/table";
+import { Modal } from "@/app/components/modals/modalskin";
+import UpdateCryptoRate from "@/app/components/modals/updaterate";
+import { useAppDispatch } from "@/app/lib/redux/controls";
+import { setSingleRate } from "@/app/lib/redux/slices/crypto";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Fragment, useState } from "react";
 
 // --- Types
 export interface Rate {
@@ -18,6 +23,7 @@ export interface Rate {
   dateRange: string;
   status: string;
   lastUpdated: string;
+  rawData: string;
 }
 
 // --- Status badge colors
@@ -25,82 +31,6 @@ const statusColors: Record<string, string> = {
   Active: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
   Inactive: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 };
-
-// --- Sample data
-export const rates: Rate[] = [
-  {
-    id: 1,
-    cryptocurrency: "Bitcoin",
-    symbol: "BTC",
-    network: "Bitcoin",
-    buyRate: "N/A",
-    sellRate: "₦1,000",
-    spread: "N/A",
-    dateRange: "02/10/2025 - 14/10/2025",
-    status: "Inactive",
-    lastUpdated: "02/10/2025 13:12:57",
-  },
-  {
-    id: 2,
-    cryptocurrency: "Tether USD",
-    symbol: "USDT",
-    network: "Ethereum",
-    buyRate: "₦1,000",
-    sellRate: "N/A",
-    spread: "N/A",
-    dateRange: "29/09/2025 - 06/10/2025",
-    status: "Inactive",
-    lastUpdated: "29/09/2025 21:10:22",
-  },
-  {
-    id: 3,
-    cryptocurrency: "Tether USD",
-    symbol: "USDT",
-    network: "Tron",
-    buyRate: "₦1,000",
-    sellRate: "N/A",
-    spread: "N/A",
-    dateRange: "29/09/2025 - 06/10/2025",
-    status: "Inactive",
-    lastUpdated: "29/09/2025 21:11:30",
-  },
-  {
-    id: 4,
-    cryptocurrency: "Tether USD",
-    symbol: "USDT",
-    network: "Ethereum",
-    buyRate: "₦1,575",
-    sellRate: "₦1,480",
-    spread: "-6.03",
-    dateRange: "29/09/2025 - 30/09/2025",
-    status: "Inactive",
-    lastUpdated: "29/09/2025 12:40:56",
-  },
-  {
-    id: 5,
-    cryptocurrency: "Tether USD",
-    symbol: "USDT",
-    network: "Tron",
-    buyRate: "₦1,575",
-    sellRate: "₦1,480",
-    spread: "-6.03",
-    dateRange: "29/09/2025 - 30/09/2025",
-    status: "Inactive",
-    lastUpdated: "29/09/2025 12:41:39",
-  },
-  {
-    id: 6,
-    cryptocurrency: "USD Coin",
-    symbol: "USDC",
-    network: "Ethereum",
-    buyRate: "₦1,000",
-    sellRate: "N/A",
-    spread: "N/A",
-    dateRange: "29/09/2025 - 06/10/2025",
-    status: "Inactive",
-    lastUpdated: "29/09/2025 21:10:55",
-  },
-];
 
 // --- Columns
 export const columns: Column<Rate>[] = [
@@ -138,33 +68,49 @@ export const columns: Column<Rate>[] = [
   {
     key: "actions",
     header: "Actions",
-    render: () => {
-      return (
-        <Popover>
-          <PopoverTrigger asChild>
-            <button
-              className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
-              title="Actions"
-            >
-              <span className="material-icons text-[20px]">more_vert</span>
-            </button>
-          </PopoverTrigger>
+    render: (user) => {
+      const dispatch = useAppDispatch();
+      const [editRate, setEditRate] = useState(false);
 
-          <PopoverContent className="max-w-[150px] text-[12px]">
-            <div
-              // onClick={viewDetails}
-              className="py-[6px] select-none border-b hover:bg-gray-50 px-[10px]"
-            >
-              Edit Rate
-            </div>
-            <div
-              // onClick={() => setResetPassword(true)}
-              className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
-            >
-              Delete
-            </div>
-          </PopoverContent>
-        </Popover>
+      const handleFeeEdit = () => {
+        const data = JSON.parse(user?.rawData);
+        dispatch(setSingleRate(data));
+        setEditRate(true);
+      };
+
+      return (
+        <Fragment>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
+                title="Actions"
+              >
+                <span className="material-icons text-[20px]">more_vert</span>
+              </button>
+            </PopoverTrigger>
+
+            <PopoverContent className="max-w-[150px] text-[12px]">
+              <div
+                onClick={handleFeeEdit}
+                className="py-[6px] select-none border-b hover:bg-gray-50 px-[10px]"
+              >
+                Edit Rate
+              </div>
+              <div
+                // onClick={() => setResetPassword(true)}
+                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
+              >
+                Delete
+              </div>
+            </PopoverContent>
+          </Popover>
+          {editRate && (
+            <Modal isOpen={editRate}>
+              <UpdateCryptoRate setIsopen={setEditRate} />
+            </Modal>
+          )}
+        </Fragment>
       );
     },
   },
