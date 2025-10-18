@@ -1,5 +1,15 @@
 "use client";
 import { Column } from "@/app/components/home/table";
+import { Modal } from "@/app/components/modals/modalskin";
+import UpdateTransactionRule from "@/app/components/modals/updatefee";
+import { useAppDispatch } from "@/app/lib/redux/controls";
+import { setSingleFee } from "@/app/lib/redux/slices/crypto";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Fragment, useState } from "react";
 
 export interface Fee {
   id: number;
@@ -11,6 +21,7 @@ export interface Fee {
   appliedTo: string;
   lastModified: string;
   status: string;
+  rawData: string;
 }
 
 // --- Status badge colors
@@ -18,76 +29,6 @@ const statusColors: Record<string, string> = {
   Active: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
   Inactive: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 };
-
-// --- Sample data
-export const fees: Fee[] = [
-  {
-    id: 1,
-    transactionType: "Sell",
-    cryptoAsset: "Tron (TRX)",
-    network: "Tron",
-    feeType: "Fixed",
-    currentValue: "NGN 20",
-    appliedTo: "Basic",
-    lastModified: "9/15/2025, 8:10:35 AM",
-    status: "Active",
-  },
-  {
-    id: 2,
-    transactionType: "Buy",
-    cryptoAsset: "Tron (TRX)",
-    network: "Tron",
-    feeType: "Fixed",
-    currentValue: "NGN 1000",
-    appliedTo: "Basic",
-    lastModified: "9/15/2025, 8:04:55 AM",
-    status: "Active",
-  },
-  {
-    id: 3,
-    transactionType: "Buy",
-    cryptoAsset: "Bitcoin (BTC)",
-    network: "Bitcoin",
-    feeType: "Fixed",
-    currentValue: "NGN 5000",
-    appliedTo: "Basic",
-    lastModified: "9/15/2025, 8:11:36 AM",
-    status: "Active",
-  },
-  {
-    id: 4,
-    transactionType: "Buy",
-    cryptoAsset: "USD Coin (USDC)",
-    network: "Ethereum",
-    feeType: "Fixed",
-    currentValue: "NGN 120",
-    appliedTo: "Basic",
-    lastModified: "9/15/2025, 10:21:13 AM",
-    status: "Active",
-  },
-  {
-    id: 5,
-    transactionType: "Buy",
-    cryptoAsset: "USD Coin (USDC)",
-    network: "Ethereum",
-    feeType: "Fixed",
-    currentValue: "NGN 12",
-    appliedTo: "Basic",
-    lastModified: "9/15/2025, 10:22:48 AM",
-    status: "Active",
-  },
-  {
-    id: 6,
-    transactionType: "Buy",
-    cryptoAsset: "Tether USD (USDT)",
-    network: "Ethereum",
-    feeType: "Fixed",
-    currentValue: "NGN 3000",
-    appliedTo: "Basic",
-    lastModified: "9/20/2025, 9:43:13 AM",
-    status: "Active",
-  },
-];
 
 // --- Columns
 export const feeColumns: Column<Fee>[] = [
@@ -114,10 +55,50 @@ export const feeColumns: Column<Fee>[] = [
   {
     key: "actions",
     header: "Action",
-    render: () => (
-      <button className="text-text-light dark:text-text-dark hover:text-primary">
-        <span className="material-icons">more_vert</span>
-      </button>
-    ),
+    render: (user) => {
+      const dispatch = useAppDispatch();
+      const [editFee, setEditFee] = useState(false);
+
+      const handleFeeEdit = () => {
+        const data = JSON.parse(user?.rawData);
+        dispatch(setSingleFee(data));
+        setEditFee(true);
+      };
+
+      return (
+        <Fragment>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
+                title="Actions"
+              >
+                <span className="material-icons text-[20px]">more_vert</span>
+              </button>
+            </PopoverTrigger>
+
+            <PopoverContent className="max-w-[150px] text-[12px]">
+              <div
+                onClick={handleFeeEdit}
+                className="py-[6px] select-none border-b hover:bg-gray-50 px-[10px]"
+              >
+                Edit Fee
+              </div>
+              <div
+                // onClick={() => setResetPassword(true)}
+                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
+              >
+                Delete
+              </div>
+            </PopoverContent>
+          </Popover>
+          {editFee && (
+            <Modal isOpen={editFee}>
+              <UpdateTransactionRule setIsopen={setEditFee} />
+            </Modal>
+          )}
+        </Fragment>
+      );
+    },
   },
 ];

@@ -1,5 +1,10 @@
 "use client";
 import { Column } from "@/app/components/home/table";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 // --- Types
 export interface Rate {
@@ -133,10 +138,34 @@ export const columns: Column<Rate>[] = [
   {
     key: "actions",
     header: "Actions",
-    render: () => (
-      <button className="text-text-light dark:text-text-dark hover:text-primary">
-        <span className="material-icons">more_vert</span>
-      </button>
-    ),
+    render: () => {
+      return (
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
+              title="Actions"
+            >
+              <span className="material-icons text-[20px]">more_vert</span>
+            </button>
+          </PopoverTrigger>
+
+          <PopoverContent className="max-w-[150px] text-[12px]">
+            <div
+              // onClick={viewDetails}
+              className="py-[6px] select-none border-b hover:bg-gray-50 px-[10px]"
+            >
+              Edit Rate
+            </div>
+            <div
+              // onClick={() => setResetPassword(true)}
+              className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
+            >
+              Delete
+            </div>
+          </PopoverContent>
+        </Popover>
+      );
+    },
   },
 ];

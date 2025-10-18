@@ -7,6 +7,8 @@ const initialState: any = {
   cryptoList: [],
   reloadFee: false,
   reloadRate: false,
+  singleFee: {},
+  singleRate: {},
 };
 
 const cryptoReducer = createSlice({
@@ -25,6 +27,12 @@ const cryptoReducer = createSlice({
     setRateList: (state, action) => {
       state.rateList = action.payload;
     },
+    setSingleRate: (state, action) => {
+      state.singleRate = action.payload;
+    },
+    setSingleFee: (state, action) => {
+      state.singleFee = action.payload;
+    },
     setReloadFee: (state, action) => {
       state.reloadFee = action.payload;
     },
@@ -41,5 +49,7 @@ export const {
   setRateList,
   setReloadFee,
   setReloadRate,
+  setSingleRate,
+  setSingleFee,
 } = cryptoReducer.actions;
 export default cryptoReducer.reducer;

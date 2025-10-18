@@ -45,6 +45,14 @@ export const CryptoService = {
       return { error: true, payload: e.message };
     }
   },
+  updateFee: async (id: string, params: any) => {
+    try {
+      const response = await API.put(`/fee-manager/update/${id}`, params);
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
   createRate: async (params: any) => {
     try {
       const response = await API.post(`/rate-manager/create`, params);

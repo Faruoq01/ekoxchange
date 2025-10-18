@@ -49,7 +49,8 @@ const FeeTable: React.FC = () => {
             : `NGN ${item.fixedAmount ?? 0}`,
           appliedTo: item.userLevel ?? "N/A",
           lastModified: formatDate(item.updatedAt),
-          status: "Active", // You can replace this with item.status if your backend supports it
+          status: "Active",
+          rawData: JSON.stringify(item),
         }));
 
         setFees(normalizedData);

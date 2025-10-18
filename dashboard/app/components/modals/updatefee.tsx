@@ -36,7 +36,7 @@ const transactionSchema = z.object({
 
 export type TransactionRuleFormValues = z.infer<typeof transactionSchema>;
 
-const CreateTransactionRule = ({
+const UpdateTransactionRule = ({
   setIsopen,
 }: {
   setIsopen: Dispatch<SetStateAction<boolean>>;
@@ -44,28 +44,59 @@ const CreateTransactionRule = ({
   const dispatch = useAppDispatch();
   const cryptoList = useAppSelector((state) => state.crypto.cryptoList);
   const reloadFee = useAppSelector((state) => state.crypto.reloadFee);
+  const singleFee = useAppSelector((state) => state.crypto.singleFee);
 
   const {
     register,
     control,
     handleSubmit,
     watch,
+    reset, // <-- added reset
     formState: { errors, isSubmitting },
   } = useForm<TransactionRuleFormValues>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
-      transactionType: "Sell",
-      cryptoAsset: "",
-      isPercentage: true,
-      percentageAmount: "5",
-      fixedAmount: "0",
-      threshold: "1000",
-      userLevel: "Verified",
-      effectiveDate: new Date().toISOString().split("T")[0],
+      transactionType: singleFee?.transactionType,
+      cryptoAsset: singleFee?.cryptoAsset?._id,
+      isPercentage: singleFee?.isPercentage,
+      percentageAmount: singleFee?.percentageAmount,
+      fixedAmount: singleFee?.fixedAmount,
+      threshold: singleFee?.threshold?.toString(),
+      userLevel: singleFee?.userLevel,
+      effectiveDate: singleFee?.effectiveDate
+        ? new Date(singleFee.effectiveDate).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
     },
   });
 
   const isPercentage = watch("isPercentage");
+
+  // Reset form when singleFee loads or changes (normalizes date & threshold)
+  useEffect(() => {
+    if (!singleFee) return;
+    reset({
+      transactionType: singleFee.transactionType,
+      cryptoAsset: singleFee.cryptoAsset?._id ?? "",
+      isPercentage:
+        typeof singleFee.isPercentage === "boolean"
+          ? singleFee.isPercentage
+          : true,
+      percentageAmount:
+        singleFee.percentageAmount !== undefined
+          ? String(singleFee.percentageAmount)
+          : "0",
+      fixedAmount:
+        singleFee.fixedAmount !== undefined
+          ? String(singleFee.fixedAmount)
+          : "0",
+      threshold:
+        singleFee.threshold !== undefined ? String(singleFee.threshold) : "0",
+      userLevel: singleFee.userLevel ?? "Verified",
+      effectiveDate: singleFee.effectiveDate
+        ? new Date(singleFee.effectiveDate).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+    });
+  }, [singleFee, reset]);
 
   // ✅ Load Crypto List
   const getCryptoList = useCallback(async () => {
@@ -104,18 +135,21 @@ const CreateTransactionRule = ({
         .split("T")[0];
     }
 
-    const { error, payload } = await CryptoService.createFee(data);
+    const { error, payload } = await CryptoService.updateFee(
+      singleFee?.id,
+      data
+    );
     if (!error && payload) {
       setIsopen(false);
       dispatch(setReloadFee(!reloadFee));
-      toast.success("Fee rule created successfully!");
+      toast.success("Fee rule updated successfully!");
     }
   };
 
   return (
     <div className="w-[85%] md:max-w-[420px] bg-gray-50 px-[15px] py-[15px] shadow-md rounded-md">
       <div className="flex flex-row justify-between items-center">
-        <h2 className="text-sm font-[600] text-[#000]">Create Fee Rule</h2>
+        <h2 className="text-sm font-[600] text-[#000]">Update Fee Rule</h2>
         <Image
           onClick={() => setIsopen(false)}
           src={"/close.svg"}
@@ -292,4 +326,4 @@ const CreateTransactionRule = ({
   );
 };
 
-export default CreateTransactionRule;
+export default UpdateTransactionRule;
