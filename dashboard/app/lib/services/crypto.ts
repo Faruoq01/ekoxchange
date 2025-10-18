@@ -45,4 +45,12 @@ export const CryptoService = {
       return { error: true, payload: e.message };
     }
   },
+  createRate: async (params: any) => {
+    try {
+      const response = await API.post(`/rate-manager/create`, params);
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };

@@ -10,6 +10,7 @@ import { CryptoService } from "@/app/lib/services/crypto";
 import { columns, Rate } from "./rate";
 import { Modal } from "@/app/components/modals/modalskin";
 import CreateCryptoRate from "@/app/components/modals/ratemodal";
+import { useAppSelector } from "@/app/lib/redux/controls";
 
 const RateTable = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +19,7 @@ const RateTable = () => {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const perPage = 30;
+  const reloadRate = useAppSelector((state) => state.crypto.reloadRate);
 
   const getRates = useCallback(async () => {
     const skip = (page - 1) * perPage;
@@ -65,11 +67,11 @@ const RateTable = () => {
       setRates(transformedData);
       setTotal(payload.total || 0);
     }
-  }, [page]);
+  }, [page, reloadRate]);
 
   useEffect(() => {
     getRates();
-  }, [getRates]);
+  }, [getRates, reloadRate]);
 
   return (
     <Fragment>
