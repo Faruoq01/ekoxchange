@@ -2,6 +2,7 @@
 import { Column } from "@/app/components/home/table";
 import ConfirmModal from "@/app/components/modals/confirmation";
 import { Modal } from "@/app/components/modals/modalskin";
+import TransactionSyncModal from "@/app/components/modals/synctxn";
 import UpdateUser from "@/app/components/modals/updateuser";
 import UserDetailsModal from "@/app/components/modals/user.details";
 import WalletUserDetails from "@/app/components/modals/wallet.user";
@@ -252,6 +253,7 @@ export const walletColumns: Column<WalletUser>[] = [
       const [isDetails, setIsDetails] = useState(false);
       const [resetPassword, setResetPassword] = useState(false);
       const [reset2fa, setReset2fa] = useState(false);
+      const [sync, setSync] = useState(false);
 
       const viewDetails = () => {
         const data = JSON.parse(user?.rawData);
@@ -279,6 +281,18 @@ export const walletColumns: Column<WalletUser>[] = [
           setReset2fa(false);
           toast.success("2FA reset successfully!");
         }
+      };
+
+      const handleSync = async () => {
+        const data = JSON.parse(user?.rawData);
+        console.log(data, "data");
+        // setLoading(true);
+        // const { error, payload } = await UserService.reset2fa(data?.id);
+        // setLoading(false);
+        // if (!error && payload) {
+        //   setReset2fa(false);
+        //   toast.success("2FA reset successfully!");
+        // }
       };
 
       return (
@@ -312,6 +326,12 @@ export const walletColumns: Column<WalletUser>[] = [
               >
                 Reset 2FA
               </div>
+              <div
+                onClick={() => setSync(true)}
+                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
+              >
+                Sync Txns
+              </div>
             </PopoverContent>
           </Popover>
           {isDetails && (
@@ -340,6 +360,16 @@ export const walletColumns: Column<WalletUser>[] = [
                 loading={loading}
                 onConfirm={handleConfirm2fa}
                 onCancel={() => setReset2fa(false)}
+              />
+            </Modal>
+          )}
+          {sync && (
+            <Modal isOpen={sync}>
+              <TransactionSyncModal
+                open={sync}
+                loading={loading}
+                onConfirm={handleSync}
+                onClose={() => setSync(false)}
               />
             </Modal>
           )}
