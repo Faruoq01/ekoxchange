@@ -22,7 +22,7 @@ import { Modal } from "@/app/components/modals/modalskin";
 import DeleteModal from "@/app/components/modals/delete";
 
 /* ------------------------------ Types ------------------------------ */
-export interface Role {
+interface Role {
   id: number;
   name: string;
   description: string;
@@ -32,7 +32,7 @@ export interface Role {
 }
 
 /* ------------------------------ Table Columns ------------------------------ */
-export const roleColumns: Column<Role>[] = [
+const roleColumns: Column<Role>[] = [
   {
     key: "name",
     header: "Role Name",
