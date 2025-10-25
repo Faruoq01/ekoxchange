@@ -71,77 +71,79 @@ export const columns: Column<Rate>[] = [
   {
     key: "actions",
     header: "Actions",
-    render: (user) => {
-      const dispatch = useAppDispatch();
-      const [editRate, setEditRate] = useState(false);
-      const [deleteRate, setDeleteRate] = useState(false);
-      const [loading, setLoading] = useState(false);
-      const reloadRate = useAppSelector((state) => state.crypto.reloadRate);
-
-      const handleFeeEdit = () => {
-        const data = JSON.parse(user?.rawData);
-        dispatch(setSingleRate(data));
-        setEditRate(true);
-      };
-
-      const handleDelete = async () => {
-        const data = JSON.parse(user?.rawData);
-        setLoading(true);
-        const { error, payload } = await CryptoService.deleteRate(data?.id);
-        setLoading(false);
-        if (!error && payload) {
-          setDeleteRate(false);
-          dispatch(setReloadRate(!reloadRate));
-          toast.success("Rate deleted successfully!");
-        }
-      };
-
-      return (
-        <Fragment>
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
-                title="Actions"
-              >
-                <span className="material-icons text-[20px]">more_vert</span>
-              </button>
-            </PopoverTrigger>
-
-            <PopoverContent className="max-w-[150px] text-[12px]">
-              <div
-                onClick={handleFeeEdit}
-                className="py-[6px] select-none border-b hover:bg-gray-50 px-[10px]"
-              >
-                Edit Rate
-              </div>
-              <div
-                onClick={() => setDeleteRate(true)}
-                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
-              >
-                Delete
-              </div>
-            </PopoverContent>
-          </Popover>
-          {editRate && (
-            <Modal isOpen={editRate}>
-              <UpdateCryptoRate setIsopen={setEditRate} />
-            </Modal>
-          )}
-          {deleteRate && (
-            <Modal isOpen={deleteRate}>
-              <ConfirmModal
-                title="Delete Record!"
-                message="This record would be deleted permanently and this action cannot be undone."
-                confirmText="Yes, Reset"
-                loading={loading}
-                onConfirm={handleDelete}
-                onCancel={() => setDeleteRate(false)}
-              />
-            </Modal>
-          )}
-        </Fragment>
-      );
-    },
+    render: (user) => <ActionComponent user={user} />,
   },
 ];
+
+const ActionComponent = (user: any) => {
+  const dispatch = useAppDispatch();
+  const [editRate, setEditRate] = useState(false);
+  const [deleteRate, setDeleteRate] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const reloadRate = useAppSelector((state) => state.crypto.reloadRate);
+
+  const handleFeeEdit = () => {
+    const data = JSON.parse(user?.rawData);
+    dispatch(setSingleRate(data));
+    setEditRate(true);
+  };
+
+  const handleDelete = async () => {
+    const data = JSON.parse(user?.rawData);
+    setLoading(true);
+    const { error, payload } = await CryptoService.deleteRate(data?.id);
+    setLoading(false);
+    if (!error && payload) {
+      setDeleteRate(false);
+      dispatch(setReloadRate(!reloadRate));
+      toast.success("Rate deleted successfully!");
+    }
+  };
+
+  return (
+    <Fragment>
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
+            title="Actions"
+          >
+            <span className="material-icons text-[20px]">more_vert</span>
+          </button>
+        </PopoverTrigger>
+
+        <PopoverContent className="max-w-[150px] text-[12px]">
+          <div
+            onClick={handleFeeEdit}
+            className="py-[6px] select-none border-b hover:bg-gray-50 px-[10px]"
+          >
+            Edit Rate
+          </div>
+          <div
+            onClick={() => setDeleteRate(true)}
+            className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
+          >
+            Delete
+          </div>
+        </PopoverContent>
+      </Popover>
+      {editRate && (
+        <Modal isOpen={editRate}>
+          <UpdateCryptoRate setIsopen={setEditRate} />
+        </Modal>
+      )}
+      {deleteRate && (
+        <Modal isOpen={deleteRate}>
+          <ConfirmModal
+            title="Delete Record!"
+            message="This record would be deleted permanently and this action cannot be undone."
+            confirmText="Yes, Reset"
+            loading={loading}
+            onConfirm={handleDelete}
+            onCancel={() => setDeleteRate(false)}
+          />
+        </Modal>
+      )}
+    </Fragment>
+  );
+};

@@ -93,7 +93,7 @@ const RateTable = () => {
         </div>
 
         <div className="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-md">
-          <Table<Rate> columns={columns} data={rates} loading={loading} />
+          <Table columns={columns} data={rates} loading={loading} />
           <div className="mt-6">
             <Pagination total={total} perPage={perPage} currentPage={page} />
           </div>

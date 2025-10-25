@@ -85,7 +85,7 @@ const FeeTable: React.FC = () => {
         </header>
 
         <div className="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-md">
-          <Table<Fee> columns={feeColumns} data={fees} loading={loading} />
+          <Table columns={feeColumns} data={fees} loading={loading} />
           <div className="mt-6">
             <Pagination total={total} perPage={perPage} currentPage={page} />
           </div>
