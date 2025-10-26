@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
       "lh3.googleusercontent.com",
       "i.pravatar.cc",
       "source.unsplash.com",
+      "images.seeklogo.com",
+      "encrypted-tbn0.gstatic.com",
     ],
     remotePatterns: [
       {
