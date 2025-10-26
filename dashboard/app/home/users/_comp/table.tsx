@@ -138,63 +138,7 @@ export const adminColumns: Column<AdminUser>[] = [
   {
     key: "actions",
     header: "Actions",
-    render: (user) => {
-      const dispatch = useAppDispatch();
-      const [isOpen, setIsopen] = useState(false);
-      const [isDetails, setIsDetails] = useState(false);
-
-      const editUser = () => {
-        const data = JSON.parse(user?.rawData);
-        dispatch(setSingleAdminUser(data));
-        setIsopen(true);
-      };
-
-      const viewDetails = () => {
-        const data = JSON.parse(user?.rawData);
-        dispatch(setSingleAdminUser(data));
-        setIsDetails(true);
-      };
-
-      return (
-        <Fragment>
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
-                title="Actions"
-              >
-                <span className="material-icons text-[20px]">more_vert</span>
-              </button>
-            </PopoverTrigger>
-
-            <PopoverContent className="max-w-[130px] text-[12px]">
-              <div
-                onClick={editUser}
-                className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]"
-              >
-                Edit user
-              </div>
-              <div
-                onClick={viewDetails}
-                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
-              >
-                View Details
-              </div>
-            </PopoverContent>
-          </Popover>
-
-          <Modal isOpen={isOpen}>
-            <UpdateUser setIsopen={setIsopen} />
-          </Modal>
-
-          {isDetails && (
-            <Modal isOpen={isDetails}>
-              <UserDetailsModal setIsDetails={setIsDetails} />
-            </Modal>
-          )}
-        </Fragment>
-      );
-    },
+    render: (user) => <AdminActions user={user} />,
   },
 ];
 
@@ -247,134 +191,199 @@ export const walletColumns: Column<WalletUser>[] = [
   {
     key: "actions",
     header: "Actions",
-    render: (user) => {
-      const dispatch = useAppDispatch();
-      const [loading, setLoading] = useState(false);
-      const [isDetails, setIsDetails] = useState(false);
-      const [resetPassword, setResetPassword] = useState(false);
-      const [reset2fa, setReset2fa] = useState(false);
-      const [sync, setSync] = useState(false);
-
-      const viewDetails = () => {
-        const data = JSON.parse(user?.rawData);
-        dispatch(setSingleAdminUser(data));
-        setIsDetails(true);
-      };
-
-      const handleConfirmPassword = async () => {
-        const data = JSON.parse(user?.rawData);
-        setLoading(true);
-        const { error, payload } = await UserService.resetPassword(data?.id);
-        setLoading(false);
-        if (!error && payload) {
-          setResetPassword(false);
-          toast.success("Password reset successfully!");
-        }
-      };
-
-      const handleConfirm2fa = async () => {
-        const data = JSON.parse(user?.rawData);
-        setLoading(true);
-        const { error, payload } = await UserService.reset2fa(data?.id);
-        setLoading(false);
-        if (!error && payload) {
-          setReset2fa(false);
-          toast.success("2FA reset successfully!");
-        }
-      };
-
-      const handleSync = async () => {
-        const data = JSON.parse(user?.rawData);
-        console.log(data, "data");
-        // setLoading(true);
-        // const { error, payload } = await UserService.reset2fa(data?.id);
-        // setLoading(false);
-        // if (!error && payload) {
-        //   setReset2fa(false);
-        //   toast.success("2FA reset successfully!");
-        // }
-      };
-
-      return (
-        <Fragment>
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
-                title="Actions"
-              >
-                <span className="material-icons text-[20px]">more_vert</span>
-              </button>
-            </PopoverTrigger>
-
-            <PopoverContent className="max-w-[150px] text-[12px]">
-              <div
-                onClick={viewDetails}
-                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
-              >
-                View Details
-              </div>
-              <div
-                onClick={() => setResetPassword(true)}
-                className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]"
-              >
-                Reset Password
-              </div>
-              <div
-                onClick={() => setReset2fa(true)}
-                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
-              >
-                Reset 2FA
-              </div>
-              <div
-                onClick={() => setSync(true)}
-                className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
-              >
-                Sync Txns
-              </div>
-            </PopoverContent>
-          </Popover>
-          {isDetails && (
-            <Modal isOpen={isDetails}>
-              <WalletUserDetails setIsDetails={setIsDetails} />
-            </Modal>
-          )}
-          {resetPassword && (
-            <Modal isOpen={resetPassword}>
-              <ConfirmModal
-                title="Reset Password"
-                message="A system generated password would be sent to this user to login and reset within 30mins."
-                confirmText="Yes, Reset"
-                loading={loading}
-                onConfirm={handleConfirmPassword}
-                onCancel={() => setResetPassword(false)}
-              />
-            </Modal>
-          )}
-          {reset2fa && (
-            <Modal isOpen={reset2fa}>
-              <ConfirmModal
-                title="Reset 2FA"
-                message="A new 2FA code would be generated and sent to a user to use with google authenticator."
-                confirmText="Yes, Reset"
-                loading={loading}
-                onConfirm={handleConfirm2fa}
-                onCancel={() => setReset2fa(false)}
-              />
-            </Modal>
-          )}
-          {sync && (
-            <Modal isOpen={sync}>
-              <TransactionSyncModal
-                open={sync}
-                loading={loading}
-                onConfirm={handleSync}
-                onClose={() => setSync(false)}
-              />
-            </Modal>
-          )}
-        </Fragment>
-      );
-    },
+    render: (user) => <WalletActions user={user} />,
   },
 ];
+
+const WalletActions = ({ user }: { user: WalletUser }) => {
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
+  const [isDetails, setIsDetails] = useState(false);
+  const [resetPassword, setResetPassword] = useState(false);
+  const [reset2fa, setReset2fa] = useState(false);
+  const [sync, setSync] = useState(false);
+
+  const viewDetails = () => {
+    const data = JSON.parse(user?.rawData);
+    dispatch(setSingleAdminUser(data));
+    setIsDetails(true);
+  };
+
+  const handleConfirmPassword = async () => {
+    const data = JSON.parse(user?.rawData);
+    setLoading(true);
+    const { error, payload } = await UserService.resetPassword(data?.id);
+    setLoading(false);
+    if (!error && payload) {
+      setResetPassword(false);
+      toast.success("Password reset successfully!");
+    }
+  };
+
+  const handleConfirm2fa = async () => {
+    const data = JSON.parse(user?.rawData);
+    setLoading(true);
+    const { error, payload } = await UserService.reset2fa(data?.id);
+    setLoading(false);
+    if (!error && payload) {
+      setReset2fa(false);
+      toast.success("2FA reset successfully!");
+    }
+  };
+
+  const handleSync = async (daysCount: number) => {
+    const data = JSON.parse(user?.rawData);
+    const param = { days: daysCount };
+    setLoading(true);
+    const { error, payload } = await UserService.syncUserTransactions(
+      data?.id,
+      param
+    );
+    setLoading(false);
+    if (!error && payload) {
+      setSync(false);
+      toast.success(
+        `${payload?.count} transactions synced over ${payload?.days} days successfully!.`
+      );
+    }
+  };
+
+  return (
+    <Fragment>
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
+            title="Actions"
+          >
+            <span className="material-icons text-[20px]">more_vert</span>
+          </button>
+        </PopoverTrigger>
+
+        <PopoverContent className="max-w-[150px] text-[12px]">
+          <div
+            onClick={viewDetails}
+            className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
+          >
+            View Details
+          </div>
+          <div
+            onClick={() => setResetPassword(true)}
+            className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]"
+          >
+            Reset Password
+          </div>
+          <div
+            onClick={() => setReset2fa(true)}
+            className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
+          >
+            Reset 2FA
+          </div>
+          <div
+            onClick={() => setSync(true)}
+            className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
+          >
+            Sync Txns
+          </div>
+        </PopoverContent>
+      </Popover>
+      {isDetails && (
+        <Modal isOpen={isDetails}>
+          <WalletUserDetails setIsDetails={setIsDetails} />
+        </Modal>
+      )}
+      {resetPassword && (
+        <Modal isOpen={resetPassword}>
+          <ConfirmModal
+            title="Reset Password"
+            message="A system generated password would be sent to this user to login and reset within 30mins."
+            confirmText="Yes, Reset"
+            loading={loading}
+            onConfirm={handleConfirmPassword}
+            onCancel={() => setResetPassword(false)}
+          />
+        </Modal>
+      )}
+      {reset2fa && (
+        <Modal isOpen={reset2fa}>
+          <ConfirmModal
+            title="Reset 2FA"
+            message="A new 2FA code would be generated and sent to a user to use with google authenticator."
+            confirmText="Yes, Reset"
+            loading={loading}
+            onConfirm={handleConfirm2fa}
+            onCancel={() => setReset2fa(false)}
+          />
+        </Modal>
+      )}
+      {sync && (
+        <Modal isOpen={sync}>
+          <TransactionSyncModal
+            open={sync}
+            loading={loading}
+            onConfirm={handleSync}
+            onClose={() => setSync(false)}
+          />
+        </Modal>
+      )}
+    </Fragment>
+  );
+};
+
+const AdminActions = ({ user }: { user: AdminUser }) => {
+  const dispatch = useAppDispatch();
+  const [isOpen, setIsopen] = useState(false);
+  const [isDetails, setIsDetails] = useState(false);
+
+  const editUser = () => {
+    const data = JSON.parse(user?.rawData);
+    dispatch(setSingleAdminUser(data));
+    setIsopen(true);
+  };
+
+  const viewDetails = () => {
+    const data = JSON.parse(user?.rawData);
+    dispatch(setSingleAdminUser(data));
+    setIsDetails(true);
+  };
+
+  return (
+    <Fragment>
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            className="text-gray-500 dark:text-gray-300 hover:text-primary transition"
+            title="Actions"
+          >
+            <span className="material-icons text-[20px]">more_vert</span>
+          </button>
+        </PopoverTrigger>
+
+        <PopoverContent className="max-w-[130px] text-[12px]">
+          <div
+            onClick={editUser}
+            className="py-[6px] border-b select-none hover:bg-gray-50 px-[10px]"
+          >
+            Edit user
+          </div>
+          <div
+            onClick={viewDetails}
+            className="py-[6px] select-none hover:bg-gray-50 px-[10px]"
+          >
+            View Details
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      <Modal isOpen={isOpen}>
+        <UpdateUser setIsopen={setIsopen} />
+      </Modal>
+
+      {isDetails && (
+        <Modal isOpen={isDetails}>
+          <UserDetailsModal setIsDetails={setIsDetails} />
+        </Modal>
+      )}
+    </Fragment>
+  );
+};

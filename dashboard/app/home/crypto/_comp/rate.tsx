@@ -71,11 +71,11 @@ export const columns: Column<Rate>[] = [
   {
     key: "actions",
     header: "Actions",
-    render: (user) => <ActionComponent user={user} />,
+    render: (rate) => <ActionComponent rate={rate} />,
   },
 ];
 
-const ActionComponent = (user: any) => {
+const ActionComponent = ({ rate }: { rate: Rate }) => {
   const dispatch = useAppDispatch();
   const [editRate, setEditRate] = useState(false);
   const [deleteRate, setDeleteRate] = useState(false);
@@ -83,13 +83,13 @@ const ActionComponent = (user: any) => {
   const reloadRate = useAppSelector((state) => state.crypto.reloadRate);
 
   const handleFeeEdit = () => {
-    const data = JSON.parse(user?.rawData);
+    const data = JSON.parse(rate?.rawData);
     dispatch(setSingleRate(data));
     setEditRate(true);
   };
 
   const handleDelete = async () => {
-    const data = JSON.parse(user?.rawData);
+    const data = JSON.parse(rate?.rawData);
     setLoading(true);
     const { error, payload } = await CryptoService.deleteRate(data?.id);
     setLoading(false);

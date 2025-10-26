@@ -184,4 +184,14 @@ export const UserService = {
       return { error: true, payload: e.message };
     }
   },
+  syncUserTransactions: async (id: string, param: { days: number }) => {
+    try {
+      const response = await API.post(`/transactions/sync/${id}`, param, {
+        withCredentials: true,
+      });
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };

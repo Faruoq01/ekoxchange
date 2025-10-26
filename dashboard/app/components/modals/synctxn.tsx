@@ -15,7 +15,7 @@ import {
 interface TransactionSyncModalProps {
   open: boolean;
   onClose: () => void;
-  onConfirm: (from: Date, to: Date, days: number) => void;
+  onConfirm: (days: number) => void;
   loading?: boolean;
 }
 
@@ -35,7 +35,7 @@ const TransactionSyncModal: React.FC<TransactionSyncModalProps> = ({
 
   const handleConfirm = () => {
     if (!fromDate) return;
-    onConfirm(fromDate, today, daysCount);
+    onConfirm(daysCount);
   };
 
   return (
