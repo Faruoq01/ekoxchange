@@ -13,7 +13,11 @@ export class AppPages {
       message: "/home/users/message",
     },
     crypto: "/home/crypto",
-    transactions: "/home/transactions",
+    transactions: {
+      index: "/home/transactions",
+      buy: "/home/transactions/buy",
+      sell: "/home/transactions/sell",
+    },
     analytics: "/home/analytics",
     support: "/home/support",
     roles: {

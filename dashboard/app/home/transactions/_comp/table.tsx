@@ -24,69 +24,6 @@ const statusColors: Record<string, string> = {
   Failed: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 };
 
-/* --- BUY Transactions --- */
-export const buyTransactions: Transaction[] = [
-  {
-    id: 1,
-    type: "Buy",
-    asset: "Bitcoin (BTC)",
-    network: "Bitcoin",
-    amount: "0.005 BTC",
-    value: "≈ $340",
-    status: "Completed",
-    timestamp: "Oct 4, 2025, 08:20 AM",
-    icon: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png",
-  },
-  {
-    id: 2,
-    type: "Buy",
-    asset: "Ethereum (ETH)",
-    network: "Ethereum",
-    amount: "0.12 ETH",
-    value: "≈ $360",
-    status: "Pending",
-    timestamp: "Oct 3, 2025, 04:45 PM",
-    icon: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
-  },
-  {
-    id: 4,
-    type: "Buy",
-    asset: "Solana (SOL)",
-    network: "Solana",
-    amount: "5 SOL",
-    value: "≈ $210",
-    status: "Failed",
-    timestamp: "Oct 1, 2025, 10:32 AM",
-    icon: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png",
-  },
-];
-
-/* --- SELL Transactions --- */
-export const sellTransactions: Transaction[] = [
-  {
-    id: 5,
-    type: "Sell",
-    asset: "Ethereum (ETH)",
-    network: "Ethereum",
-    amount: "0.35 ETH",
-    value: "≈ $1,020",
-    status: "Completed",
-    timestamp: "Oct 4, 2025, 09:55 AM",
-    icon: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
-  },
-  {
-    id: 7,
-    type: "Sell",
-    asset: "BNB (Binance Coin)",
-    network: "BNB Chain",
-    amount: "1.5 BNB",
-    value: "≈ $620",
-    status: "Completed",
-    timestamp: "Oct 2, 2025, 05:15 PM",
-    icon: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/info/logo.png",
-  },
-];
-
 /* --- SWAP Transactions --- */
 export const swapTransactions: Transaction[] = [
   {

@@ -21,14 +21,14 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import {
-  buyTransactions,
-  sellTransactions,
   swapTransactions,
   sendTransactions,
   transactionColumns,
   Transaction,
 } from "./_comp/table";
 import { AnimatePresence, motion } from "framer-motion";
+import { sellTransactionColumns, sellTransactions } from "./_comp/sell.txn";
+import { buyTransactionColumns, buyTransactions } from "./_comp/buy.txns";
 
 const Transactions = () => {
   const [status, setStatus] = useState<string>("");
@@ -44,7 +44,7 @@ const Transactions = () => {
     { key: "send", label: "Send" },
   ];
 
-  const getTransactions = (): Transaction[] => {
+  const getTransactions = (): any[] => {
     switch (activeTab) {
       case "buy":
         return buyTransactions;
@@ -54,6 +54,21 @@ const Transactions = () => {
         return swapTransactions;
       case "send":
         return sendTransactions;
+      default:
+        return [];
+    }
+  };
+
+  const getTransactionColumns = (): any[] => {
+    switch (activeTab) {
+      case "buy":
+        return buyTransactionColumns;
+      case "sell":
+        return sellTransactionColumns;
+      case "swap":
+        return transactionColumns;
+      case "send":
+        return transactionColumns;
       default:
         return [];
     }
@@ -142,9 +157,9 @@ const Transactions = () => {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <Table<Transaction>
+            <Table<any>
               data={getTransactions()}
-              columns={transactionColumns}
+              columns={getTransactionColumns()}
             />
           </motion.div>
         </AnimatePresence>

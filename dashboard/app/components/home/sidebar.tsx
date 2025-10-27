@@ -93,8 +93,8 @@ const navItems = [
   {
     label: "Transactions",
     icon: "receipt_long",
-    link: AppPages.home.transactions,
-    pages: [],
+    link: AppPages.home.transactions.index,
+    pages: [AppPages.home.transactions.buy, AppPages.home.transactions.sell],
   },
   {
     label: "Analytics",
