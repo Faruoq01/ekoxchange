@@ -4,8 +4,10 @@ import { AppPages } from "@/app/assets/appages";
 import Pagination from "@/app/components/home/pagination";
 import Table, { Column } from "@/app/components/home/table";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
+import { BuyOrder } from "@/app/lib/redux/interfaces/transaction";
 import { setBuyOrder } from "@/app/lib/redux/slices/transaction";
 import { TransactionService } from "@/app/lib/services/transaction";
+import { formatTimestamp } from "@/app/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Fragment, useCallback, useEffect, useState } from "react";
@@ -27,16 +29,15 @@ export interface SellTransaction {
     accountNumber: string;
   };
   date: string;
-  status: "Pending" | "Completed" | "Failed";
+  status: "pending" | "paid" | "failed";
 }
 
 /* --- Status Colors --- */
 const statusColors: Record<SellTransaction["status"], string> = {
-  Completed:
-    "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-  Pending:
+  paid: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+  pending:
     "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-  Failed: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+  failed: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 };
 
 /* --- Example Data --- */
@@ -58,7 +59,7 @@ export const buyTransactions: SellTransaction[] = [
       accountNumber: "3045678901",
     },
     date: "Oct 4, 2025, 09:15 AM",
-    status: "Pending",
+    status: "pending",
   },
   {
     id: 2,
@@ -77,7 +78,7 @@ export const buyTransactions: SellTransaction[] = [
       accountNumber: "1023456789",
     },
     date: "Oct 3, 2025, 04:45 PM",
-    status: "Completed",
+    status: "paid",
   },
   {
     id: 3,
@@ -96,7 +97,7 @@ export const buyTransactions: SellTransaction[] = [
       accountNumber: "0123456789",
     },
     date: "Oct 1, 2025, 10:32 AM",
-    status: "Failed",
+    status: "failed",
   },
 ];
 
@@ -205,6 +206,34 @@ export const BuyOrderComponent = ({ activeTab }: { activeTab: string }) => {
     getBuyOrderList();
   }, [getBuyOrderList]);
 
+  const rowData = () => {
+    return buyOrders?.map((item: BuyOrder, index: number) => {
+      return {
+        id: index,
+        user: {
+          name: item?.createdBy?.firstname + " " + item?.createdBy?.lastname,
+          email: item?.createdBy?.email,
+          avatar: item?.createdBy?.avatar
+            ? item?.createdBy?.avatar
+            : `https://picsum.photos/200/200?${index + 2}`,
+        },
+        amount: {
+          crypto: item?.amountToPay + " " + item?.selectedToken.symbol,
+          usd: "$" + item?.usdPrice,
+        },
+        paymentInfo: {
+          bankName: item?.bankName,
+          accountNumber: item?.accountNumber,
+        },
+        date: formatTimestamp(item?.createdAt),
+        status: item?.status,
+        rawData: JSON.stringify(item?.createdAt),
+      };
+    });
+  };
+
+  const processedRow = rowData();
+
   return (
     <Fragment>
       <AnimatePresence mode="wait">
@@ -215,7 +244,7 @@ export const BuyOrderComponent = ({ activeTab }: { activeTab: string }) => {
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.3 }}
         >
-          <Table<any> data={buyTransactions} columns={buyTransactionColumns} />
+          <Table<any> data={processedRow} columns={buyTransactionColumns} />
         </motion.div>
       </AnimatePresence>
 
