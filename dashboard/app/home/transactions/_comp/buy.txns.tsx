@@ -5,7 +5,10 @@ import Pagination from "@/app/components/home/pagination";
 import Table, { Column } from "@/app/components/home/table";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
 import { BuyOrder } from "@/app/lib/redux/interfaces/transaction";
-import { setBuyOrder } from "@/app/lib/redux/slices/transaction";
+import {
+  setBuyOrder,
+  setSingleBuyOrder,
+} from "@/app/lib/redux/slices/transaction";
 import { TransactionService } from "@/app/lib/services/transaction";
 import { formatTimestamp } from "@/app/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -30,6 +33,7 @@ export interface SellTransaction {
   };
   date: string;
   status: "pending" | "paid" | "failed";
+  rawData: string;
 }
 
 /* --- Status Colors --- */
@@ -108,10 +112,13 @@ export const buyTransactionColumns: Column<SellTransaction>[] = [
   {
     key: "actions",
     header: "Actions",
-    render: () => {
+    render: (user) => {
       const router = useRouter();
+      const dispatch = useAppDispatch();
 
       const goToDetails = () => {
+        const data = JSON.parse(user?.rawData);
+        dispatch(setSingleBuyOrder(data));
         router.push(AppPages.home.transactions.buy);
       };
 

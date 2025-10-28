@@ -5,7 +5,10 @@ import Pagination from "@/app/components/home/pagination";
 import Table, { Column } from "@/app/components/home/table";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
 import { SellOrder } from "@/app/lib/redux/interfaces/transaction";
-import { setSellOrder } from "@/app/lib/redux/slices/transaction";
+import {
+  setSellOrder,
+  setSingleSellOrder,
+} from "@/app/lib/redux/slices/transaction";
 import { TransactionService } from "@/app/lib/services/transaction";
 import { formatTimestamp, shortenTxnHash } from "@/app/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -33,6 +36,7 @@ export interface SellTransaction {
   };
   createdAt: string;
   status: "pending" | "completed";
+  rawData: string;
 }
 
 /* --- Status Colors --- */
@@ -125,10 +129,13 @@ export const sellTransactionColumns: Column<SellTransaction>[] = [
   {
     key: "actions",
     header: "Actions",
-    render: () => {
+    render: (user) => {
       const router = useRouter();
+      const dispatch = useAppDispatch();
 
       const goToDetails = () => {
+        const data = JSON.parse(user?.rawData);
+        dispatch(setSingleSellOrder(data));
         router.push(AppPages.home.transactions.sell);
       };
 
@@ -189,6 +196,7 @@ export const SellOrderComponent = ({ activeTab }: { activeTab: string }) => {
         },
         createdAt: formatTimestamp(item?.createdAt),
         status: item?.status,
+        rawData: JSON.stringify(item),
       };
     });
   };
