@@ -19,9 +19,9 @@ const SellComponent = () => {
     );
   }
 
-  const seller = sellOrder.createdBy;
-  const sellerName = `${seller.firstname} ${seller.lastname}`;
-  const sellerAvatar = seller.avatar || `https://picsum.photos/200/200?2`;
+  const seller = sellOrder?.createdBy;
+  const sellerName = `${seller?.firstname} ${seller?.lastname}`;
+  const sellerAvatar = seller?.avatar || `https://picsum.photos/200/200?2`;
 
   const shortenHash = (hash: string) =>
     hash ? `${hash.slice(0, 6)}...${hash.slice(-4)}` : "N/A";
@@ -48,51 +48,55 @@ const SellComponent = () => {
               <Info
                 label="Amount to Pay"
                 value={`${
-                  sellOrder.amountToPay + " " + sellOrder?.selectedToken?.symbol
+                  sellOrder?.amountToPay +
+                  " " +
+                  sellOrder?.selectedToken?.symbol
                 }`}
               />
               <Info
                 label="Token Amount"
                 value={`${
-                  sellOrder.selectedToken?.minimumTransaction || "N/A"
-                } ${sellOrder.selectedToken?.symbol || ""}`}
+                  sellOrder?.selectedToken?.minimumTransaction || "N/A"
+                } ${sellOrder?.selectedToken?.symbol || ""}`}
               />
               <Info
                 label="Unit Price"
-                value={`$ ${sellOrder.unitPrice} / ${sellOrder.selectedToken?.symbol}`}
+                value={`$ ${sellOrder?.unitPrice} / ${sellOrder?.selectedToken?.symbol}`}
               />
               <Info
                 label="Status"
                 value={
                   <span
                     className={`px-2.5 py-1 text-xs font-medium rounded-full ${
-                      sellOrder.status === "pending"
+                      sellOrder?.status === "pending"
                         ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
-                        : sellOrder.status === "paid"
+                        : sellOrder?.status === "paid"
                         ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
                         : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
                     }`}
                   >
-                    {sellOrder.status}
+                    {sellOrder?.status}
                   </span>
                 }
               />
               <Info
                 label="Chain"
-                value={sellOrder.selectedToken?.chain?.name || sellOrder.chain}
+                value={
+                  sellOrder?.selectedToken?.chain?.name || sellOrder?.chain
+                }
               />
               <Info
                 label="Transaction Hash"
-                value={shortenHash(sellOrder.txnHash)}
+                value={shortenHash(sellOrder?.txnHash)}
                 mono
               />
               <Info
                 label="Created At"
-                value={formatDate(sellOrder.createdAt)}
+                value={formatDate(sellOrder?.createdAt)}
               />
               <Info
                 label="Last Updated"
-                value={formatDate(sellOrder.updatedAt)}
+                value={formatDate(sellOrder?.updatedAt)}
               />
             </div>
           </div>
@@ -103,10 +107,10 @@ const SellComponent = () => {
               Bank Details
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-              <Info label="Bank Name" value={sellOrder.bankName} />
-              <Info label="Account Number" value={sellOrder.accountNumber} />
+              <Info label="Bank Name" value={sellOrder?.bankName} />
+              <Info label="Account Number" value={sellOrder?.accountNumber} />
               <div className="sm:col-span-2">
-                <Info label="Account Name" value={sellOrder.accountName} />
+                <Info label="Account Name" value={sellOrder?.accountName} />
               </div>
             </div>
           </div>
@@ -134,7 +138,7 @@ const SellComponent = () => {
                   {sellerName}
                 </p>
                 <p className="text-sm text-text-light-secondary dark:text-text-dark-secondary break-all">
-                  {seller.email}
+                  {seller?.email}
                 </p>
               </div>
             </div>

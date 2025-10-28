@@ -34,15 +34,15 @@ export default function BuyComponent() {
   } = buyOrder;
 
   const buyer = createdBy;
-  const buyerName = `${buyer.firstname || "Unknown"} ${
-    buyer.lastname || ""
+  const buyerName = `${buyer?.firstname || "Unknown"} ${
+    buyer?.lastname || ""
   }`.trim();
-  const buyerEmail = buyer.email || "No email provided";
-  const buyerAvatar = buyer.avatar || `https://picsum.photos/200/200?2`;
+  const buyerEmail = buyer?.email || "No email provided";
+  const buyerAvatar = buyer?.avatar || `https://picsum.photos/200/200?2`;
 
   // Helper function
   const formatDate = (timestamp: number) =>
-    timestamp ? new Date(timestamp).toLocaleString("en-US") : "N/A";
+    timestamp ? new Date(timestamp)?.toLocaleString("en-US") : "N/A";
 
   return (
     <main className="flex-1 pb-[50px]">
@@ -72,7 +72,7 @@ export default function BuyComponent() {
                 {
                   label: "Selected Token",
                   value: selectedToken
-                    ? `${selectedToken.name} (${selectedToken.symbol})`
+                    ? `${selectedToken?.name} (${selectedToken?.symbol})`
                     : "N/A",
                 },
                 { label: "Created At", value: formatDate(createdAt) },
