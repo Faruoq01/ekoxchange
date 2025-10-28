@@ -1,8 +1,6 @@
 "use client";
-
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import Pagination from "@/app/components/home/pagination";
-import Table from "@/app/components/home/table";
 import Text from "@/app/components/forms/text";
 import {
   Select,
@@ -20,15 +18,11 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import {
-  swapTransactions,
-  sendTransactions,
-  transactionColumns,
-  Transaction,
-} from "./_comp/table";
 import { AnimatePresence, motion } from "framer-motion";
-import { sellTransactionColumns, sellTransactions } from "./_comp/sell.txn";
-import { buyTransactionColumns, buyTransactions } from "./_comp/buy.txns";
+import { SellOrderComponent } from "./_comp/sell.txn";
+import { BuyOrderComponent } from "./_comp/buy.txns";
+import { SwapComponent } from "./_comp/swap";
+import { SendComponent } from "./_comp/send";
 
 const Transactions = () => {
   const [status, setStatus] = useState<string>("");
@@ -44,33 +38,18 @@ const Transactions = () => {
     { key: "send", label: "Send" },
   ];
 
-  const getTransactions = (): any[] => {
+  const getTransactions = (): ReactNode => {
     switch (activeTab) {
       case "buy":
-        return buyTransactions;
+        return <BuyOrderComponent activeTab={activeTab} />;
       case "sell":
-        return sellTransactions;
+        return <SellOrderComponent activeTab={activeTab} />;
       case "swap":
-        return swapTransactions;
+        return <SwapComponent activeTab={activeTab} />;
       case "send":
-        return sendTransactions;
+        return <SendComponent activeTab={activeTab} />;
       default:
-        return [];
-    }
-  };
-
-  const getTransactionColumns = (): any[] => {
-    switch (activeTab) {
-      case "buy":
-        return buyTransactionColumns;
-      case "sell":
-        return sellTransactionColumns;
-      case "swap":
-        return transactionColumns;
-      case "send":
-        return transactionColumns;
-      default:
-        return [];
+        return <BuyOrderComponent activeTab={activeTab} />;
     }
   };
 
@@ -149,22 +128,7 @@ const Transactions = () => {
         </div>
 
         {/* Table Section */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Table<any>
-              data={getTransactions()}
-              columns={getTransactionColumns()}
-            />
-          </motion.div>
-        </AnimatePresence>
-
-        <Pagination total={30} perPage={30} currentPage={1} />
+        {getTransactions()}
       </div>
     </main>
   );

@@ -1,8 +1,14 @@
 "use client";
 
 import { AppPages } from "@/app/assets/appages";
-import { Column } from "@/app/components/home/table";
+import Pagination from "@/app/components/home/pagination";
+import Table, { Column } from "@/app/components/home/table";
+import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
+import { setBuyOrder } from "@/app/lib/redux/slices/transaction";
+import { TransactionService } from "@/app/lib/services/transaction";
+import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { Fragment, useCallback, useEffect, useState } from "react";
 
 /* --- Interface --- */
 export interface SellTransaction {
@@ -180,3 +186,40 @@ export const buyTransactionColumns: Column<SellTransaction>[] = [
     },
   },
 ];
+
+export const BuyOrderComponent = ({ activeTab }: { activeTab: string }) => {
+  const dispatch = useAppDispatch();
+  const [skip, setSkip] = useState(0);
+  const [limit, setLimit] = useState(30);
+  const buyOrders = useAppSelector((state) => state.transaction.buyOrders);
+  console.log(buyOrders, "buyOrders");
+
+  const getBuyOrderList = useCallback(async () => {
+    const { error, payload } = await TransactionService.buyOrder(skip, limit);
+    if (!error && payload) {
+      dispatch(setBuyOrder(payload));
+    }
+  }, []);
+
+  useEffect(() => {
+    getBuyOrderList();
+  }, [getBuyOrderList]);
+
+  return (
+    <Fragment>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Table<any> data={buyTransactions} columns={buyTransactionColumns} />
+        </motion.div>
+      </AnimatePresence>
+
+      <Pagination total={30} perPage={30} currentPage={1} />
+    </Fragment>
+  );
+};
