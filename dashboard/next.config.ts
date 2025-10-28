@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
       "source.unsplash.com",
       "images.seeklogo.com",
       "encrypted-tbn0.gstatic.com",
+      "ui-avatars.com",
+      "res.cloudinary.com",
     ],
     remotePatterns: [
       {

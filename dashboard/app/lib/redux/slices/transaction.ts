@@ -23,7 +23,7 @@ const transactionReducer = createSlice({
       state.buyOrders = action.payload;
     },
     setSingleBuyOrder: (state, action) => {
-      state.sellOrders = action.payload;
+      state.singleBuyOrder = action.payload;
     },
     setSellOrder: (state, action) => {
       state.sellOrders = action.payload;

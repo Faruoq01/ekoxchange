@@ -1,34 +1,101 @@
 "use client";
+import { useAppSelector } from "@/app/lib/redux/controls";
+import { BuyOrder } from "@/app/lib/redux/interfaces/transaction";
 import Image from "next/image";
 
 export default function BuyComponent() {
+  const buyOrder = useAppSelector(
+    (state) => state.transaction.singleBuyOrder as BuyOrder | null
+  );
+
+  if (!buyOrder || Object.keys(buyOrder).length === 0) {
+    return (
+      <main className="flex items-center justify-center h-[60vh]">
+        <p className="text-gray-500 dark:text-gray-400 text-lg bg-white px-[10px] py-[10px] rounded-full text-[12px]">
+          No transaction data available.
+        </p>
+      </main>
+    );
+  }
+
+  const {
+    status,
+    amountToPay,
+    usdPrice,
+    unitPrice,
+    selectedToken,
+    createdAt,
+    updatedAt,
+    accountName,
+    accountNumber,
+    bankName,
+    transactionReceipt,
+    createdBy,
+  } = buyOrder;
+
+  const buyer = createdBy;
+  const buyerName = `${buyer.firstname || "Unknown"} ${
+    buyer.lastname || ""
+  }`.trim();
+  const buyerEmail = buyer.email || "No email provided";
+  const buyerAvatar = buyer.avatar || `https://picsum.photos/200/200?2`;
+
+  // Helper function
+  const formatDate = (timestamp: number) =>
+    timestamp ? new Date(timestamp).toLocaleString("en-US") : "N/A";
+
   return (
     <main className="flex-1 pb-[50px]">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        {/* LEFT COLUMN */}
         <div className="lg:col-span-2 space-y-8">
-          <section className="bg-white dark:bg-gray-800 dark:bg-surface-dark p-6 rounded-lg border border-border-light dark:border-border-dark">
+          {/* Transaction Summary */}
+          <section className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-border-light dark:border-border-dark">
             <h2 className="text-lg font-semibold mb-6">Transaction Summary</h2>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { label: "Status", value: "Pending", badge: true },
-                { label: "Amount to Pay", value: "₦250,000.00" },
-                { label: "Token Amount", value: "100,000 USDT" },
-                { label: "Unit Price", value: "₦2.50 / USDT" },
-                { label: "USD Price", value: "$250.00" },
-                { label: "Selected Token", value: "Tether (USDT)" },
-                { label: "Created At", value: "Oct 4, 2025, 09:15 AM" },
-                { label: "Last Updated", value: "Oct 4, 2025, 09:18 AM" },
+                { label: "Status", value: status, badge: true },
+                {
+                  label: "Amount to Pay",
+                  value: `${
+                    Number(amountToPay).toLocaleString() +
+                    " " +
+                    selectedToken?.symbol
+                  }`,
+                },
+                { label: "USD Price", value: `$${usdPrice}` },
+                {
+                  label: "Unit Price",
+                  value: unitPrice ? `$${unitPrice}` : "N/A",
+                },
+                {
+                  label: "Selected Token",
+                  value: selectedToken
+                    ? `${selectedToken.name} (${selectedToken.symbol})`
+                    : "N/A",
+                },
+                { label: "Created At", value: formatDate(createdAt) },
+                { label: "Last Updated", value: formatDate(updatedAt) },
               ].map(({ label, value, badge }) => (
                 <div key={label}>
-                  <p className="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-1">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                     {label}
                   </p>
                   {badge ? (
-                    <span className="px-2.5 py-1 text-sm font-medium rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
+                    <span
+                      className={`px-2.5 py-1 text-sm font-medium rounded-full ${
+                        status === "paid"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                          : status === "failed"
+                          ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
+                      }`}
+                    >
                       {value}
                     </span>
                   ) : (
-                    <p className="font-medium text-text-light-primary dark:text-text-dark-primary">
+                    <p className="font-medium text-gray-900 dark:text-gray-100">
                       {value}
                     </p>
                   )}
@@ -38,40 +105,38 @@ export default function BuyComponent() {
           </section>
 
           {/* Buyer Information */}
-          <section className="bg-white dark:bg-gray-800 dark:bg-surface-dark p-6 rounded-lg border border-border-light dark:border-border-dark">
+          <section className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-border-light dark:border-border-dark">
             <h2 className="text-lg font-semibold mb-6">Buyer Information</h2>
             <div className="flex items-center gap-4">
               <Image
-                alt="John Doe avatar"
+                alt={`${buyerName} avatar`}
                 width={64}
                 height={64}
-                className="rounded-full"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAX1y5Q_KINXF3A82l9-FI6ymTm-g_JtozAtNmrG6T2reLmJuqOb7ezNfTYwTw8eA_i8KHNxGT0YfSBi5cusJaREa0lVHniLfpRAcch5Wz14bBPAtR-iq49H-V7p7lxwXUKb6CW-JrLm6cSToq1vJr-v_fPN1Y-aUUWHYPefC8m3BiOFihBJA2VaeyVsB1SHiZTCmbaIacMXhrGSxISSZ_vS72ZooZqPKS4KdxGvL9F00UHQSSeu8Ravd4r8g4KToHy6WOD8I6vTt6n"
+                className="rounded-full object-cover"
+                src={buyerAvatar}
               />
               <div>
-                <p className="font-semibold text-lg">John Doe</p>
-                <p className="text-text-light-secondary dark:text-text-dark-secondary">
-                  johndoe@example.com
-                </p>
+                <p className="font-semibold text-lg">{buyerName}</p>
+                <p className="text-gray-500 dark:text-gray-400">{buyerEmail}</p>
               </div>
             </div>
           </section>
 
           {/* Bank Details */}
-          <section className="bg-white dark:bg-gray-800 dark:bg-surface-dark p-6 rounded-lg border border-border-light dark:border-border-dark">
+          <section className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-border-light dark:border-border-dark">
             <h2 className="text-lg font-semibold mb-6">Bank Details</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
-                { label: "Bank Name", value: "First Bank of Nigeria" },
-                { label: "Account Name", value: "John Olumide Doe" },
-                { label: "Account Number", value: "3045678901" },
+                { label: "Bank Name", value: bankName },
+                { label: "Account Name", value: accountName },
+                { label: "Account Number", value: accountNumber },
               ].map(({ label, value }) => (
                 <div key={label}>
-                  <p className="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-1">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                     {label}
                   </p>
-                  <p className="font-medium text-text-light-primary dark:text-text-dark-primary">
-                    {value}
+                  <p className="font-medium text-gray-900 dark:text-gray-100">
+                    {value || "N/A"}
                   </p>
                 </div>
               ))}
@@ -79,21 +144,17 @@ export default function BuyComponent() {
           </section>
         </div>
 
-        {/* Right Column */}
+        {/* RIGHT COLUMN */}
         <div className="space-y-8">
           {/* Actions */}
-          <section className="bg-white dark:bg-gray-800 dark:bg-surface-dark p-6 rounded-lg border border-border-light dark:border-border-dark">
+          <section className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-border-light dark:border-border-dark">
             <h2 className="text-lg font-semibold mb-4">Actions</h2>
             <div className="space-y-3">
-              <button className="w-full flex items-center justify-center gap-2 bg-primary text-white font-semibold py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors">
-                <span className="material-icons">send</span>
+              <button className="w-full text-[14px] flex items-center justify-center gap-2 bg-primary text-white font-semibold py-3 px-4 rounded-lg hover:bg-primary/90 transition">
+                <span className="material-icons text-[14px]">send</span>
                 Transfer Tokens
               </button>
-              <button className="w-full flex items-center justify-center gap-2 bg-green-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-green-700 transition-colors">
-                <span className="material-icons">check_circle</span>
-                Mark as Completed
-              </button>
-              <button className="w-full flex items-center justify-center gap-2 bg-red-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-red-700 transition-colors">
+              <button className="w-full flex text-[14px] items-center justify-center gap-2 bg-red-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-red-700 transition">
                 <span className="material-icons">cancel</span>
                 Cancel Transaction
               </button>
@@ -101,23 +162,33 @@ export default function BuyComponent() {
           </section>
 
           {/* Transaction Receipt */}
-          <section className="bg-white dark:bg-gray-800 dark:bg-surface-dark p-6 rounded-lg border border-border-light dark:border-border-dark">
+          <section className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-border-light dark:border-border-dark">
             <h2 className="text-lg font-semibold mb-4">Transaction Receipt</h2>
-            <div className="border-2 border-dashed border-border-light dark:border-border-dark rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50">
-              <Image
-                alt="Transaction receipt"
-                width={400}
-                height={300}
-                className="rounded-md w-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxLAUfIzJyUClq0Oux_RNIWAFoMDCweeM9XVxP7MztCY6LHdYXv_62-P3O-KyKa85cOKxO6x6cZuKC3vgNUNYmo_r1hqtZtMlbgIv6e1i7HR1komjZu_3hVUXII_4Gqc9DkiQQVZ_hVNVkRer__wjrr9QaRlLMww0ifIDHKxvpG-2Fb0EU5ocPx5iMxQLRLnFN4ooUnnkdEgVTFttmuZ8GrMHbiiTI31TZALwStwk94QctDxMgqoE3PHKGd4T1q-72HAeFENazYl6z"
-              />
-              <a
-                href="#"
-                className="mt-4 inline-flex items-center gap-2 text-sm text-primary font-medium"
-              >
-                <span className="material-icons">download</span>
-                Download Receipt
-              </a>
+            <div className="border-2 border-dashed border-border-light dark:border-border-dark rounded-lg p-4 text-center hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+              {transactionReceipt ? (
+                <>
+                  <Image
+                    alt="Transaction receipt"
+                    width={400}
+                    height={300}
+                    className="rounded-md w-full object-cover"
+                    src={transactionReceipt}
+                  />
+                  <a
+                    href={transactionReceipt}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-flex items-center gap-2 text-sm text-primary font-medium"
+                  >
+                    <span className="material-icons">download</span>
+                    View / Download Receipt
+                  </a>
+                </>
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400">
+                  No receipt uploaded.
+                </p>
+              )}
             </div>
           </section>
         </div>
