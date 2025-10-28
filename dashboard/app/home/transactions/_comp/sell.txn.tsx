@@ -4,21 +4,28 @@ import { AppPages } from "@/app/assets/appages";
 import Pagination from "@/app/components/home/pagination";
 import Table, { Column } from "@/app/components/home/table";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
+import { SellOrder } from "@/app/lib/redux/interfaces/transaction";
 import { setSellOrder } from "@/app/lib/redux/slices/transaction";
 import { TransactionService } from "@/app/lib/services/transaction";
+import { formatTimestamp, shortenTxnHash } from "@/app/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Fragment, useCallback, useEffect, useState } from "react";
 
 /* --- Interface --- */
 export interface SellTransaction {
-  id: string;
-  token: string;
-  unitPrice: string;
-  usdPrice: string;
+  id: number;
+  user: {
+    name: string;
+    email: string;
+    avatar: string;
+  };
+  amount: {
+    crypto: string;
+    usd: string;
+  };
   txnHash: string;
   chain: string;
-  amountToPay: string;
   bank: {
     bankName: string;
     accountName: string;
@@ -36,71 +43,42 @@ const statusColors: Record<SellTransaction["status"], string> = {
     "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
 };
 
-/* --- Example Data --- */
-export const sellTransactions: SellTransaction[] = [
-  {
-    id: "1",
-    token: "USDT",
-    unitPrice: "0.998",
-    usdPrice: "150.20",
-    txnHash: "0x1a2b...c3d4",
-    chain: "BSC",
-    amountToPay: "150.50",
-    bank: {
-      bankName: "First Bank of Nigeria",
-      accountName: "John Doe",
-      accountNumber: "3045678901",
-    },
-    createdAt: "Oct 4, 2025, 09:15 AM",
-    status: "pending",
-  },
-  {
-    id: "2",
-    token: "USDC",
-    unitPrice: "1.00",
-    usdPrice: "1000.00",
-    txnHash: "0x4f5e...d6c7",
-    chain: "Ethereum",
-    amountToPay: "1000.00",
-    bank: {
-      bankName: "Zenith Bank",
-      accountName: "Jane Smith",
-      accountNumber: "1023456789",
-    },
-    createdAt: "Oct 3, 2025, 04:45 PM",
-    status: "completed",
-  },
-  {
-    id: "3",
-    token: "DAI",
-    unitPrice: "0.999",
-    usdPrice: "250.00",
-    txnHash: "0x7c8d...e9f0",
-    chain: "Polygon",
-    amountToPay: "250.25",
-    bank: {
-      bankName: "GTBank",
-      accountName: "Mike Ross",
-      accountNumber: "0123456789",
-    },
-    createdAt: "Oct 1, 2025, 10:32 AM",
-    status: "completed",
-  },
-];
-
 /* --- Table Columns --- */
 export const sellTransactionColumns: Column<SellTransaction>[] = [
-  { key: "id", header: "Transaction ID" },
-  { key: "token", header: "Token" },
   {
-    key: "unitPrice",
-    header: "Unit Price",
-    render: (tx) => `$${tx.unitPrice}`,
+    key: "user",
+    header: "User",
+    render: (tx) => (
+      <div className="flex items-center gap-3">
+        <img
+          src={tx.user.avatar}
+          alt={tx.user.name}
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div>
+          <div className="font-medium text-text-light-primary dark:text-text-dark-primary">
+            {tx.user.name}
+          </div>
+          <div className="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+            {tx.user.email}
+          </div>
+        </div>
+      </div>
+    ),
   },
   {
-    key: "usdPrice",
-    header: "Amount (USD)",
-    render: (tx) => `$${tx.usdPrice}`,
+    key: "amount",
+    header: "Amount",
+    render: (tx) => (
+      <div>
+        <div className="font-medium text-text-light-primary dark:text-text-dark-primary">
+          {tx.amount.crypto}
+        </div>
+        <div className="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          {tx.amount.usd}
+        </div>
+      </div>
+    ),
   },
   {
     key: "bank",
@@ -170,11 +148,13 @@ export const SellOrderComponent = ({ activeTab }: { activeTab: string }) => {
   const dispatch = useAppDispatch();
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(30);
+  const [loading, setLoading] = useState(false);
   const sellOrders = useAppSelector((state) => state.transaction.sellOrders);
-  console.log(sellOrders, "sellOrders");
 
   const getBuyOrderList = useCallback(async () => {
+    setLoading(true);
     const { error, payload } = await TransactionService.sellOrder(skip, limit);
+    setLoading(false);
     if (!error && payload) {
       dispatch(setSellOrder(payload));
     }
@@ -183,6 +163,37 @@ export const SellOrderComponent = ({ activeTab }: { activeTab: string }) => {
   useEffect(() => {
     getBuyOrderList();
   }, [getBuyOrderList]);
+
+  const rowData = () => {
+    return sellOrders?.map((item: SellOrder, index: number) => {
+      return {
+        id: index + 1,
+        user: {
+          name: item?.createdBy?.firstname + " " + item?.createdBy?.lastname,
+          email: item?.createdBy?.email,
+          avatar: item?.createdBy?.avatar
+            ? item?.createdBy?.avatar
+            : `https://picsum.photos/200/200?${index + 2}`,
+        },
+        amount: {
+          crypto: item?.amountToPay + " " + item?.selectedToken.symbol,
+          usd: "$" + item?.usdPrice,
+        },
+        txnHash: shortenTxnHash(item?.txnHash),
+        chain: item?.chain,
+        amountToPay: item?.amountToPay + " " + item?.selectedToken?.symbol,
+        bank: {
+          bankName: item?.bankName,
+          accountName: item?.accountName,
+          accountNumber: item?.accountNumber,
+        },
+        createdAt: formatTimestamp(item?.createdAt),
+        status: item?.status,
+      };
+    });
+  };
+
+  const processedRow = rowData();
 
   return (
     <Fragment>
@@ -195,8 +206,9 @@ export const SellOrderComponent = ({ activeTab }: { activeTab: string }) => {
           transition={{ duration: 0.3 }}
         >
           <Table<any>
-            data={sellTransactions}
+            data={processedRow}
             columns={sellTransactionColumns}
+            loading={loading}
           />
         </motion.div>
       </AnimatePresence>

@@ -18,3 +18,9 @@ export function formatTimestamp(timestamp: number | string): string {
 
   return `${day}${suffix} ${month}, ${year}`;
 }
+
+export function shortenTxnHash(hash: string): string {
+  if (!hash) return "";
+  if (hash.length <= 10) return hash; // If it's already short enough
+  return `${hash.slice(0, 6)}...${hash.slice(-4)}`;
+}

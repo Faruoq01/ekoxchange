@@ -40,67 +40,6 @@ const statusColors: Record<SellTransaction["status"], string> = {
   failed: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 };
 
-/* --- Example Data --- */
-export const buyTransactions: SellTransaction[] = [
-  {
-    id: 1,
-    user: {
-      name: "John Doe",
-      email: "johndoe@example.com",
-      avatar:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuAX1y5Q_KINXF3A82l9-FI6ymTm-g_JtozAtNmrG6T2reLmJuqOb7ezNfTYwTw8eA_i8KHNxGT0YfSBi5cusJaREa0lVHniLfpRAcch5Wz14bBPAtR-iq49H-V7p7lxwXUKb6CW-JrLm6cSToq1vJr-v_fPN1Y-aUUWHYPefC8m3BiOFihBJA2VaeyVsB1SHiZTCmbaIacMXhrGSxISSZ_vS72ZooZqPKS4KdxGvL9F00UHQSSeu8Ravd4r8g4KToHy6WOD8I6vTt6n",
-    },
-    amount: {
-      crypto: "100,000 USDT",
-      usd: "$250.00",
-    },
-    paymentInfo: {
-      bankName: "First Bank of Nigeria",
-      accountNumber: "3045678901",
-    },
-    date: "Oct 4, 2025, 09:15 AM",
-    status: "pending",
-  },
-  {
-    id: 2,
-    user: {
-      name: "Jane Smith",
-      email: "janesmith@example.com",
-      avatar:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDeYyUYJbf2QE_YwZUgqX73XubDBw1Fi103AN75vzTE5WLJW7qSjhMs8B9gvh7hGMuVA_oS4IwMZ4a0bfQ0DbPEmJElXH6YEgdgY7ewN5JoaiQZBvytzKtnHbkzxp-XlQSrHQxm9hqQS5i1OGBJbBBIQvAoyLeihpixGef9zjhXaroGXHPTQbaNimOSnse-NpQC9rKljgcotLpjyckJKxZDhn6sIUGrSN_CRkwHeom2qY1mMbvTWbaLkxLA-PkAp1XC94cpyd6FjfIc",
-    },
-    amount: {
-      crypto: "50,000 USDT",
-      usd: "$125.00",
-    },
-    paymentInfo: {
-      bankName: "Zenith Bank",
-      accountNumber: "1023456789",
-    },
-    date: "Oct 3, 2025, 04:45 PM",
-    status: "paid",
-  },
-  {
-    id: 3,
-    user: {
-      name: "Mike Ross",
-      email: "mikeross@example.com",
-      avatar:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBfpD3MpeEIf7CtUM9UvRYwTjlq7cHGdyCgXVSE1HZBwieMzH43hF-iIVwEDA5nlPfrbubVPeNGLl7AuWymOy6FgMCKV-XLoufATAhpoKy-imRgFDMPVOZ2EWjURA7N8O--J05g_HocHojvC3fYC1wsVGBMkNCPzpzhX8hRjFlN3xzIHzZz-iOlg2mSHAUq9tFjiG5_SQNtd50qSQH9mCUrAFeorrHSwqCBD1eUU_EbPU2rf2dUK7jXyQjpot1aDZK6h_OwerSV7muo",
-    },
-    amount: {
-      crypto: "200,000 USDT",
-      usd: "$500.00",
-    },
-    paymentInfo: {
-      bankName: "GTBank",
-      accountNumber: "0123456789",
-    },
-    date: "Oct 1, 2025, 10:32 AM",
-    status: "failed",
-  },
-];
-
 /* --- Table Columns --- */
 export const buyTransactionColumns: Column<SellTransaction>[] = [
   {
@@ -192,11 +131,13 @@ export const BuyOrderComponent = ({ activeTab }: { activeTab: string }) => {
   const dispatch = useAppDispatch();
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(30);
+  const [loading, setLoading] = useState(false);
   const buyOrders = useAppSelector((state) => state.transaction.buyOrders);
-  console.log(buyOrders, "buyOrders");
 
   const getBuyOrderList = useCallback(async () => {
+    setLoading(true);
     const { error, payload } = await TransactionService.buyOrder(skip, limit);
+    setLoading(false);
     if (!error && payload) {
       dispatch(setBuyOrder(payload));
     }
@@ -227,7 +168,7 @@ export const BuyOrderComponent = ({ activeTab }: { activeTab: string }) => {
         },
         date: formatTimestamp(item?.createdAt),
         status: item?.status,
-        rawData: JSON.stringify(item?.createdAt),
+        rawData: JSON.stringify(item),
       };
     });
   };
@@ -244,7 +185,11 @@ export const BuyOrderComponent = ({ activeTab }: { activeTab: string }) => {
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.3 }}
         >
-          <Table<any> data={processedRow} columns={buyTransactionColumns} />
+          <Table<any>
+            data={processedRow}
+            columns={buyTransactionColumns}
+            loading={loading}
+          />
         </motion.div>
       </AnimatePresence>
 
