@@ -27,6 +27,7 @@ export interface SellTransaction {
     crypto: string;
     usd: string;
   };
+  amountPaid: string;
   paymentInfo: {
     bankName: string;
     accountNumber: string;
@@ -75,8 +76,19 @@ export const buyTransactionColumns: Column<SellTransaction>[] = [
         <div className="font-medium text-text-light-primary dark:text-text-dark-primary">
           {tx.amount.crypto}
         </div>
-        <div className="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+        <div className="text-[12px] text-gray-500 dark:text-text-dark-secondary">
           {tx.amount.usd}
+        </div>
+      </div>
+    ),
+  },
+  {
+    key: "amountPaid",
+    header: "Amount Paid",
+    render: (tx) => (
+      <div>
+        <div className="font-medium text-text-light-primary dark:text-text-dark-primary">
+          ~ ₦{tx?.amountPaid}
         </div>
       </div>
     ),
@@ -167,8 +179,11 @@ export const BuyOrderComponent = ({ activeTab }: { activeTab: string }) => {
         },
         amount: {
           crypto: item?.amountToPay + " " + item?.selectedToken.symbol,
-          usd: "$" + item?.usdPrice,
+          usd: "$" + item?.usdPrice + " / " + item?.selectedToken?.chain?.name,
         },
+        amountPaid: (
+          Number(item?.usdPrice) * Number(item?.selectedToken?.rate?.sellRate)
+        ).toLocaleString(),
         paymentInfo: {
           bankName: item?.bankName,
           accountNumber: item?.accountNumber,

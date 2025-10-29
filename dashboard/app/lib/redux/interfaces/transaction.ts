@@ -132,6 +132,13 @@ export interface SellOrder {
       updatedAt: number;
       updatedBy: string | null;
     };
+    rate: {
+      _id: string;
+      id: string;
+      cryptoAsset: string;
+      buyRate: number;
+      sellRate: number;
+    };
     __v: number;
     contractAddress: string | null;
     createdAt: number;

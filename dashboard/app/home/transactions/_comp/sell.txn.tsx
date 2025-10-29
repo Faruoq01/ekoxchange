@@ -27,7 +27,7 @@ export interface SellTransaction {
     crypto: string;
     usd: string;
   };
-  txnHash: string;
+  amountToPay: string;
   chain: string;
   bank: {
     bankName: string;
@@ -85,6 +85,17 @@ export const sellTransactionColumns: Column<SellTransaction>[] = [
     ),
   },
   {
+    key: "amountToPay",
+    header: "Amount to pay",
+    render: (tx) => (
+      <div>
+        <div className="font-medium text-text-light-primary dark:text-text-dark-primary">
+          ~ ₦{tx?.amountToPay}
+        </div>
+      </div>
+    ),
+  },
+  {
     key: "bank",
     header: "Bank Details",
     render: (tx) => (
@@ -94,20 +105,6 @@ export const sellTransactionColumns: Column<SellTransaction>[] = [
         </div>
         <div className="text-sm text-text-light-secondary dark:text-text-dark-secondary">
           {tx.bank.bankName} / {tx.bank.accountNumber}
-        </div>
-      </div>
-    ),
-  },
-  {
-    key: "txnHash",
-    header: "Txn Hash / Chain",
-    render: (tx) => (
-      <div>
-        <div className="font-medium text-text-light-primary dark:text-text-dark-primary">
-          {tx.txnHash}
-        </div>
-        <div className="text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          {tx.chain}
         </div>
       </div>
     ),
@@ -186,9 +183,9 @@ export const SellOrderComponent = ({ activeTab }: { activeTab: string }) => {
           crypto: item?.amountToPay + " " + item?.selectedToken.symbol,
           usd: "$" + item?.usdPrice,
         },
-        txnHash: shortenTxnHash(item?.txnHash),
-        chain: item?.chain,
-        amountToPay: item?.amountToPay + " " + item?.selectedToken?.symbol,
+        amountToPay: (
+          Number(item?.usdPrice) * Number(item?.selectedToken?.rate?.buyRate)
+        ).toLocaleString(),
         bank: {
           bankName: item?.bankName,
           accountName: item?.accountName,
