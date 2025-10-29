@@ -1,19 +1,22 @@
 "use client";
-import ConfirmModal from "@/app/components/modals/confirmation";
-import { TokenTransferModalContent } from "@/app/components/modals/manual.w";
-import { Modal } from "@/app/components/modals/modalskin";
+
+import { Fragment, useState } from "react";
+import Image from "next/image";
 import { useAppSelector } from "@/app/lib/redux/controls";
 import { BuyOrder } from "@/app/lib/redux/interfaces/transaction";
-import Image from "next/image";
-import { Fragment, useState } from "react";
+import { Modal } from "@/app/components/modals/modalskin";
+import ConfirmModal from "@/app/components/modals/confirmation";
+import { TokenTransferModalContent } from "@/app/components/modals/manual.w";
 
 export default function BuyComponent() {
   const [isOpen, setIsOpen] = useState(false);
   const [cancel, setCancel] = useState(false);
+
   const buyOrder = useAppSelector(
     (state) => state.transaction.singleBuyOrder as BuyOrder | null
   );
 
+  // Fallback for empty or missing data
   if (!buyOrder || Object.keys(buyOrder).length === 0) {
     return (
       <main className="flex items-center justify-center h-[60vh]">
@@ -24,6 +27,7 @@ export default function BuyComponent() {
     );
   }
 
+  // Destructure main fields
   const {
     status,
     amountToPay,
@@ -39,22 +43,49 @@ export default function BuyComponent() {
     createdBy,
   } = buyOrder;
 
+  // Buyer details
   const buyer = createdBy;
   const buyerName = `${buyer?.firstname || "Unknown"} ${
     buyer?.lastname || ""
   }`.trim();
   const buyerEmail = buyer?.email || "No email provided";
-  const buyerAvatar = buyer?.avatar || `https://picsum.photos/200/200?2`;
+  const buyerAvatar = buyer?.avatar || "https://picsum.photos/200/200?2";
+  const buyerCountry = buyer?.country || "Unknown Country";
+  const buyerKYC = buyer?.isKYCDone ? "Verified" : "Not Verified";
+  const buyerPhone = buyer?.phone || "N/A";
 
-  // Helper function
+  // Token details
+  const tokenName = selectedToken?.name ?? "N/A";
+  const tokenSymbol = selectedToken?.symbol ?? "N/A";
+  const tokenType = selectedToken?.tokenType ?? "N/A";
+  const chainName = selectedToken?.chain?.name ?? "N/A";
+  const chainCode = selectedToken?.chainCode ?? "N/A";
+  const buyRate = selectedToken?.rate?.buyRate ?? 0;
+  const sellRate = selectedToken?.rate?.sellRate ?? 0;
+
+  // Helper for timestamp formatting
   const formatDate = (timestamp: number) =>
-    timestamp ? new Date(timestamp)?.toLocaleString("en-US") : "N/A";
+    timestamp ? new Date(timestamp).toLocaleString("en-US") : "N/A";
+
+  // Determine transaction color badge
+  const getStatusBadgeClass = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "paid":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+      case "failed":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+      default:
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+    }
+  };
 
   return (
     <Fragment>
       <main className="flex-1 pb-[50px]">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          {/* LEFT COLUMN */}
           <div className="lg:col-span-2 space-y-8">
+            {/* Transaction Summary */}
             <section className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-border-light dark:border-border-dark">
               <h2 className="text-lg font-semibold mb-6">
                 Transaction Summary
@@ -65,22 +96,24 @@ export default function BuyComponent() {
                   { label: "Status", value: status, badge: true },
                   {
                     label: "Amount to Pay",
-                    value: `${
-                      Number(amountToPay).toLocaleString() +
-                      " " +
-                      selectedToken?.symbol
-                    }`,
+                    value: `${Number(
+                      amountToPay
+                    ).toLocaleString()} ${tokenSymbol}`,
                   },
                   { label: "USD Price", value: `$${usdPrice}` },
-                  {
-                    label: "Unit Price",
-                    value: unitPrice ? `$${unitPrice}` : "N/A",
-                  },
+                  { label: "Unit Price", value: `$${unitPrice || "N/A"}` },
                   {
                     label: "Selected Token",
-                    value: selectedToken
-                      ? `${selectedToken?.name} (${selectedToken?.symbol})`
-                      : "N/A",
+                    value: `${tokenName} (${tokenSymbol})`,
+                  },
+                  { label: "Token Type", value: tokenType },
+                  { label: "Chain", value: `${chainName} (${chainCode})` },
+                  { label: "Buy Rate", value: `${buyRate}` },
+                  {
+                    label: "Amount Paid",
+                    value: `~ ₦${(
+                      Number(usdPrice) * Number(sellRate)
+                    ).toLocaleString()}`,
                   },
                   { label: "Created At", value: formatDate(createdAt) },
                   { label: "Last Updated", value: formatDate(updatedAt) },
@@ -91,18 +124,14 @@ export default function BuyComponent() {
                     </p>
                     {badge ? (
                       <span
-                        className={`px-2.5 py-1 text-sm font-medium rounded-full ${
-                          status === "paid"
-                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                            : status === "failed"
-                            ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
-                            : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
-                        }`}
+                        className={`px-2.5 py-1 text-sm font-medium rounded-full ${getStatusBadgeClass(
+                          status
+                        )}`}
                       >
                         {value}
                       </span>
                     ) : (
-                      <p className="font-medium text-gray-900 dark:text-gray-100">
+                      <p className="font-[500] text-[14px] text-gray-900 dark:text-gray-100">
                         {value}
                       </p>
                     )}
@@ -127,6 +156,31 @@ export default function BuyComponent() {
                   <p className="text-gray-500 dark:text-gray-400">
                     {buyerEmail}
                   </p>
+                  <p className="text-sm text-gray-400">{buyerCountry}</p>
+                </div>
+              </div>
+              <div className="mt-6 grid grid-cols-2 gap-6">
+                <div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                    Phone
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">
+                    {buyerPhone}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                    KYC Status
+                  </p>
+                  <span
+                    className={`px-2.5 py-1 text-sm font-medium rounded-full ${
+                      buyer?.isKYCDone
+                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+                    }`}
+                  >
+                    {buyerKYC}
+                  </span>
                 </div>
               </div>
             </section>
@@ -166,6 +220,7 @@ export default function BuyComponent() {
                   <span className="material-icons text-[14px]">send</span>
                   Transfer Tokens
                 </button>
+
                 <button
                   onClick={() => setCancel(true)}
                   className="w-full flex text-[14px] items-center justify-center gap-2 bg-red-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-red-700 transition"
@@ -211,16 +266,20 @@ export default function BuyComponent() {
           </div>
         </div>
       </main>
+
+      {/* Transfer Token Modal */}
       <Modal isOpen={isOpen}>
         <TokenTransferModalContent
           onClose={() => setIsOpen(false)}
-          onConfirm={(data) => console.log("Confirmed:", data)}
+          onConfirm={(data) => console.log("Confirmed Token Transfer:", data)}
         />
       </Modal>
+
+      {/* Cancel Confirmation Modal */}
       <Modal isOpen={cancel}>
         <ConfirmModal
           onCancel={() => setCancel(false)}
-          onConfirm={() => console.log("Confirmed working")}
+          onConfirm={() => console.log("Transaction Cancelled")}
         />
       </Modal>
     </Fragment>
