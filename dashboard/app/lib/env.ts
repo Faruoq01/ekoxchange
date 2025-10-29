@@ -9,4 +9,11 @@ export class AppEnv {
   static api = {
     base_url: process.env.NEXT_PUBLIC_BASE_URL,
   };
+
+  static poolAccount = {
+    bitcoin: process.env.NEXT_PUBLIC_POOL_BITCOIN,
+    ethereum: process.env.NEXT_PUBLIC_POOL_ETHEREUM,
+    solana: process.env.NEXT_PUBLIC_POOL_SOLANA,
+    tron: process.env.NEXT_PUBLIC_POOL_TRON,
+  };
 }

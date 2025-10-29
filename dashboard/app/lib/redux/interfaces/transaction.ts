@@ -22,6 +22,20 @@ export interface BuyOrder {
       updatedAt: number;
       updatedBy: string | null;
     };
+    chainCode:
+      | "BTC"
+      | "ETH"
+      | "SOL"
+      | "USDC-ERC20"
+      | "USDT-ERC20"
+      | "USDT-TRC20";
+    rate: {
+      _id: string;
+      id: string;
+      cryptoAsset: string;
+      buyRate: number;
+      sellRate: number;
+    };
     symbol: string;
     __v: number;
     contractAddress: string;
@@ -36,7 +50,7 @@ export interface BuyOrder {
     maximumTransaction: number;
     minimumTransaction: number;
     name: string;
-    tokenType: "ERC20" | "BEP20" | "SPL" | string;
+    tokenType: "ERC20" | "TRC20" | string;
     updatedAt: number;
     updatedBy: string | null;
   };

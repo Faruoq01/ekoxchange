@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useAppSelector } from "@/app/lib/redux/controls";
 import { BuyOrder } from "@/app/lib/redux/interfaces/transaction";
+import { AppEnv } from "@/app/lib/env";
 
 const transferSchema = z.object({
   fromAddress: z.string().min(1, "Sender address is required"),
@@ -12,9 +13,7 @@ const transferSchema = z.object({
     .string()
     .startsWith("0x", "Wallet address must start with 0x")
     .length(42, "Wallet address must be 42 characters long"),
-  amount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-    message: "Amount must be a valid positive number",
-  }),
+  amount: z.string().min(1, "Invalid amount"),
 });
 
 type TransferFormData = z.infer<typeof transferSchema>;
@@ -33,6 +32,20 @@ export const TokenTransferModalContent = ({
   );
   console.log(buyOrder, "buyOrder");
 
+  const tokenSymbol: any = buyOrder?.selectedToken?.chainCode;
+  const fromAddress = FROM_TOKEN_MAP[tokenSymbol];
+
+  const TO_TOKEN_MAP: any = {
+    BTC: buyOrder?.createdBy?.bitcoinAddress,
+    ETH: buyOrder?.createdBy?.ethereumAddress,
+    SOL: buyOrder?.createdBy?.solanaAddress,
+    TRX: buyOrder?.createdBy?.tronAddress,
+    "USDC-ERC20": buyOrder?.createdBy?.ethereumAddress,
+    "USDT-ERC20": buyOrder?.createdBy?.ethereumAddress,
+    "USDT-TRC20": buyOrder?.createdBy?.tronAddress,
+  };
+  const toAddress = TO_TOKEN_MAP[tokenSymbol];
+
   const {
     register,
     handleSubmit,
@@ -40,14 +53,13 @@ export const TokenTransferModalContent = ({
   } = useForm<TransferFormData>({
     resolver: zodResolver(transferSchema),
     defaultValues: {
-      fromAddress: "0xAdminWalletAddress1234567890abcdef123",
-      toAddress: "",
-      amount: "",
+      fromAddress: fromAddress,
+      toAddress: toAddress,
+      amount: buyOrder?.amountToPay,
     },
   });
 
   const onSubmit = (data: TransferFormData) => {
-    console.log("Transfer data:", data);
     onConfirm?.(data);
   };
 
@@ -75,8 +87,9 @@ export const TokenTransferModalContent = ({
         </div>
       </div>
 
-      {/* Scrollable body */}
+      {/* Form Body */}
       <form
+        id="transferForm"
         onSubmit={handleSubmit(onSubmit)}
         className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6"
       >
@@ -92,7 +105,7 @@ export const TokenTransferModalContent = ({
             />
             <div>
               <p className="font-semibold text-gray-900 dark:text-white">
-                {`${buyOrder?.selectedToken?.name} ( ${buyOrder?.selectedToken?.symbol} )`}
+                {`${buyOrder?.selectedToken?.name} (${buyOrder?.selectedToken?.symbol})`}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {buyOrder?.selectedToken?.chain?.name}
@@ -104,7 +117,11 @@ export const TokenTransferModalContent = ({
               {`${buyOrder?.amountToPay} ${buyOrder?.selectedToken?.symbol}`}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              ~ ₦250,000.00
+              ~ ₦
+              {(
+                Number(buyOrder?.amountToPay) *
+                Number(buyOrder?.selectedToken?.rate?.sellRate)
+              ).toLocaleString()}
             </p>
           </div>
         </div>
@@ -121,7 +138,7 @@ export const TokenTransferModalContent = ({
             id="fromAddress"
             {...register("fromAddress")}
             readOnly
-            className="block w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 mt-1 px-3 py-2 focus:ring-primary focus:border-primary"
+            className="block w-full text-[12px] rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 mt-1 px-3 py-3 focus:ring-primary focus:border-primary"
           />
           {errors.fromAddress && (
             <p className="text-sm text-red-500 mt-1">
@@ -141,8 +158,9 @@ export const TokenTransferModalContent = ({
           <input
             id="toAddress"
             {...register("toAddress")}
+            readOnly
             placeholder="Enter recipient's wallet address"
-            className="block w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 mt-1 px-3 py-2 focus:ring-primary focus:border-primary"
+            className="block w-full text-[12px] rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-200 mt-1 px-3 py-3 focus:ring-primary focus:border-primary"
           />
           {errors.toAddress && (
             <p className="text-sm text-red-500 mt-1">
@@ -163,11 +181,12 @@ export const TokenTransferModalContent = ({
             <input
               id="amount"
               {...register("amount")}
+              readOnly
               placeholder="0.00"
-              className="block w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 pr-12 text-gray-700 dark:text-gray-200 mt-1 px-3 py-2 focus:ring-primary focus:border-primary"
+              className="block w-full text-[12px] rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-900 pr-12 text-gray-700 dark:text-gray-200 mt-1 px-3 py-3 focus:ring-primary focus:border-primary"
             />
             <span className="absolute inset-y-0 right-3 flex items-center text-gray-500 dark:text-gray-400 text-sm">
-              USDT
+              {buyOrder?.selectedToken?.symbol}
             </span>
           </div>
           {errors.amount && (
@@ -219,4 +238,15 @@ export const TokenTransferModalContent = ({
       </div>
     </div>
   );
+};
+
+// Static map for platform token pool addresses
+const FROM_TOKEN_MAP: any = {
+  BTC: AppEnv.poolAccount.bitcoin,
+  ETH: AppEnv.poolAccount.ethereum,
+  SOL: AppEnv.poolAccount.solana,
+  TRX: AppEnv.poolAccount.tron,
+  "USDC-ERC20": AppEnv.poolAccount.ethereum,
+  "USDT-ERC20": AppEnv.poolAccount.ethereum,
+  "USDT-TRC20": AppEnv.poolAccount.tron,
 };
