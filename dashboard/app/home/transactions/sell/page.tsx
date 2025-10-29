@@ -152,7 +152,11 @@ const SellComponent = () => {
                 <Info label="Created By" value={sellerName} />
                 <Info
                   label="Updated By"
-                  value={sellOrder.updatedBy || "Admin (System)"}
+                  value={
+                    sellOrder?.updatedBy?.firstname +
+                      " " +
+                      sellOrder?.updatedBy?.lastname || "Admin (System)"
+                  }
                 />
               </div>
             </div>
