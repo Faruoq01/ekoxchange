@@ -1,4 +1,5 @@
 "use client";
+import ConfirmModal from "@/app/components/modals/confirmation";
 import { TokenTransferModalContent } from "@/app/components/modals/manual.w";
 import { Modal } from "@/app/components/modals/modalskin";
 import { useAppSelector } from "@/app/lib/redux/controls";
@@ -8,6 +9,7 @@ import { Fragment, useState } from "react";
 
 export default function BuyComponent() {
   const [isOpen, setIsOpen] = useState(false);
+  const [cancel, setCancel] = useState(false);
   const buyOrder = useAppSelector(
     (state) => state.transaction.singleBuyOrder as BuyOrder | null
   );
@@ -164,7 +166,10 @@ export default function BuyComponent() {
                   <span className="material-icons text-[14px]">send</span>
                   Transfer Tokens
                 </button>
-                <button className="w-full flex text-[14px] items-center justify-center gap-2 bg-red-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-red-700 transition">
+                <button
+                  onClick={() => setCancel(true)}
+                  className="w-full flex text-[14px] items-center justify-center gap-2 bg-red-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-red-700 transition"
+                >
                   <span className="material-icons">cancel</span>
                   Cancel Transaction
                 </button>
@@ -210,6 +215,12 @@ export default function BuyComponent() {
         <TokenTransferModalContent
           onClose={() => setIsOpen(false)}
           onConfirm={(data) => console.log("Confirmed:", data)}
+        />
+      </Modal>
+      <Modal isOpen={cancel}>
+        <ConfirmModal
+          onCancel={() => setCancel(false)}
+          onConfirm={() => console.log("Confirmed working")}
         />
       </Modal>
     </Fragment>
