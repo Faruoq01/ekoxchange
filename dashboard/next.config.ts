@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       "encrypted-tbn0.gstatic.com",
       "ui-avatars.com",
       "res.cloudinary.com",
+      "zengo.com",
     ],
     remotePatterns: [
       {

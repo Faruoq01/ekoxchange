@@ -108,7 +108,10 @@ export default function BuyComponent() {
                   },
                   { label: "Token Type", value: tokenType },
                   { label: "Chain", value: `${chainName} (${chainCode})` },
-                  { label: "Buy Rate", value: `${buyRate}` },
+                  {
+                    label: "Sell Rate",
+                    value: `~ ₦${sellRate.toLocaleString()}`,
+                  },
                   {
                     label: "Amount Paid",
                     value: `~ ₦${(
