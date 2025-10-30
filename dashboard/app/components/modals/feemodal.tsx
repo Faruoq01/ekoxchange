@@ -98,6 +98,12 @@ const CreateTransactionRule = ({
       return toast.error("Enter a valid fixed amount");
     }
 
+    if (data.isPercentage) {
+      delete data.fixedAmount;
+    } else {
+      delete data.percentageAmount;
+    }
+
     if (data.effectiveDate) {
       data.effectiveDate = new Date(data.effectiveDate)
         .toISOString()

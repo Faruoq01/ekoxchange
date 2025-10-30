@@ -39,6 +39,7 @@ export const CryptoService = {
   },
   createFee: async (params: any) => {
     try {
+      console.log(params, "params");
       const response = await API.post(`/fee-manager/create`, params);
       return { error: false, payload: response?.data };
     } catch (e: any) {
