@@ -6,6 +6,8 @@ import Image from "next/image";
 import { useAppSelector } from "@/app/lib/redux/controls";
 import { BuyOrder } from "@/app/lib/redux/interfaces/transaction";
 import { AppEnv } from "@/app/lib/env";
+import { useCallback, useEffect, useState } from "react";
+import { TransactionService } from "@/app/lib/services/transaction";
 
 const transferSchema = z.object({
   fromAddress: z.string().min(1, "Sender address is required"),
@@ -20,17 +22,17 @@ type TransferFormData = z.infer<typeof transferSchema>;
 
 interface TokenTransferModalContentProps {
   onClose?: () => void;
-  onConfirm?: (data: TransferFormData) => void;
+  onConfirm?: (data: any) => void;
 }
 
 export const TokenTransferModalContent = ({
   onClose,
   onConfirm,
 }: TokenTransferModalContentProps) => {
+  const [gasFee, setGasFee] = useState(0);
   const buyOrder = useAppSelector(
     (state) => state.transaction.singleBuyOrder as BuyOrder | null
   );
-  console.log(buyOrder, "buyOrder");
 
   const tokenSymbol: any = buyOrder?.selectedToken?.chainCode;
   const fromAddress = FROM_TOKEN_MAP[tokenSymbol];
@@ -59,9 +61,41 @@ export const TokenTransferModalContent = ({
     },
   });
 
-  const onSubmit = (data: TransferFormData) => {
-    onConfirm?.(data);
+  const onSubmit = async (data: TransferFormData) => {
+    const param = {
+      chain: buyOrder?.selectedToken?.tokenType,
+      tokenAddress: buyOrder?.selectedToken?.contractAddress,
+      recipient: toAddress,
+      tokenName: buyOrder?.selectedToken?.name,
+      tokenSymbol: buyOrder?.selectedToken?.symbol,
+      amount: buyOrder?.amountToPay,
+      decimals: buyOrder?.selectedToken?.decimals,
+    };
+
+    const { error, payload } = await TransactionService.manualWithdrawal(param);
+    if (!error && payload) {
+      onConfirm?.(param);
+    }
   };
+
+  const getGasEstimate = useCallback(async () => {
+    if (gasFee > 0) return;
+    const param = {
+      chain: buyOrder?.selectedToken?.tokenType,
+      tokenAddress: buyOrder?.selectedToken?.contractAddress,
+      recipient: toAddress,
+      amount: buyOrder?.amountToPay,
+      decimals: buyOrder?.selectedToken?.decimals,
+    };
+    const { error, payload } = await TransactionService.gasEstimate(param);
+    if (!error && payload) {
+      setGasFee(Number(payload));
+    }
+  }, []);
+
+  useEffect(() => {
+    getGasEstimate();
+  }, [getGasEstimate]);
 
   return (
     <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-xl w-full max-w-2xl transform transition-all overflow-hidden flex flex-col max-h-[90vh]">
@@ -201,7 +235,7 @@ export const TokenTransferModalContent = ({
               Estimated Network Fee:
             </p>
             <p className="font-medium text-gray-900 dark:text-white">
-              0.0012 ETH (~$2.15)
+              {gasFee} ETH (~${gasFee * Number(buyOrder?.usdPrice)})
             </p>
           </div>
 

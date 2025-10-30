@@ -1,20 +1,31 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Image from "next/image";
 import { useAppSelector } from "@/app/lib/redux/controls";
 import { BuyOrder } from "@/app/lib/redux/interfaces/transaction";
 import { Modal } from "@/app/components/modals/modalskin";
 import ConfirmModal from "@/app/components/modals/confirmation";
 import { TokenTransferModalContent } from "@/app/components/modals/manual.w";
+import { useRouter } from "next/navigation";
+import { AppPages } from "@/app/assets/appages";
+import { TransactionService } from "@/app/lib/services/transaction";
+import toast from "react-hot-toast";
 
 export default function BuyComponent() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [cancel, setCancel] = useState(false);
 
   const buyOrder = useAppSelector(
     (state) => state.transaction.singleBuyOrder as BuyOrder | null
   );
+
+  useEffect(() => {
+    if (!buyOrder || Object.keys(buyOrder).length === 0) {
+      router.push(AppPages.home.transactions.index);
+    }
+  }, []);
 
   // Fallback for empty or missing data
   if (!buyOrder || Object.keys(buyOrder).length === 0) {
@@ -60,7 +71,6 @@ export default function BuyComponent() {
   const tokenType = selectedToken?.tokenType ?? "N/A";
   const chainName = selectedToken?.chain?.name ?? "N/A";
   const chainCode = selectedToken?.chainCode ?? "N/A";
-  const buyRate = selectedToken?.rate?.buyRate ?? 0;
   const sellRate = selectedToken?.rate?.sellRate ?? 0;
 
   // Helper for timestamp formatting
@@ -77,6 +87,10 @@ export default function BuyComponent() {
       default:
         return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
     }
+  };
+
+  const manualTransfer = async (data: any) => {
+    toast.success("Tokens transfered to user successfully!");
   };
 
   return (
@@ -274,7 +288,7 @@ export default function BuyComponent() {
       <Modal isOpen={isOpen}>
         <TokenTransferModalContent
           onClose={() => setIsOpen(false)}
-          onConfirm={(data) => console.log("Confirmed Token Transfer:", data)}
+          onConfirm={manualTransfer}
         />
       </Modal>
 

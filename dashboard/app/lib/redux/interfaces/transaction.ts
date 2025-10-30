@@ -289,3 +289,40 @@ export interface SellOrder {
   id: string;
   __v: number;
 }
+
+export interface Transaction {
+  _id: string;
+  id: string;
+  user: UserInfo;
+  chain: string;
+  direction: "Sent" | "Received";
+  status: "Pending" | "Success" | "Failed";
+  amount: number;
+  fee: number;
+  from: string;
+  to: string;
+  hash: string;
+  explorer: string;
+  logo: string;
+  timestamp: number;
+  createdAt: number;
+  updatedAt: number;
+  __v: number;
+}
+
+export interface UserInfo {
+  id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  country: string;
+  phone: string;
+  avatar: string | null;
+  ethereumAddress: string;
+  solanaAddress: string;
+  tronAddress: string;
+  bitcoinAddress: string;
+  isVerified: boolean;
+  isActive: boolean;
+  timezone: string;
+}

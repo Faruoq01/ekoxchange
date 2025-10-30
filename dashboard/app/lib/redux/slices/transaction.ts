@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { BuyOrder, SellOrder } from "../interfaces/transaction";
+import { BuyOrder, SellOrder, Transaction } from "../interfaces/transaction";
 
 interface TransactionType {
   buyOrders: BuyOrder[] | [];
   sellOrders: SellOrder[] | [];
+  send: Transaction[] | [];
   singleBuyOrder: BuyOrder | {};
   singleSellOrder: SellOrder | {};
 }
@@ -11,6 +12,7 @@ interface TransactionType {
 const initialState: TransactionType = {
   buyOrders: [],
   sellOrders: [],
+  send: [],
   singleBuyOrder: {},
   singleSellOrder: {},
 };
@@ -31,6 +33,9 @@ const transactionReducer = createSlice({
     setSingleSellOrder: (state, action) => {
       state.singleSellOrder = action.payload;
     },
+    setSendTransaction: (state, action) => {
+      state.send = action.payload;
+    },
   },
 });
 
@@ -39,5 +44,6 @@ export const {
   setSingleBuyOrder,
   setSellOrder,
   setSingleSellOrder,
+  setSendTransaction,
 } = transactionReducer.actions;
 export default transactionReducer.reducer;

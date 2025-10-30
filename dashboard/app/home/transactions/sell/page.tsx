@@ -4,9 +4,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/app/lib/redux/controls";
 import { SellOrder } from "@/app/lib/redux/interfaces/transaction";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Modal } from "@/app/components/modals/modalskin";
 import ConfirmModal from "@/app/components/modals/confirmation";
+import { AppPages } from "@/app/assets/appages";
 
 const SellComponent = () => {
   const router = useRouter();
@@ -16,11 +17,20 @@ const SellComponent = () => {
     (state) => state.transaction.singleSellOrder as SellOrder | null
   );
 
-  if (!sellOrder) {
+  useEffect(() => {
+    if (!sellOrder || Object.keys(sellOrder).length === 0) {
+      router.push(AppPages.home.transactions.index);
+    }
+  }, []);
+
+  // Fallback for empty or missing data
+  if (!sellOrder || Object.keys(sellOrder).length === 0) {
     return (
-      <div className="flex justify-center items-center h-64 text-gray-500 dark:text-gray-300">
-        No sell order data available.
-      </div>
+      <main className="flex items-center justify-center h-[60vh]">
+        <p className="text-gray-500 dark:text-gray-400 text-lg bg-white px-[10px] py-[10px] rounded-full text-[12px]">
+          No transaction data available.
+        </p>
+      </main>
     );
   }
 

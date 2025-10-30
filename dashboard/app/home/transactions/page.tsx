@@ -18,7 +18,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { SellOrderComponent } from "./_comp/sell.txn";
 import { BuyOrderComponent } from "./_comp/buy.txns";
 import { SwapComponent } from "./_comp/swap";
@@ -34,8 +34,8 @@ const Transactions = () => {
   const tabs = [
     { key: "buy", label: "Buy" },
     { key: "sell", label: "Sell" },
-    { key: "swap", label: "Swap" },
     { key: "send", label: "Send" },
+    { key: "swap", label: "Swap" },
   ];
 
   const getTransactions = (): ReactNode => {
