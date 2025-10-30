@@ -57,9 +57,9 @@ const CreateTransactionRule = ({
       transactionType: "Sell",
       cryptoAsset: "",
       isPercentage: true,
-      percentageAmount: "5",
+      percentageAmount: "0",
       fixedAmount: "0",
-      threshold: "1000",
+      threshold: "0",
       userLevel: "Verified",
       effectiveDate: new Date().toISOString().split("T")[0],
     },
@@ -198,16 +198,18 @@ const CreateTransactionRule = ({
           )}
 
           {/* Threshold */}
-          <InputText
-            label="Threshold"
-            name="threshold"
-            type="number"
-            register={register}
-            formErrors={errors}
-            placeholder="Enter threshold value"
-            bgColor="#fff"
-            className="bg-white"
-          />
+          {isPercentage && (
+            <InputText
+              label="Threshold"
+              name="threshold"
+              type="number"
+              register={register}
+              formErrors={errors}
+              placeholder="Enter threshold value"
+              bgColor="#fff"
+              className="bg-white"
+            />
+          )}
 
           {/* User Level */}
           <Controller
