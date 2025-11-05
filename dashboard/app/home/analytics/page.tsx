@@ -3,7 +3,7 @@ import StatCard from "@/app/components/cards/analytics";
 import DoubleLineChart from "@/app/components/charts/analytics";
 import Pagination from "@/app/components/home/pagination";
 import Table from "@/app/components/home/table";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { logs, logsColumns, SystemLog } from "./_comp/table";
 import Text from "@/app/components/forms/text";
 import {
@@ -13,57 +13,59 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-
-const statCards = [
-  {
-    title: "Daily Trade Volume",
-    value: "$1.2M",
-    trend: "+15.2%",
-    trendDirection: "up" as const,
-    gradient:
-      "from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700",
-  },
-  {
-    title: "Giftcard Transactions",
-    value: "3,450",
-    trend: "-3.1%",
-    trendDirection: "down" as const,
-    gradient:
-      "from-emerald-500 to-teal-600 dark:from-emerald-600 dark:to-teal-700",
-  },
-  {
-    title: "Crypto Flow (24h)",
-    value: "$350K",
-    trend: "+8.5%",
-    trendDirection: "up" as const,
-    gradient:
-      "from-purple-500 to-violet-600 dark:from-purple-600 dark:to-violet-700",
-  },
-  {
-    title: "User Counts",
-    value: "15,890",
-    trend: "+2.1%",
-    trendDirection: "up" as const,
-    gradient:
-      "from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700",
-  },
-];
+import { AnalyticsService } from "@/app/lib/services/analytics";
+import { DateRangePicker } from "@/app/components/forms/daterange";
+import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
+import { setCardStats } from "@/app/lib/redux/slices/analytics";
 
 const Analytics = () => {
+  const dispatch = useAppDispatch();
   const [status, setStatus] = useState<string>("");
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const currentYear = new Date().getFullYear();
+  const cardStats = useAppSelector((state) => state.analytics.cardStats);
 
+  const [startDate, setStartDate] = useState<string>(`${currentYear}-01-01`);
+  const [endDate, setEndDate] = useState<string>(`${currentYear}-12-31`);
+
+  const getCardStatistics = useCallback(async () => {
+    const userCountProm = AnalyticsService.getUserCount(startDate, endDate);
+    const transVolProm = AnalyticsService.getTradeVolume(startDate, endDate);
+    const cryptoFlowProm = AnalyticsService.getCryptoFlow(startDate, endDate);
+
+    const [userCount, tradeVolume, cryptoVolume] = await Promise.all([
+      userCountProm,
+      transVolProm,
+      cryptoFlowProm,
+    ]);
+
+    if (!userCount?.error && !tradeVolume?.error && !cryptoVolume?.error) {
+      const stats = {
+        tradeVolume: tradeVolume?.payload,
+        cryptoFlow: cryptoVolume?.payload,
+        userCounts: userCount?.payload,
+        giftcardTransactions: 0,
+      };
+      dispatch(setCardStats(stats));
+    }
+  }, []);
+
+  useEffect(() => {
+    getCardStatistics();
+  }, [getCardStatistics, startDate, endDate]);
+
+  const handleRangeChange = (range: any) => {
+    console.log("Selected range:", range);
+    setStartDate(range?.startDate);
+    setEndDate(range?.endDate);
+  };
+
+  const statCards = getCards(cardStats);
   return (
     <main className="flex-1 mt-[10px]">
+      <div className="flex flex-row justify-between items-center mb-[20px]">
+        <h1 className="font-bold text-lg">Analytics</h1>
+        <DateRangePicker onChange={handleRangeChange} />
+      </div>
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         {statCards.map((card, i) => (
@@ -112,29 +114,6 @@ const Analytics = () => {
                   <SelectItem value="Failed">Failed</SelectItem>
                 </SelectContent>
               </Select>
-
-              {/* Date Filter */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button
-                    className={cn(
-                      "flex items-center justify-between w-44 px-3 py-2 border border-border-light dark:border-border-dark rounded-lg text-sm hover:bg-accent transition-colors",
-                      !date && "text-muted-foreground"
-                    )}
-                  >
-                    {date ? format(date, "PPP") : <span>Filter by Date</span>}
-                    <CalendarIcon className="w-4 h-4 ml-2 opacity-60" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
             </div>
           </div>
 
@@ -149,6 +128,43 @@ const Analytics = () => {
       </main>
     </main>
   );
+};
+
+const getCards = (stats: any) => {
+  return [
+    {
+      title: "Daily Trade Volume",
+      value: stats?.tradeVolume,
+      trend: "+15.2%",
+      trendDirection: "up" as const,
+      gradient:
+        "from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700",
+    },
+    {
+      title: "Giftcard Transactions",
+      value: "0",
+      trend: "-3.1%",
+      trendDirection: "down" as const,
+      gradient:
+        "from-emerald-500 to-teal-600 dark:from-emerald-600 dark:to-teal-700",
+    },
+    {
+      title: "Crypto Flow",
+      value: "$" + Number(stats?.cryptoFlow).toFixed(2),
+      trend: "+8.5%",
+      trendDirection: "up" as const,
+      gradient:
+        "from-purple-500 to-violet-600 dark:from-purple-600 dark:to-violet-700",
+    },
+    {
+      title: "User Counts",
+      value: stats?.userCounts,
+      trend: "+2.1%",
+      trendDirection: "up" as const,
+      gradient:
+        "from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700",
+    },
+  ];
 };
 
 export default Analytics;

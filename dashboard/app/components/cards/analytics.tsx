@@ -43,7 +43,7 @@ const StatCard = ({
       {/* Card Content */}
       <div>
         <p className="text-sm opacity-80 mb-1">{title}</p>
-        <p className="text-3xl font-bold">{value}</p>
+        <p className="text-2xl font-bold">{value}</p>
         <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
           <span className="material-symbols-outlined text-sm">
             {trendDirection === "up" ? "trending_up" : "trending_down"}
