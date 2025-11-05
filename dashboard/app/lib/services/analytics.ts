@@ -53,7 +53,7 @@ export const AnalyticsService = {
   },
   getMonthlyUserVolume: async (startDate: string, endDate: string) => {
     try {
-      const response = await API.post(
+      const response = await API.get(
         `/analytics/user/monthly?startDate=${startDate}&endDate=${endDate}`
       );
       return { error: false, payload: response?.data };
@@ -86,7 +86,7 @@ export const AnalyticsService = {
 
   getMonthlyTransactionVolume: async (startDate: string, endDate: string) => {
     try {
-      const response = await API.post(
+      const response = await API.get(
         `/analytics/transaction/monthly?startDate=${startDate}&endDate=${endDate}`
       );
       return { error: false, payload: response?.data };

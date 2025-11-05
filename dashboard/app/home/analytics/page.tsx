@@ -54,7 +54,6 @@ const Analytics = () => {
   }, [getCardStatistics, startDate, endDate]);
 
   const handleRangeChange = (range: any) => {
-    console.log("Selected range:", range);
     setStartDate(range?.startDate);
     setEndDate(range?.endDate);
   };
@@ -62,7 +61,7 @@ const Analytics = () => {
   const statCards = getCards(cardStats);
   return (
     <main className="flex-1 mt-[10px]">
-      <div className="flex flex-row justify-between items-center mb-[20px]">
+      <div className="flex flex-row justify-between items-center mb-[10px]">
         <h1 className="font-bold text-lg">Analytics</h1>
         <DateRangePicker onChange={handleRangeChange} />
       </div>
