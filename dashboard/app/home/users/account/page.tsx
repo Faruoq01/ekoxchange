@@ -9,6 +9,7 @@ import WalletBalances from "./_comp/wallet";
 import TransactionHistory from "./_comp/transactions";
 import { useAppSelector } from "@/app/lib/redux/controls";
 import { AppPages } from "@/app/assets/appages";
+import { formatTimestamp } from "@/app/lib/utils";
 
 const tabs = [
   { label: "KYC Documents", component: KYCDocumentsTab },
@@ -18,9 +19,12 @@ const tabs = [
 ];
 
 const UpdateAdminUsers = () => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("KYC Documents");
   const user = useAppSelector((state) => state.users.user);
-  const router = useRouter();
+  const singleAdminUser = useAppSelector(
+    (state) => state.users.singleAdminUser
+  );
 
   const ActiveComponent =
     tabs.find((t) => t.label === activeTab)?.component || KYCDocumentsTab;
@@ -56,7 +60,9 @@ const UpdateAdminUsers = () => {
               Manage User Account
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              John Doe • john.doe@example.com
+              {singleAdminUser?.firstname + " " + singleAdminUser?.lastname}
+              {" -- "}
+              {singleAdminUser?.email}
             </p>
           </div>
         </header>
@@ -72,19 +78,31 @@ const UpdateAdminUsers = () => {
             <img
               alt="User avatar"
               className="w-24 h-24 sm:w-20 sm:h-20 rounded-full object-cover mx-auto sm:mx-0 shadow-md"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHFoanIMmn5gzi-q_c7N0oH4k7s0ZDp3FizegkbSeQCsYaamTA_xeR15tELjIk8VSwopNg7NKHaQmjzcRVndsQnt7r3Wi2Pd63iuqyDOB2TuNfeW-J9SthBeR_tv-mUDRubcS91TNkfLgyxiSP_ncnrtWwCIWfRL2QG9k8F2LZwEZWurf-G7MBZp-fQWkBjNnZg9QBxj1CWLSX-6v3dcW-6k9jM7pgR78ql686wm5bWxBLPw5JR1t5yCGWx1cs9MZkddSaSjAUnw"
+              src={
+                singleAdminUser?.avatar
+                  ? singleAdminUser?.avatar
+                  : `https://lh3.googleusercontent.com/aida-public/AB6AXuBHFoanIMmn5gzi-q_c7N0oH4k7s0ZDp3FizegkbSeQCsYaamTA_xeR15tELjIk8VSwopNg7NKHaQmjzcRVndsQnt7r3Wi2Pd63iuqyDOB2TuNfeW-J9SthBeR_tv-mUDRubcS91TNkfLgyxiSP_ncnrtWwCIWfRL2QG9k8F2LZwEZWurf-G7MBZp-fQWkBjNnZg9QBxj1CWLSX-6v3dcW-6k9jM7pgR78ql686wm5bWxBLPw5JR1t5yCGWx1cs9MZkddSaSjAUnw`
+              }
             />
             <div className="text-center sm:text-left">
-              <h3 className="text-lg sm:text-xl font-semibold">John Doe</h3>
+              <h3 className="text-lg sm:text-xl font-semibold">
+                {singleAdminUser?.firstname + " " + singleAdminUser?.lastname}
+              </h3>
               <p className="text-sm text-text-light dark:text-text-dark">
-                john.doe@example.com
+                {singleAdminUser?.email}
               </p>
               <div className="mt-2 flex flex-wrap justify-center sm:justify-start items-center gap-2">
-                <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300">
-                  Active
+                <span
+                  className={` ${
+                    singleAdminUser?.isActive
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  } text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300`}
+                >
+                  {singleAdminUser?.isActive ? "Active" : "Inactive"}
                 </span>
                 <span className="text-text-light dark:text-text-dark text-sm">
-                  Joined: Jan 15, 2023
+                  {`Joined: ${formatTimestamp(singleAdminUser?.createdAt)}`}
                 </span>
               </div>
             </div>
