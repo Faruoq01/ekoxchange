@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
       "ui-avatars.com",
       "res.cloudinary.com",
       "zengo.com",
+      "cdn-icons-png.flaticon.com",
     ],
     remotePatterns: [
       {

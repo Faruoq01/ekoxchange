@@ -1,9 +1,11 @@
 "use client";
 
+import { useAppSelector } from "@/app/lib/redux/controls";
+import { TransactionService } from "@/app/lib/services/transaction";
 import { motion } from "framer-motion";
 import { Copy, ExternalLink } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface Transaction {
   _id: string;
@@ -31,7 +33,13 @@ interface BalanceGroup {
 }
 
 export default function TransactionHistory() {
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  const singleAdminUser = useAppSelector(
+    (state) => state.users.singleAdminUser
+  );
+  console.log(transactions, "transactions ===>");
 
   const handleCopy = async (text: string) => {
     await navigator.clipboard.writeText(text);
@@ -343,9 +351,70 @@ export default function TransactionHistory() {
     },
   ];
 
+  const getAllTransactions = useCallback(async () => {
+    setLoading(true);
+    const { error, payload } = await TransactionService.walletTransaction(
+      singleAdminUser?.id
+    );
+    setLoading(false);
+
+    if (!error && payload) {
+      setTransactions(payload?.balances);
+    }
+  }, []);
+
+  useEffect(() => {
+    getAllTransactions();
+  }, [getAllTransactions]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{
+            repeat: Infinity,
+            duration: 1.2,
+            ease: "linear",
+          }}
+          className="relative w-12 h-12"
+        >
+          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-purple-500 border-r-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.7)]" />
+          <div className="absolute inset-2 rounded-full border-2 border-gray-200 dark:border-gray-700" />
+        </motion.div>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="mt-4 text-gray-500 dark:text-gray-400 text-sm font-medium tracking-wide"
+        >
+          Loading...
+        </motion.p>
+      </div>
+    );
+  }
+
+  // ✅ Empty state
+  if (!loading && transactions.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-15">
+        <Image
+          src={"/empty.svg"}
+          alt="Empty data"
+          width={100}
+          height={100}
+          className="opacity-80"
+        />
+        <p className="mt-4 text-gray-500 dark:text-gray-400 text-sm">
+          No records found
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full space-y-10">
-      {balances.map((group) => (
+      {transactions.map((group: any) => (
         <div key={group.date}>
           {/* Date Header */}
           <div className="pb-3 border-b border-border-light dark:border-border-dark">
@@ -356,7 +425,7 @@ export default function TransactionHistory() {
 
           {/* Transaction Cards */}
           <div className="mt-6 space-y-6">
-            {group.transactions.map((tx) => {
+            {group.transactions.map((tx: any) => {
               const isReceived = tx.direction === "Received";
               const isFailed = tx.status === "Failed";
               const isSuccess =
@@ -443,14 +512,14 @@ export default function TransactionHistory() {
                     {/* Right: Amount & Status */}
                     <div className="text-right w-full md:w-auto flex flex-col items-end gap-2">
                       <p
-                        className={`text-lg font-bold ${
+                        className={`text-md font-bold ${
                           isReceived
                             ? "text-green-600 dark:text-green-400"
                             : "text-red-600 dark:text-red-400"
                         }`}
                       >
                         {isReceived ? "+" : "-"}
-                        {tx.amount} ETH
+                        {tx.amount} {mapChainToSymbol[tx?.chain]}
                       </p>
 
                       <span
@@ -491,3 +560,12 @@ export default function TransactionHistory() {
     </div>
   );
 }
+
+const mapChainToSymbol: any = {
+  ["Bitcoin"]: "BTC",
+  ["Ethereum"]: "ETH",
+  ["Solana"]: "SOL",
+  ["Tron"]: "TRX",
+  ["USDC"]: "USDC",
+  ["USDT"]: "USDT",
+};

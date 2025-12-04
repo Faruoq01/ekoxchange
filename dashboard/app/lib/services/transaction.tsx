@@ -1,6 +1,15 @@
 import API from "./api";
 
 export const TransactionService = {
+  walletTransaction: async (id: string) => {
+    try {
+      const response = await API.get(`/admin/user/transactions/${id}/get`);
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
+
   buyOrder: async (skip: number, limit: number) => {
     try {
       const response = await API.get(
