@@ -1,9 +1,8 @@
 "use client";
-
 import { useAppSelector } from "@/app/lib/redux/controls";
 import { TransactionService } from "@/app/lib/services/transaction";
 import { motion } from "framer-motion";
-import { Copy, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
