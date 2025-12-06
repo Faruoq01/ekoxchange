@@ -17,6 +17,7 @@ import { AnalyticsService } from "@/app/lib/services/analytics";
 import { DateRangePicker } from "@/app/components/forms/daterange";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
 import { setCardStats } from "@/app/lib/redux/slices/analytics";
+import { UserService } from "@/app/lib/services/users";
 
 const Analytics = () => {
   const dispatch = useAppDispatch();
@@ -26,6 +27,10 @@ const Analytics = () => {
 
   const [startDate, setStartDate] = useState<string>(`${currentYear}-01-01`);
   const [endDate, setEndDate] = useState<string>(`${currentYear}-12-31`);
+
+  const [loading, setLoading] = useState(false);
+  const [skip, setSkip] = useState(0);
+  const [limit, setLimit] = useState(30);
 
   const getCardStatistics = useCallback(async () => {
     const userCountProm = AnalyticsService.getUserCount(startDate, endDate);
@@ -57,6 +62,19 @@ const Analytics = () => {
     setStartDate(range?.startDate);
     setEndDate(range?.endDate);
   };
+
+  const getSystemActivityLogs = useCallback(async () => {
+    setLoading(true);
+    const { error, payload } = await UserService.getSystemLogs(skip, limit);
+    setLoading(false);
+    if (!error && payload) {
+      console.log(payload, "payload");
+    }
+  }, [dispatch, skip, limit]);
+
+  useEffect(() => {
+    getSystemActivityLogs();
+  }, [getSystemActivityLogs]);
 
   const statCards = getCards(cardStats);
   return (
