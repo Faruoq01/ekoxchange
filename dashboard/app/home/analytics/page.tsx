@@ -31,6 +31,7 @@ const Analytics = () => {
   const [loading, setLoading] = useState(false);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(30);
+  const [logs, setLogs] = useState([]);
 
   const getCardStatistics = useCallback(async () => {
     const userCountProm = AnalyticsService.getUserCount(startDate, endDate);
@@ -68,6 +69,7 @@ const Analytics = () => {
     const { error, payload } = await UserService.getSystemLogs(skip, limit);
     setLoading(false);
     if (!error && payload) {
+      setLogs(payload);
       console.log(payload, "payload");
     }
   }, [dispatch, skip, limit]);
@@ -135,7 +137,11 @@ const Analytics = () => {
           </div>
 
           {/* Table */}
-          <Table<SystemLog> columns={logsColumns} data={logs} />
+          <Table<SystemLog>
+            columns={logsColumns}
+            data={logs}
+            loading={loading}
+          />
 
           {/* Pagination */}
           <div className="mt-6">
