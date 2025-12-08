@@ -4,7 +4,6 @@ import DoubleLineChart from "@/app/components/charts/analytics";
 import Pagination from "@/app/components/home/pagination";
 import Table from "@/app/components/home/table";
 import React, { useCallback, useEffect, useState } from "react";
-import { logs, logsColumns, SystemLog } from "./_comp/table";
 import Text from "@/app/components/forms/text";
 import {
   Select,
@@ -18,6 +17,7 @@ import { DateRangePicker } from "@/app/components/forms/daterange";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
 import { setCardStats } from "@/app/lib/redux/slices/analytics";
 import { UserService } from "@/app/lib/services/users";
+import { logsColumns } from "./_comp/table";
 
 const Analytics = () => {
   const dispatch = useAppDispatch();
@@ -137,11 +137,7 @@ const Analytics = () => {
           </div>
 
           {/* Table */}
-          <Table<SystemLog>
-            columns={logsColumns}
-            data={logs}
-            loading={loading}
-          />
+          <Table columns={logsColumns} data={logs} loading={loading} />
 
           {/* Pagination */}
           <div className="mt-6">

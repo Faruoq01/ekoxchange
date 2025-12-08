@@ -1,117 +1,48 @@
-"use client";
 import { Column } from "@/app/components/home/table";
+import { UserIcon } from "lucide-react";
 
-export interface SystemLog {
-  id: number;
-  user: string;
-  action: string;
-  category: string;
-  status: string;
-  timestamp: string;
-  icon: string;
-}
-
-const statusColors: Record<string, string> = {
-  Success: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-  Warning:
-    "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-  Error: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
-};
-
-export const logs: SystemLog[] = [
+export const logsColumns: Column<any>[] = [
   {
-    id: 1,
-    user: "John Doe",
-    action: "Logged in successfully",
-    category: "Authentication",
-    status: "Success",
-    timestamp: "2 minutes ago",
-    icon: "login",
-  },
-  {
-    id: 2,
-    user: "Jane Smith",
-    action: "Executed BTC/ETH trade",
-    category: "Trading",
-    status: "Success",
-    timestamp: "15 minutes ago",
-    icon: "currency_bitcoin",
-  },
-  {
-    id: 3,
-    user: "System",
-    action: "Auto backup completed",
-    category: "System",
-    status: "Success",
-    timestamp: "1 hour ago",
-    icon: "cloud_done",
-  },
-  {
-    id: 4,
-    user: "Sam Wilson",
-    action: "Failed withdrawal attempt",
-    category: "Payments",
-    status: "Error",
-    timestamp: "3 hours ago",
-    icon: "error",
-  },
-  {
-    id: 5,
-    user: "Admin",
-    action: "Updated system configuration",
-    category: "Settings",
-    status: "Warning",
-    timestamp: "Yesterday",
-    icon: "settings",
-  },
-];
-
-export const logsColumns: Column<SystemLog>[] = [
-  {
-    key: "action",
-    header: "Activity",
-    render: (log) => (
+    key: "fullName",
+    header: "User",
+    render: (row) => (
       <div className="flex items-center gap-3">
-        <span className="material-icons text-primary">{log.icon}</span>
-        <div>
-          <p className="font-semibold">{log.action}</p>
-          <p className="text-xs text-text-light dark:text-text-dark">
-            {log.category}
-          </p>
-        </div>
+        {row.avatar ? (
+          <img
+            src={row.avatar}
+            alt={row.fullName}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold">
+            {row.fullName?.charAt(0) || <UserIcon className="w-4 h-4" />}
+          </div>
+        )}
+        <span className="font-medium text-gray-800 dark:text-gray-100">
+          {row.fullName}
+        </span>
       </div>
     ),
   },
   {
-    key: "user",
-    header: "User",
-    render: (log) => (
-      <p className="font-medium text-text-light dark:text-text-dark">
-        {log.user}
-      </p>
-    ),
-  },
-  {
-    key: "status",
-    header: "Status",
-    render: (log) => (
-      <span
-        className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-          statusColors[log.status]
-        }`}
-      >
-        {log.status}
+    key: "description",
+    header: "Activity",
+    render: (row) => (
+      <span className="text-gray-700 dark:text-gray-300 text-sm">
+        {row.description}
       </span>
     ),
   },
-  { key: "timestamp", header: "Time" },
   {
-    key: "actions",
-    header: "",
-    render: () => (
-      <button className="text-text-light dark:text-text-dark hover:text-primary">
-        <span className="material-icons">more_vert</span>
-      </button>
+    key: "createdAt",
+    header: "Timestamp",
+    render: (row) => (
+      <span className="text-xs text-gray-500 dark:text-gray-400">
+        {new Date(row.createdAt).toLocaleString(undefined, {
+          dateStyle: "medium",
+          timeStyle: "short",
+        })}
+      </span>
     ),
   },
 ];
