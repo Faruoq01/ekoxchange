@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  next-app:
+    build: .
+    container_name: ekoxchange-admin
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "3001:3001"
+    command: ["npm", "start"]
