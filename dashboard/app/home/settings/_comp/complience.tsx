@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import RichTextEditor from "./editor";
 
 const Compliance = () => {
   const [publishedTerms, setPublishedTerms] = useState(true);
@@ -62,52 +63,7 @@ const Compliance = () => {
               </label>
             </div>
           </div>
-          <div className="border border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden mb-6 flex flex-col">
-            <div className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-600 p-2 flex flex-wrap gap-1">
-              {/* Formatting buttons */}
-              {[
-                "format_bold",
-                "format_italic",
-                "format_underlined",
-                "format_align_left",
-                "format_align_center",
-                "format_align_right",
-                "format_list_bulleted",
-                "format_list_numbered",
-                "link",
-              ].map((icon) => (
-                <button
-                  key={icon}
-                  className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-600 dark:text-gray-300"
-                  title={icon.replace(/_/g, " ")}
-                >
-                  <span className="material-icons-outlined text-xl">
-                    {icon}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <div className="bg-white dark:bg-gray-900 p-4 min-h-[250px] max-h-[400px] overflow-y-auto custom-scrollbar">
-              <div className="prose prose-sm dark:prose-invert max-w-none focus:outline-none">
-                <h3 className="mt-0">1. Introduction</h3>
-                <p>
-                  Welcome to Eko Exchange. By accessing or using our website,
-                  mobile application, and services, you agree to comply with and
-                  be bound by these Terms and Conditions.
-                </p>
-                <h3>2. User Eligibility</h3>
-                <p>
-                  To use our services, you must be at least 18 years old and
-                  have the legal capacity to enter into a binding contract.
-                </p>
-                <h3>3. Account Security</h3>
-                <p>
-                  You are responsible for maintaining the confidentiality of
-                  your account credentials.
-                </p>
-              </div>
-            </div>
-          </div>
+          <RichTextEditor />
 
           {/* Buttons */}
           <div className="flex items-center justify-between pt-2">
@@ -171,29 +127,7 @@ const Compliance = () => {
             </div>
           </div>
 
-          <div className="border border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden mb-6 flex flex-col">
-            <div className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-600 p-2 flex flex-wrap gap-1">
-              {/* Formatting buttons */}
-              {["format_bold", "format_italic", "format_list_bulleted"].map(
-                (icon) => (
-                  <button
-                    key={icon}
-                    className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-600 dark:text-gray-300"
-                  >
-                    <span className="material-icons-outlined text-xl">
-                      {icon}
-                    </span>
-                  </button>
-                )
-              )}
-            </div>
-            <div className="bg-white dark:bg-gray-900 p-4 min-h-[150px] custom-scrollbar">
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Your privacy is important to us. This policy outlines how we
-                collect, use, and protect your personal information.
-              </p>
-            </div>
-          </div>
+          <RichTextEditor />
 
           <div className="flex items-center justify-between pt-2">
             <button className="flex items-center gap-2 text-primary hover:text-primary-dark font-medium text-sm transition-colors">
