@@ -3,11 +3,15 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import GeneralSettings from "./_comp/general";
+import Notifications from "./_comp/notification";
+import Security from "./_comp/security";
+import Compliance from "./_comp/complience";
 
 const tabs = [
   { id: "general", label: "General" },
   { id: "security", label: "Security" },
   { id: "notifications", label: "Notifications" },
+  { id: "compliance", label: "Legal & Content" },
   { id: "ads", label: "Ad Banner" },
 ];
 
@@ -51,7 +55,7 @@ const Settings = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="bg-card-light dark:bg-card-dark rounded-lg max-w-[800px]"
+              className="bg-card-light dark:bg-card-dark rounded-lg w-full"
             >
               <GeneralSettings />
             </motion.section>
@@ -64,75 +68,35 @@ const Settings = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm"
+              className="bg-card-light dark:bg-card-dark rounded-lg w-full"
             >
-              <h2 className="text-xl font-semibold mb-6 text-heading-light dark:text-heading-dark">
-                Security
-              </h2>
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold text-heading-light dark:text-heading-dark">
-                      Change Password
-                    </h3>
-                    <p className="text-sm text-text-light dark:text-text-dark">
-                      Update your password to a new one.
-                    </p>
-                  </div>
-                  <button className="px-4 py-2 text-sm font-semibold text-primary border border-primary rounded-lg hover:bg-primary/10 transition-colors">
-                    Change
-                  </button>
-                </div>
-
-                <hr className="border-border-light dark:border-border-dark" />
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold text-heading-light dark:text-heading-dark">
-                      Two-Factor Authentication (2FA)
-                    </h3>
-                    <p className="text-sm text-text-light dark:text-text-dark">
-                      Add an extra layer of security to your account.
-                    </p>
-                  </div>
-                  <Toggle id="two-factor" />
-                </div>
-              </div>
+              <Security />
             </motion.section>
           )}
 
           {activeTab === "notifications" && (
             <motion.section
-              key="notifications"
+              key="security"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm"
+              className="bg-card-light dark:bg-card-dark rounded-lg w-full"
             >
-              <h2 className="text-xl font-semibold mb-6 text-heading-light dark:text-heading-dark">
-                Notifications
-              </h2>
-              {[
-                "Email Notifications",
-                "Push Notifications",
-                "Promotional Offers",
-              ].map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-start justify-between py-3"
-                >
-                  <div>
-                    <h3 className="font-semibold text-heading-light dark:text-heading-dark">
-                      {item}
-                    </h3>
-                    <p className="text-sm text-text-light dark:text-text-dark">
-                      Manage how you receive updates and alerts.
-                    </p>
-                  </div>
-                  <Toggle id={item.toLowerCase().replace(/\s/g, "-")} />
-                </div>
-              ))}
+              <Notifications />
+            </motion.section>
+          )}
+
+          {activeTab === "compliance" && (
+            <motion.section
+              key="security"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="bg-card-light dark:bg-card-dark rounded-lg w-full"
+            >
+              <Compliance />
             </motion.section>
           )}
 
