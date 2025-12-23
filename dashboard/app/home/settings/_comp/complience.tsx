@@ -10,6 +10,11 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 
 import RichTextEditor from "./editor";
+import { useCallback, useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { SettingsService } from "@/app/lib/services/settings";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Schema                                   */
@@ -44,6 +49,9 @@ type ComplianceFormValues = z.infer<typeof complianceSchema>;
 /* -------------------------------------------------------------------------- */
 
 export default function Compliance() {
+  const [compliance, setCompliance] = useState<any>({});
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<ComplianceFormValues>({
     resolver: zodResolver(complianceSchema),
     defaultValues: {
@@ -62,11 +70,50 @@ export default function Compliance() {
     handleSubmit,
     control,
     formState: { errors },
+    setValue,
   } = form;
 
-  const onSubmit = (data: ComplianceFormValues) => {
-    console.log("Compliance form data:", data);
+  const onSubmit = async (data: ComplianceFormValues) => {
+    setLoading(true);
+
+    const { error, payload } =
+      await SettingsService.saveAndUpdateComplianceSettings(data);
+
+    setLoading(false);
+
+    if (!error && payload) {
+      setCompliance(payload);
+      toast.success("Compliance settings updated successfully!");
+    }
   };
+
+  const getGeneralSettings = useCallback(async () => {
+    const { error, payload } = await SettingsService.getGeneralSettings();
+
+    if (!error && payload?.generalSettings) {
+      setCompliance(payload.generalSettings);
+    }
+  }, []);
+
+  useEffect(() => {
+    getGeneralSettings();
+  }, [getGeneralSettings]);
+
+  useEffect(() => {
+    if (!compliance || Object.keys(compliance).length === 0) return;
+
+    setValue("termsContent", compliance.termsContent ?? "");
+    setValue("termsPublished", compliance.termsPublished ?? true);
+
+    setValue("privacyContent", compliance.privacyContent ?? "");
+    setValue("privacyPublished", compliance.privacyPublished ?? true);
+
+    setValue("riskContent", compliance.riskContent ?? "");
+    setValue("riskPublished", compliance.riskPublished ?? true);
+
+    setValue("amlContent", compliance.amlContent ?? "");
+    setValue("amlPublished", compliance.amlPublished ?? true);
+  }, [compliance, setValue]);
 
   const docs = [
     {
@@ -109,10 +156,7 @@ export default function Compliance() {
     },
   ];
 
-  const COLOR_STYLES: Record<
-    "blue" | "purple" | "orange" | "emerald",
-    { bg: string; text: string }
-  > = {
+  const COLOR_STYLES = {
     blue: {
       bg: "bg-blue-50 dark:bg-blue-900/20",
       text: "text-blue-600 dark:text-blue-400",
@@ -129,7 +173,24 @@ export default function Compliance() {
       bg: "bg-emerald-50 dark:bg-emerald-900/20",
       text: "text-emerald-600 dark:text-emerald-400",
     },
-  };
+  } as const;
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
+          className="relative w-12 h-12"
+        >
+          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-purple-500 border-r-purple-400" />
+          <div className="absolute inset-2 rounded-full border-2 border-gray-200 dark:border-gray-700" />
+        </motion.div>
+
+        <p className="mt-4 text-sm text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8 mb-[50px]">
@@ -146,12 +207,13 @@ export default function Compliance() {
                   >
                     <span className="material-icons-outlined">{doc.icon}</span>
                   </div>
+
                   <div>
                     <CardTitle>{doc.title}</CardTitle>
                     {doc.version && (
                       <Badge variant="secondary">{doc.version}</Badge>
                     )}
-                    <span className="text-xs text-muted-foreground ml-2">
+                    <span className="ml-2 text-xs text-muted-foreground">
                       Updated: {doc.updated}
                     </span>
                   </div>
@@ -175,14 +237,14 @@ export default function Compliance() {
                 control={control}
                 name={doc.contentField}
                 render={({ field }) => (
-                  <div className="rounded-xl flex-1">
+                  <div className="flex-1 rounded-xl">
                     <RichTextEditor
                       defaultValue={field.value}
                       onEditorChange={field.onChange}
                     />
 
                     {errors[doc.contentField] && (
-                      <p className="text-red-500 text-sm mt-1">
+                      <p className="mt-1 text-sm text-red-500">
                         {errors[doc.contentField]?.message}
                       </p>
                     )}
@@ -194,14 +256,22 @@ export default function Compliance() {
         );
       })}
 
-      {/* ------------------------------------------------------------------ */}
-      {/*                         Global Actions                              */}
-      {/* ------------------------------------------------------------------ */}
+      {/* Global Actions */}
       <div className="flex justify-end gap-3 pt-6 border-t">
-        <Button variant="ghost" type="button">
+        <Button type="button" variant="ghost">
           Cancel
         </Button>
-        <Button type="submit">Save All Changes</Button>
+
+        <Button type="submit" disabled={loading} className="min-w-[140px]">
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Saving...
+            </span>
+          ) : (
+            "Save Changes"
+          )}
+        </Button>
       </div>
     </form>
   );
