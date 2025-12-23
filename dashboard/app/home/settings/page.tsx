@@ -6,6 +6,7 @@ import GeneralSettings from "./_comp/general";
 import Notifications from "./_comp/notification";
 import Security from "./_comp/security";
 import Compliance from "./_comp/complience";
+import AdBannerSettings from "./_comp/ad";
 
 const tabs = [
   { id: "general", label: "General" },
@@ -100,31 +101,7 @@ const Settings = () => {
             </motion.section>
           )}
 
-          {activeTab === "ads" && (
-            <motion.section
-              key="ads"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm"
-            >
-              <h2 className="text-xl font-semibold mb-6 text-heading-light dark:text-heading-dark">
-                Ad Banner Settings
-              </h2>
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-heading-light dark:text-heading-dark">
-                    Show Ad Banner
-                  </h3>
-                  <p className="text-sm text-text-light dark:text-text-dark">
-                    Display promotional banners on the dashboard.
-                  </p>
-                </div>
-                <Toggle id="ad-banner" />
-              </div>
-            </motion.section>
-          )}
+          {activeTab === "ads" && <AdBannerSettings />}
         </AnimatePresence>
       </div>
     </main>
