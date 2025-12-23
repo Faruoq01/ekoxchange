@@ -95,10 +95,10 @@ export default function AdBannerSettings() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-heading-light dark:text-heading-dark">
+            <h2 className="text-lg font-semibold text-heading-light dark:text-heading-dark">
               Ad Banner Settings
             </h2>
-            <p className="text-sm text-text-light dark:text-text-dark mt-1">
+            <p className="text-[12px] text-text-light dark:text-text-dark">
               Manage dashboard promotional banners.
             </p>
           </div>
