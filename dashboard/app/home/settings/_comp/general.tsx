@@ -20,6 +20,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useCallback, useEffect, useState } from "react";
+import { SettingsService } from "@/app/lib/services/settings";
+import { Loader2 } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Schema                                   */
@@ -46,6 +49,9 @@ type GeneralSettingsFormValues = z.infer<typeof generalSettingsSchema>;
 /* -------------------------------------------------------------------------- */
 
 export default function GeneralSettings() {
+  const [general, setGeneral] = useState<any>({});
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<GeneralSettingsFormValues>({
     resolver: zodResolver(generalSettingsSchema),
     defaultValues: {
@@ -59,9 +65,38 @@ export default function GeneralSettings() {
 
   const { control, handleSubmit } = form;
 
-  const onSubmit = (values: GeneralSettingsFormValues) => {
-    console.log("Submitted settings:", values);
+  const onSubmit = async (values: GeneralSettingsFormValues) => {
+    setLoading(true);
+    const { error, payload } =
+      await SettingsService.saveAndUpdateGeneralSettings(values);
+    setLoading(false);
+    if (!error && payload) {
+      setGeneral(payload);
+    }
   };
+
+  const getGeneralSettings = useCallback(async () => {
+    const { error, payload } = await SettingsService.getGeneralSettings();
+    if (!error && payload) {
+      if (payload?.generalSettings) {
+        setGeneral(payload?.generalSettings);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    getGeneralSettings();
+  }, [getGeneralSettings]);
+
+  useEffect(() => {
+    if (Object.keys(general).length > 0) {
+      form.setValue("platformName", general?.platformName);
+      form.setValue("statusBanner", general?.statusBanner);
+      form.setValue("supportEmail", general?.supportEmail);
+      form.setValue("supportPhone", general?.supportPhone);
+      form.setValue("maintenanceMode", general?.maintenanceMode);
+    }
+  }, []);
 
   return (
     <div className="p-8 mb-[50px]">
@@ -205,16 +240,20 @@ export default function GeneralSettings() {
               <Separator />
 
               {/* Actions */}
-              <div className="flex justify-end gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => form.reset()}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit">Save Changes</Button>
-              </div>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="min-w-[140px]"
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Saving...
+                  </span>
+                ) : (
+                  "Save Changes"
+                )}
+              </Button>
             </form>
           </Form>
         </CardContent>
