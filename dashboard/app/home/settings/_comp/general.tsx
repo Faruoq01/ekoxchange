@@ -1,22 +1,66 @@
 "use client";
 
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+/* -------------------------------------------------------------------------- */
+/*                                   Schema                                   */
+/* -------------------------------------------------------------------------- */
+
+const generalSettingsSchema = z.object({
+  platformName: z.string().min(2, "Platform name is required"),
+
+  supportEmail: z.email("A valid support email is required"),
+
+  supportPhone: z
+    .string()
+    .min(7, "Support phone is required")
+    .regex(/^[+]?[\d\s()-]+$/, "Invalid phone number format"),
+
+  statusBanner: z
+    .string()
+    .min(5, "Status banner is required")
+    .max(500, "Status banner cannot exceed 500 characters"),
+
+  maintenanceMode: z.boolean(),
+});
+
+type GeneralSettingsFormValues = z.infer<typeof generalSettingsSchema>;
+
+/* -------------------------------------------------------------------------- */
+/*                                Component                                   */
+/* -------------------------------------------------------------------------- */
 
 export default function GeneralSettings() {
+  const form = useForm<GeneralSettingsFormValues>({
+    resolver: zodResolver(generalSettingsSchema),
+  });
+
+  const { control, handleSubmit } = form;
+
+  const onSubmit = (values: GeneralSettingsFormValues) => {
+    // Replace with API call
+    console.log("Submitted settings:", values);
+  };
+
   return (
     <div className="p-8 mb-[50px]">
       <div className="flex items-center justify-between mb-8">
@@ -34,110 +78,133 @@ export default function GeneralSettings() {
         <CardHeader>
           <CardTitle className="text-base">Platform Configuration</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-2">
-              <Label htmlFor="environment">Environment</Label>
-              <Input
-                id="environment"
-                value="Production"
-                disabled
-                className="font-medium"
+
+        <CardContent>
+          <Form {...form}>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="space-y-8"
+              noValidate
+            >
+              {/* Platform Details */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <Label>Environment</Label>
+                  <Input value="Production" disabled className="font-medium" />
+                  <p className="text-xs text-muted-foreground">Read-only</p>
+                </div>
+
+                <FormField
+                  control={control}
+                  name="platformName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Platform Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter platform name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={control}
+                  name="supportEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Support Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="support@example.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={control}
+                  name="supportPhone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Support Phone</FormLabel>
+                      <FormControl>
+                        <Input placeholder="+1 (555) 000-0000" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Status Banner */}
+              <FormField
+                control={control}
+                name="statusBanner"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Platform Status Banner</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Message displayed at the top of the user dashboard"
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <p className="text-xs text-muted-foreground">
+                      Visible to all users.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <p className="text-xs text-muted-foreground">Read-only</p>
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="platform-name">Platform Name</Label>
-              <Input id="platform-name" defaultValue="Eko Exchange" />
-            </div>
+              <Separator />
 
-            <div className="space-y-2">
-              <Label htmlFor="support-email">Support Email</Label>
-              <Input
-                id="support-email"
-                type="email"
-                defaultValue="support@eko"
-                // className="border-red-500 focus-visible:ring-red-500"
+              {/* Maintenance Mode */}
+              <FormField
+                control={control}
+                name="maintenanceMode"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <FormLabel className="text-sm font-semibold">
+                        Maintenance Mode
+                      </FormLabel>
+                      <p className="text-sm text-muted-foreground">
+                        Disable user access except administrators.
+                      </p>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value ?? false}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              {/* <p className="text-xs text-red-500">
-                Please enter a valid email address.
-              </p> */}
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="support-phone">Support Phone</Label>
-              <Input id="support-phone" placeholder="+1 (555) 000-0000" />
-            </div>
+              <Separator />
 
-            <div className="space-y-2">
-              <Label>Default Timezone</Label>
-              <Select defaultValue="utc">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select timezone" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="utc">
-                    UTC (Coordinated Universal Time)
-                  </SelectItem>
-                  <SelectItem value="gmt">GMT (Greenwich Mean Time)</SelectItem>
-                  <SelectItem value="est">
-                    EST (Eastern Standard Time)
-                  </SelectItem>
-                  <SelectItem value="pst">
-                    PST (Pacific Standard Time)
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Default Language</Label>
-              <Select defaultValue="en">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select language" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">English (US)</SelectItem>
-                  <SelectItem value="es">Spanish</SelectItem>
-                  <SelectItem value="fr">French</SelectItem>
-                  <SelectItem value="de">German</SelectItem>
-                  <SelectItem value="jp">Japanese</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="status-banner">Platform Status Banner</Label>
-            <Textarea
-              id="status-banner"
-              placeholder="Enter a message to be displayed on the user dashboard..."
-              className="min-h-[100px]"
-            />
-            <p className="text-xs text-muted-foreground">
-              Visible to all users at the top of their dashboard.
-            </p>
-          </div>
-
-          <Separator />
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <h3 className="text-sm font-semibold">Maintenance Mode</h3>
-              <p className="text-sm text-muted-foreground">
-                Disable user access except administrators.
-              </p>
-            </div>
-            <Switch />
-          </div>
-
-          <Separator />
-
-          <div className="flex justify-end gap-4">
-            <Button variant="outline">Cancel</Button>
-            <Button>Save Changes</Button>
-          </div>
+              {/* Actions */}
+              <div className="flex justify-end gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => form.reset()}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">Save Changes</Button>
+              </div>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>

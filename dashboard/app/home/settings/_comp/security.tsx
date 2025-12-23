@@ -1,11 +1,21 @@
 "use client";
 
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -13,167 +23,268 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 
-const Security = () => {
+/* -------------------------------------------------------------------------- */
+/*                                   Schema                                   */
+/* -------------------------------------------------------------------------- */
+
+const securitySchema = z.object({
+  enforce2FA: z.boolean(),
+
+  sessionTimeout: z.string().min(1, "Session timeout is required"),
+
+  maxFailedAttempts: z
+    .number()
+    .int()
+    .min(1, "Minimum is 1")
+    .max(10, "Maximum is 10"),
+
+  lockoutDuration: z
+    .number()
+    .int()
+    .min(5, "Minimum is 5 minutes")
+    .max(1440, "Maximum is 1440 minutes"),
+
+  minPasswordLength: z
+    .number()
+    .int()
+    .min(8, "Minimum length is 8")
+    .max(32, "Maximum length is 32"),
+
+  requireUppercase: z.boolean(),
+  requireLowercase: z.boolean(),
+  requireNumbers: z.boolean(),
+  requireSymbols: z.boolean(),
+});
+
+type SecurityFormValues = z.infer<typeof securitySchema>;
+
+/* -------------------------------------------------------------------------- */
+/*                           Typed field definitions                           */
+/* -------------------------------------------------------------------------- */
+
+const passwordRequirements: {
+  name: keyof Pick<
+    SecurityFormValues,
+    | "requireUppercase"
+    | "requireLowercase"
+    | "requireNumbers"
+    | "requireSymbols"
+  >;
+  label: string;
+}[] = [
+  { name: "requireUppercase", label: "Uppercase" },
+  { name: "requireLowercase", label: "Lowercase" },
+  { name: "requireNumbers", label: "Numbers" },
+  { name: "requireSymbols", label: "Symbols" },
+];
+
+/* -------------------------------------------------------------------------- */
+/*                                Component                                   */
+/* -------------------------------------------------------------------------- */
+
+export default function Security() {
+  const form = useForm<SecurityFormValues>({
+    resolver: zodResolver(securitySchema),
+    shouldUnregister: false,
+    defaultValues: {
+      enforce2FA: false,
+      sessionTimeout: "30",
+      maxFailedAttempts: 3,
+      lockoutDuration: 30,
+      minPasswordLength: 12,
+      requireUppercase: false,
+      requireLowercase: false,
+      requireNumbers: false,
+      requireSymbols: false,
+    },
+  });
+
+  const { control, handleSubmit } = form;
+
+  const onSubmit = (values: SecurityFormValues) => {
+    console.log("Security settings:", values);
+  };
+
   return (
     <div className="p-8 mb-[50px]">
       <h1 className="text-lg font-bold">Security Settings</h1>
-      <p className="text-[12px] text-muted-foreground mb-8">
-        Manage security protocols, access controls, and authentication policies
-        for the platform.
+      <p className="text-xs text-muted-foreground mb-8">
+        Manage authentication, sessions, and access policies.
       </p>
 
-      <Card className="shadow-sm space-y-10">
-        <CardHeader>
-          <CardTitle>Authentication & Sessions</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-5 rounded-xl border border-border bg-muted flex items-center justify-between shadow-sm">
-              <div>
-                <Label htmlFor="2fa-toggle">Enforce 2FA</Label>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Require Two-Factor Authentication for all admin accounts.
-                </p>
-              </div>
-              <Switch id="2fa-toggle" />
-            </div>
+      <Card className="shadow-sm">
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+            {/* Authentication & Sessions */}
+            <CardHeader>
+              <CardTitle>Authentication & Sessions</CardTitle>
+            </CardHeader>
 
-            <div className="space-y-2">
-              <Label htmlFor="session-timeout">Session Timeout Duration</Label>
-              <Select defaultValue="15">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select duration" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="15">15 Minutes</SelectItem>
-                  <SelectItem value="30">30 Minutes</SelectItem>
-                  <SelectItem value="60">60 Minutes</SelectItem>
-                  <SelectItem value="120">2 Hours</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground">
-                Automatically logout inactive admins after this period.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-
-        <CardHeader>
-          <CardTitle>Login Protection</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-2">
-            <Label htmlFor="max-attempts">Max Failed Login Attempts</Label>
-            <Input
-              id="max-attempts"
-              type="number"
-              defaultValue={3}
-              min={1}
-              max={10}
-            />
-            <p className="text-xs text-muted-foreground">
-              Number of attempts before lockout.
-            </p>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="lockout-duration">
-              Account Lockout Duration (Minutes)
-            </Label>
-            <Input
-              id="lockout-duration"
-              type="number"
-              defaultValue={30}
-              min={5}
-              max={1440}
-            />
-            <p className="text-xs text-muted-foreground">
-              Time to wait before retrying login.
-            </p>
-          </div>
-        </CardContent>
-
-        <CardHeader>
-          <CardTitle>Access Control</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="flex justify-between items-center">
-            <Label htmlFor="ip-allowlist">Admin IP Allowlist</Label>
-            <Badge variant="secondary">Recommended</Badge>
-          </div>
-          <Textarea
-            id="ip-allowlist"
-            placeholder={`192.168.1.1\n10.0.0.0/24`}
-            rows={3}
-            className="font-mono text-sm"
-          />
-          <p className="text-xs text-muted-foreground">
-            Enter one IP address or CIDR range per line. Leave empty to allow
-            all.
-          </p>
-        </CardContent>
-
-        <CardHeader>
-          <CardTitle>Password Policy</CardTitle>
-        </CardHeader>
-        <CardContent className="p-6 rounded-xl border border-border bg-muted/50">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-2">
-              <Label htmlFor="min-length">Minimum Length</Label>
-              <Input
-                id="min-length"
-                type="number"
-                defaultValue={12}
-                min={8}
-                max={32}
-              />
-            </div>
-            <div className="space-y-4">
-              <Label>Complexity Requirements</Label>
-              <div className="grid grid-cols-2 gap-4">
-                {["Uppercase", "Lowercase", "Numbers", "Symbols"].map(
-                  (item) => (
-                    <label key={item} className="inline-flex items-center">
-                      <input
-                        type="checkbox"
-                        className="rounded border border-border text-primary shadow-sm"
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <FormField
+                control={control}
+                name="enforce2FA"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between rounded-xl border p-5 bg-muted">
+                    <div>
+                      <FormLabel>Enforce 2FA</FormLabel>
+                      <p className="text-xs text-muted-foreground">
+                        Require two-factor authentication for admins.
+                      </p>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
                       />
-                      <span className="ml-2 text-sm text-muted-foreground">
-                        {item}
-                      </span>
-                    </label>
-                  )
+                    </FormControl>
+                  </FormItem>
                 )}
+              />
+
+              <FormField
+                control={control}
+                name="sessionTimeout"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Session Timeout</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select duration" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="15">15 Minutes</SelectItem>
+                          <SelectItem value="30">30 Minutes</SelectItem>
+                          <SelectItem value="60">60 Minutes</SelectItem>
+                          <SelectItem value="120">2 Hours</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+
+            {/* Login Protection */}
+            <CardHeader>
+              <CardTitle>Login Protection</CardTitle>
+            </CardHeader>
+
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <FormField
+                control={control}
+                name="maxFailedAttempts"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Max Failed Login Attempts</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        value={field.value}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value === ""
+                              ? undefined
+                              : Number(e.target.value)
+                          )
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name="lockoutDuration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Lockout Duration (Minutes)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        value={field.value}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value === ""
+                              ? undefined
+                              : Number(e.target.value)
+                          )
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+
+            {/* Password Policy */}
+            <CardHeader>
+              <CardTitle>Password Policy</CardTitle>
+            </CardHeader>
+
+            <CardContent className="space-y-6 rounded-xl border bg-muted/50 p-6 mx-[20px]">
+              <FormField
+                control={control}
+                name="minPasswordLength"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Minimum Password Length</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        value={field.value}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value === ""
+                              ? undefined
+                              : Number(e.target.value)
+                          )
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {passwordRequirements.map(({ name, label }) => (
+                  <FormField
+                    key={name}
+                    control={control}
+                    name={name}
+                    render={({ field }) => (
+                      <FormItem className="flex items-center justify-between rounded-lg border p-3">
+                        <FormLabel className="text-sm">{label}</FormLabel>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                ))}
               </div>
+            </CardContent>
+
+            {/* Actions */}
+            <div className="flex justify-end border-t pt-6">
+              <Button type="submit">Save Security Settings</Button>
             </div>
-          </div>
-        </CardContent>
-
-        <div className="pt-6 flex justify-end border-t border-border">
-          <Button type="submit">Save Security Settings</Button>
-        </div>
+          </form>
+        </Form>
       </Card>
-
-      <div className="mt-12 pt-8 border-t border-border">
-        <h3 className="text-sm font-bold text-destructive uppercase tracking-wider mb-4 flex items-center gap-2">
-          Danger Zone
-        </h3>
-        <Card className="bg-destructive/10 border-destructive/30 rounded-xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <h4 className="text-sm font-medium text-muted-foreground">
-              Force Logout All Admins
-            </h4>
-            <p className="text-xs text-muted-foreground mt-1">
-              This will invalidate all active sessions immediately. You will be
-              logged out as well.
-            </p>
-          </div>
-          <Button variant="destructive">Force Logout</Button>
-        </Card>
-      </div>
     </div>
   );
-};
-
-export default Security;
+}

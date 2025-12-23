@@ -1,18 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 
-const RichTextEditor = () => {
-  const [content, setContent] = useState("");
+type RichTextEditorProps = {
+  defaultValue?: string;
+  onEditorChange: (value: string) => void;
+};
 
+const RichTextEditor: React.FC<RichTextEditorProps> = ({
+  defaultValue = "",
+  onEditorChange,
+}) => {
   const editor = useEditor({
     extensions: [StarterKit, Underline, Link],
-    content,
-    onUpdate: ({ editor }) => setContent(editor.getHTML()),
+    content: defaultValue,
+    onUpdate: ({ editor }) => {
+      onEditorChange(editor.getHTML()); // send updates to parent
+    },
     editorProps: {
       attributes: {
         class: "prose dark:prose-invert max-w-none focus:outline-none",
@@ -20,6 +28,13 @@ const RichTextEditor = () => {
     },
     immediatelyRender: false,
   });
+
+  // Sync editor content when defaultValue changes
+  useEffect(() => {
+    if (editor && defaultValue !== editor.getHTML()) {
+      editor.commands.setContent(defaultValue);
+    }
+  }, [defaultValue, editor]);
 
   if (!editor) return null;
 
@@ -35,10 +50,11 @@ const RichTextEditor = () => {
   };
 
   return (
-    <div className="border border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden mb-6 flex flex-col">
+    <div className="border border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden flex flex-col">
       {/* Toolbar */}
       <div className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-600 p-2 flex flex-wrap gap-1">
         <button
+          type="button"
           className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editor.can().chain().focus().toggleBold().run()}
@@ -46,30 +62,35 @@ const RichTextEditor = () => {
           <span className="material-icons-outlined">format_bold</span>
         </button>
         <button
+          type="button"
           className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
           <span className="material-icons-outlined">format_italic</span>
         </button>
         <button
+          type="button"
           className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
         >
           <span className="material-icons-outlined">format_underlined</span>
         </button>
         <button
+          type="button"
           className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
           <span className="material-icons-outlined">format_list_bulleted</span>
         </button>
         <button
+          type="button"
           className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
           <span className="material-icons-outlined">format_list_numbered</span>
         </button>
         <button
+          type="button"
           className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
           onClick={toggleLink}
         >
