@@ -15,7 +15,7 @@ const TicketChat = ({ activeTicket }: TicketChatProps) => {
   }, [activeTicket]);
 
   return (
-    <div className="w-2/3 flex ml-[10px] flex-col bg-surface-light dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+    <div className="w-2/3 flex ml-[15px] flex-col bg-surface-light dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
       {/* Chat Header */}
       <div className="h-16 px-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between shrink-0 bg-white dark:bg-surface-dark z-10">
         <div className="flex items-center gap-3">

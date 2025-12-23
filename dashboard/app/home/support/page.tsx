@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import TicketList from "./_comp/tickets";
 import TicketChat from "./_comp/chats";
 
