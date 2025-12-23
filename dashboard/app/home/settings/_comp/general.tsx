@@ -1,7 +1,7 @@
 "use client";
 
-import { z } from "zod";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,19 +27,15 @@ import {
 
 const generalSettingsSchema = z.object({
   platformName: z.string().min(2, "Platform name is required"),
-
-  supportEmail: z.email("A valid support email is required"),
-
+  supportEmail: z.string().email("A valid support email is required"),
   supportPhone: z
     .string()
     .min(7, "Support phone is required")
     .regex(/^[+]?[\d\s()-]+$/, "Invalid phone number format"),
-
   statusBanner: z
     .string()
     .min(5, "Status banner is required")
-    .max(500, "Status banner cannot exceed 500 characters"),
-
+    .max(500, "Cannot exceed 500 characters"),
   maintenanceMode: z.boolean(),
 });
 
@@ -52,12 +48,18 @@ type GeneralSettingsFormValues = z.infer<typeof generalSettingsSchema>;
 export default function GeneralSettings() {
   const form = useForm<GeneralSettingsFormValues>({
     resolver: zodResolver(generalSettingsSchema),
+    defaultValues: {
+      platformName: "",
+      supportEmail: "",
+      supportPhone: "",
+      statusBanner: "",
+      maintenanceMode: false,
+    },
   });
 
   const { control, handleSubmit } = form;
 
   const onSubmit = (values: GeneralSettingsFormValues) => {
-    // Replace with API call
     console.log("Submitted settings:", values);
   };
 
@@ -101,7 +103,11 @@ export default function GeneralSettings() {
                     <FormItem>
                       <FormLabel>Platform Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter platform name" {...field} />
+                        <Input
+                          {...field}
+                          placeholder="Enter platform name"
+                          value={field.value ?? ""}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -117,8 +123,9 @@ export default function GeneralSettings() {
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="support@example.com"
                           {...field}
+                          placeholder="support@example.com"
+                          value={field.value ?? ""}
                         />
                       </FormControl>
                       <FormMessage />
@@ -133,7 +140,11 @@ export default function GeneralSettings() {
                     <FormItem>
                       <FormLabel>Support Phone</FormLabel>
                       <FormControl>
-                        <Input placeholder="+1 (555) 000-0000" {...field} />
+                        <Input
+                          {...field}
+                          placeholder="+1 (555) 000-0000"
+                          value={field.value ?? ""}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -150,9 +161,10 @@ export default function GeneralSettings() {
                     <FormLabel>Platform Status Banner</FormLabel>
                     <FormControl>
                       <Textarea
+                        {...field}
                         placeholder="Message displayed at the top of the user dashboard"
                         className="min-h-[100px]"
-                        {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <p className="text-xs text-muted-foreground">
