@@ -23,6 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { motion } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
+import { SettingsService } from "@/app/lib/services/settings";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Schema                                   */
@@ -84,6 +89,9 @@ const passwordRequirements: {
 /* -------------------------------------------------------------------------- */
 
 export default function Security() {
+  const [security, setSecurity] = useState<any>({});
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<SecurityFormValues>({
     resolver: zodResolver(securitySchema),
     shouldUnregister: false,
@@ -102,9 +110,70 @@ export default function Security() {
 
   const { control, handleSubmit } = form;
 
-  const onSubmit = (values: SecurityFormValues) => {
-    console.log("Security settings:", values);
+  const onSubmit = async (values: SecurityFormValues) => {
+    setLoading(true);
+    const { error, payload } =
+      await SettingsService.saveAndUpdateSecuritySettings(values);
+    setLoading(false);
+    if (!error && payload) {
+      setSecurity(payload);
+      toast.success("Security settings updated successfuly!");
+    }
   };
+
+  const getSecuritySettings = useCallback(async () => {
+    const { error, payload } = await SettingsService.getSecuritySettings();
+    if (!error && payload) {
+      if (payload?.securitySettings) {
+        setSecurity(payload?.securitySettings);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    getSecuritySettings();
+  }, [getSecuritySettings]);
+
+  useEffect(() => {
+    if (Object.keys(security).length > 0) {
+      form.setValue("enforce2FA", security?.enforce2FA);
+      form.setValue("lockoutDuration", security?.lockoutDuration);
+      form.setValue("maxFailedAttempts", security?.maxFailedAttempts);
+      form.setValue("minPasswordLength", security?.minPasswordLength);
+      form.setValue("requireLowercase", security?.requireLowercase);
+      form.setValue("requireNumbers", security?.requireNumbers);
+      form.setValue("requireSymbols", security?.requireSymbols);
+      form.setValue("requireUppercase", security?.requireUppercase);
+      form.setValue("sessionTimeout", security?.sessionTimeout);
+    }
+  }, [security]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{
+            repeat: Infinity,
+            duration: 1.2,
+            ease: "linear",
+          }}
+          className="relative w-12 h-12"
+        >
+          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-purple-500 border-r-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.7)]" />
+          <div className="absolute inset-2 rounded-full border-2 border-gray-200 dark:border-gray-700" />
+        </motion.div>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="mt-4 text-gray-500 dark:text-gray-400 text-sm font-medium tracking-wide"
+        >
+          Loading...
+        </motion.p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 mb-[50px]">
@@ -280,7 +349,20 @@ export default function Security() {
 
             {/* Actions */}
             <div className="flex justify-end border-t pt-6">
-              <Button type="submit">Save Security Settings</Button>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="min-w-[140px]"
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Saving...
+                  </span>
+                ) : (
+                  "Save Changes"
+                )}
+              </Button>
             </div>
           </form>
         </Form>

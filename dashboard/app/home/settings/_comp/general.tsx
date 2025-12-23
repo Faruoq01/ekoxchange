@@ -93,7 +93,6 @@ export default function GeneralSettings() {
 
   useEffect(() => {
     if (Object.keys(general).length > 0) {
-      console.log(general, "general =====>");
       form.setValue("platformName", general?.platformName);
       form.setValue("statusBanner", general?.statusBanner);
       form.setValue("supportEmail", general?.supportEmail);
@@ -276,20 +275,22 @@ export default function GeneralSettings() {
                 <Separator />
 
                 {/* Actions */}
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="min-w-[140px]"
-                >
-                  {loading ? (
-                    <span className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Saving...
-                    </span>
-                  ) : (
-                    "Save Changes"
-                  )}
-                </Button>
+                <div className="flex justify-end border-t pt-6">
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="min-w-[140px]"
+                  >
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Saving...
+                      </span>
+                    ) : (
+                      "Save Changes"
+                    )}
+                  </Button>
+                </div>
               </form>
             </Form>
           </CardContent>
