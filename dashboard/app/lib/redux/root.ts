@@ -5,6 +5,7 @@ import roleReducer from "./slices/roles";
 import cryptoReducer from "./slices/crypto";
 import transactionReducer from "./slices/transaction";
 import analyticsReducer from "./slices/analytics";
+import supportReducer from "./slices/support";
 
 export const rootReducer = combineReducers({
   auth: authCleanReducer,
@@ -13,4 +14,5 @@ export const rootReducer = combineReducers({
   crypto: cryptoReducer,
   transaction: transactionReducer,
   analytics: analyticsReducer,
+  support: supportReducer,
 });

@@ -8,10 +8,14 @@ import { useCallback, useEffect } from "react";
 import { AuthService } from "../lib/services/auth";
 import { setUser } from "../lib/redux/slices";
 import { AppPages } from "../assets/appages";
+import { SocketService } from "./hooks/useSocket";
+import useChatSocketListeners from "./hooks/useChatListeners";
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const socketService = SocketService.getInstance();
+  useChatSocketListeners();
   const user = useAppSelector((state) => state.auth.user);
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
 
@@ -32,6 +36,10 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
     if (!isLoggedIn) {
       router.push(AppPages.auth.login);
     }
+    const s = socketService.connect();
+    return () => {
+      s?.disconnect();
+    };
   }, [isLoggedIn]);
 
   return (

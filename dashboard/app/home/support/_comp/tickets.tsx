@@ -54,11 +54,8 @@ const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
     <div className="w-1/3 flex flex-col bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
       <div className="p-4 border-b border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold dark:text-white">Tickets</h2>
-          <button className="text-primary hover:text-purple-700 text-sm font-medium flex items-center gap-1">
-            <span className="material-icons-outlined text-sm">add</span> New
-            Ticket
-          </button>
+          <h2 className="text-md font-semibold dark:text-white">Tickets</h2>
+          <button className="text-primary hover:text-purple-700 text-sm font-medium flex items-center gap-1"></button>
         </div>
         <div className="flex gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <button
