@@ -1,16 +1,28 @@
 "use client";
+import { useAppSelector } from "@/app/lib/redux/controls";
+import { SupportService } from "@/app/lib/services/support";
+import { useCallback, useEffect, useState } from "react";
 
-import { useState } from "react";
+type TicketStatus = "open" | "closed";
+
+interface ApiTicket {
+  _id: string;
+  id: string;
+  ticketId: string;
+  title: string;
+  description: string;
+  status: TicketStatus;
+  createdAt: string;
+  createdBy?: string;
+}
 
 interface Ticket {
-  id: string;
+  _id: string;
+  displayId: string;
   title: string;
   subtitle: string;
-  status: "open" | "closed";
+  status: TicketStatus;
   time: string;
-  userName: string;
-  userAvatar: string;
-  priority: "green" | "yellow" | "red";
 }
 
 interface TicketListProps {
@@ -18,126 +30,200 @@ interface TicketListProps {
   setActiveTicket: (id: string) => void;
 }
 
-const tickets: Ticket[] = [
-  {
-    id: "#TRX-9921",
-    title: "Withdrawal Pending Approval",
-    subtitle: "I initiated a withdrawal 4 hours ago and it's still stuck...",
-    status: "open",
-    time: "2m ago",
-    userName: "Alice Freeman",
-    userAvatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuB94bh9DntnNWBZTvYKrtOgLgg3aXnmPg7uagmhB8nPRxuHNn6gILugsm58IM_wWndrIu-_qlhR9uptF145FhES0zOWAUhYPshmLOWT-YCbpSNw2hzqqwww-hLkwCeOD-tutjk4iDNK_rZtK9u54S6aWZhxkRXmgRynQ2kgtZc0hrLCWzoVC-35Ajb8IYvsUPBesIY6WmJYXjORmiapws4LEl0NI-DodANQLDChzv7jyzcNcW1QjfN72QEFt8C2mjYwVzqjZtYanZdf",
-    priority: "green",
-  },
-  {
-    id: "#KYC-4402",
-    title: "KYC Documents Rejected",
-    subtitle: "Why was my passport photo rejected? It was clear.",
-    status: "open",
-    time: "1h ago",
-    userName: "Robert Fox",
-    userAvatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBJ1boX3nKQKC9jkMwkX4c7eitrEgnomE4VTkXf1wBfTky1WYjaZGTlnmgsi9boaKlBhL8KDxJIR6CP8RJcZaps-6Vu13L4706JasqYfwmVJ6w64Fnn7mRDMdj3VTZ_HPDkHNwBGlnUsqNycE7nBs8SZG-eJNgKz0kKSs26ZnaHG5yw827n4T4Bqd4CcCB9XmhrLB4hbam6AK4TvyQKmukX7rmwICFcdRhxy0bczLr4WNQPLyFp4KafBPAeP7ZnajHepWexyYN44KvF",
-    priority: "yellow",
-  },
-];
-
 const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
-  const [filter, setFilter] = useState<"open" | "closed">("open");
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [skip] = useState(0);
+  const [limit] = useState(30);
+  const [filter, setFilter] = useState<TicketStatus>("open");
+  const [loading, setLoading] = useState(false);
+  const [counts, setCounts] = useState<{ open: number; closed: number }>({
+    open: 0,
+    closed: 0,
+  });
+  const online = useAppSelector((state) => state.support.online);
 
-  const filteredTickets = tickets.filter((t) =>
-    filter === "open" ? t.status === "open" : t.status === "closed"
-  );
+  const isOnline = (id: string) => {
+    if (Array.isArray(online)) return online.includes(id);
+    if (typeof online === "object" && online !== null) return !!online[id];
+    return false;
+  };
+
+  const mapApiTicket = (ticket: ApiTicket): Ticket => ({
+    _id: ticket._id,
+    displayId: ticket.ticketId,
+    title: ticket.title,
+    subtitle: ticket.description,
+    status: ticket.status,
+    time: new Date(ticket.createdAt).toLocaleString(),
+  });
+
+  const getTicketList = useCallback(async () => {
+    setLoading(true);
+
+    const { error, payload } = await SupportService.getAllTickets(
+      skip,
+      limit,
+      filter
+    );
+
+    if (!error && payload) {
+      setTickets(payload.tickets.map(mapApiTicket));
+
+      setCounts({
+        open: payload.openCount ?? payload.counts?.open ?? payload.counts ?? 0,
+        closed: payload.closedCount ?? payload.counts?.closed ?? 0,
+      });
+    }
+
+    setLoading(false);
+  }, [skip, limit, filter]);
+
+  useEffect(() => {
+    getTicketList();
+  }, [getTicketList]);
 
   return (
     <div className="w-1/3 flex flex-col bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+      {/* Header */}
       <div className="p-4 border-b border-gray-100 dark:border-gray-700">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-md font-semibold dark:text-white">Tickets</h2>
-          <button className="text-primary hover:text-purple-700 text-sm font-medium flex items-center gap-1"></button>
-        </div>
+        <h2 className="text-md font-semibold dark:text-white mb-4">Tickets</h2>
+
         <div className="flex gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <button
-            className={`flex-1 py-1.5 px-3 rounded-md text-sm font-medium shadow-sm transition-all ${
+            className={`flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all ${
               filter === "open"
                 ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white"
-                : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                : "text-gray-500"
             }`}
             onClick={() => setFilter("open")}
           >
-            Open ({tickets.filter((t) => t.status === "open").length})
+            Open ({counts.open})
           </button>
+
           <button
             className={`flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all ${
               filter === "closed"
-                ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm"
-                : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white"
+                : "text-gray-500"
             }`}
             onClick={() => setFilter("closed")}
           >
-            Closed
+            Closed ({counts.closed})
           </button>
         </div>
       </div>
 
+      {/* Ticket List */}
       <div className="flex-1 overflow-y-auto no-scrollbar">
-        {filteredTickets.map((ticket) => (
+        {loading && (
+          <div className="flex flex-1 items-center justify-center min-h-[400px]">
+            <div className="w-64">
+              <div className="relative h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                <div className="absolute inset-0 animate-loading-bar bg-gradient-to-r from-primary via-purple-500 to-primary" />
+              </div>
+              <p className="mt-3 text-center text-xs text-gray-500 dark:text-gray-400">
+                Fetching tickets…
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!loading && tickets.length === 0 && (
+          <div className="flex flex-1 items-center justify-center min-h-[250px]">
+            <div className="text-center max-w-xs">
+              <EmptyTicketsIllustration />
+              <h3 className="text-sm font-semibold text-gray-800 dark:text-white">
+                No tickets here
+              </h3>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                You’re all caught up. New support requests will appear here.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {tickets.map((ticket) => (
           <div
-            key={ticket.id}
+            key={ticket._id}
+            onClick={() => setActiveTicket(ticket._id)}
             className={`p-4 border-b border-gray-100 dark:border-gray-700 cursor-pointer transition-colors ${
-              ticket.id === activeTicket
+              ticket._id === activeTicket
                 ? "bg-primary/5 dark:bg-primary/10 border-l-4 border-l-primary"
                 : "border-l-4 border-l-transparent hover:bg-gray-50 dark:hover:bg-gray-800"
             }`}
-            onClick={() => setActiveTicket(ticket.id)}
           >
             <div className="flex justify-between items-start mb-1">
               <div className="flex items-center gap-2">
-                <span
-                  className={`text-xs font-semibold ${
-                    ticket.priority === "green"
-                      ? "text-green-500"
-                      : ticket.priority === "yellow"
-                      ? "text-yellow-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {ticket.id}
+                <span className="text-xs font-semibold text-primary">
+                  {ticket.displayId}
                 </span>
+
                 <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    ticket.priority === "green"
-                      ? "bg-green-500"
-                      : ticket.priority === "yellow"
-                      ? "bg-yellow-500"
-                      : "bg-red-500"
+                  className={`w-2 h-2 rounded-full ${
+                    isOnline(ticket._id) ? "bg-green-500" : "bg-gray-400"
                   }`}
-                ></span>
+                />
               </div>
+
               <span className="text-xs text-gray-400">{ticket.time}</span>
             </div>
+
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
               {ticket.title}
             </h3>
+
             <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">
               {ticket.subtitle}
             </p>
-            <div className="flex items-center gap-2 mt-3">
-              <img
-                alt={ticket.userName}
-                className="w-6 h-6 rounded-full"
-                src={ticket.userAvatar}
-              />
-              <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                {ticket.userName}
-              </span>
-            </div>
           </div>
         ))}
       </div>
     </div>
   );
 };
+
+const EmptyTicketsIllustration = () => (
+  <svg
+    width="140"
+    height="120"
+    viewBox="0 0 180 140"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className="mx-auto"
+  >
+    <rect
+      x="20"
+      y="30"
+      width="140"
+      height="80"
+      rx="12"
+      className="fill-gray-100 dark:fill-gray-800"
+    />
+    <rect
+      x="35"
+      y="45"
+      width="70"
+      height="8"
+      rx="4"
+      className="fill-gray-300 dark:fill-gray-600"
+    />
+    <rect
+      x="35"
+      y="60"
+      width="100"
+      height="8"
+      rx="4"
+      className="fill-gray-300 dark:fill-gray-600"
+    />
+    <circle cx="130" cy="60" r="6" className="fill-primary" />
+    <path
+      d="M60 110c15 10 45 10 60 0"
+      stroke="currentColor"
+      strokeWidth="2"
+      className="text-gray-400"
+      strokeLinecap="round"
+    />
+  </svg>
+);
 
 export default TicketList;
