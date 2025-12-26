@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { SocketService } from "../../hooks/useSocket";
 import toast from "react-hot-toast";
-import { error } from "console";
 
 interface TicketChatProps {
   activeTicket: string | null;
@@ -16,7 +15,7 @@ const TicketChat = ({ activeTicket }: TicketChatProps) => {
   const [chatText, setChatText] = useState("");
   const selectedTicket = useAppSelector((state) => state.support.singleTicket);
   const messages = useAppSelector((state) => state.support.messages);
-  console.log(messages, "messages ====>");
+
   const loading = useAppSelector((state) => state.support.loading);
   const socketService = SocketService.getInstance().getSocket();
 
