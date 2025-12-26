@@ -1,9 +1,16 @@
 "use client";
+import Image from "next/image";
 import { useAppSelector } from "@/app/lib/redux/controls";
 import { SupportService } from "@/app/lib/services/support";
 import { useCallback, useEffect, useState } from "react";
 
 type TicketStatus = "open" | "closed";
+
+interface IUser {
+  firstname: string;
+  lastname: string;
+  avatar: null | string;
+}
 
 interface ApiTicket {
   _id: string;
@@ -13,7 +20,7 @@ interface ApiTicket {
   description: string;
   status: TicketStatus;
   createdAt: string;
-  createdBy?: string;
+  createdBy?: IUser;
 }
 
 interface Ticket {
@@ -22,7 +29,10 @@ interface Ticket {
   title: string;
   subtitle: string;
   status: TicketStatus;
+  fullname: string;
+  avatar: null | string | undefined;
   time: string;
+  ticketId: string;
 }
 
 interface TicketListProps {
@@ -54,6 +64,9 @@ const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
     title: ticket.title,
     subtitle: ticket.description,
     status: ticket.status,
+    ticketId: ticket?.ticketId,
+    avatar: ticket?.createdBy?.avatar,
+    fullname: ticket?.createdBy?.firstname + " " + ticket?.createdBy?.lastname,
     time: new Date(ticket.createdAt).toLocaleString(),
   });
 
@@ -81,6 +94,12 @@ const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
   useEffect(() => {
     getTicketList();
   }, [getTicketList]);
+
+  useEffect(() => {
+    if (!activeTicket && tickets.length > 0) {
+      setActiveTicket(tickets[0]?.ticketId);
+    }
+  }, [tickets, activeTicket, setActiveTicket]);
 
   return (
     <div className="w-1/3 flex flex-col bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
@@ -142,12 +161,12 @@ const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
           </div>
         )}
 
-        {tickets.map((ticket) => (
+        {tickets.map((ticket, index) => (
           <div
             key={ticket._id}
-            onClick={() => setActiveTicket(ticket._id)}
+            onClick={() => setActiveTicket(ticket?.ticketId)}
             className={`p-4 border-b border-gray-100 dark:border-gray-700 cursor-pointer transition-colors ${
-              ticket._id === activeTicket
+              ticket?.ticketId === activeTicket
                 ? "bg-primary/5 dark:bg-primary/10 border-l-4 border-l-primary"
                 : "border-l-4 border-l-transparent hover:bg-gray-50 dark:hover:bg-gray-800"
             }`}
@@ -155,7 +174,7 @@ const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
             <div className="flex justify-between items-start mb-1">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-semibold text-primary">
-                  {ticket.displayId}
+                  # {ticket.displayId}
                 </span>
 
                 <span
@@ -175,6 +194,19 @@ const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
             <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">
               {ticket.subtitle}
             </p>
+
+            <div className="mt-[10px] flex flex-row items-center space-x-[10px]">
+              <Image
+                src={`https://picsum.photos/200/200?${index + 2}`}
+                width={25}
+                height={25}
+                alt="icon"
+                className="rounded-full"
+              />
+              <span className="select-none text-[12px] text-gray-500 font-[600]">
+                {ticket?.fullname}
+              </span>
+            </div>
           </div>
         ))}
       </div>
