@@ -3,11 +3,16 @@ import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
 import { SupportService } from "@/app/lib/services/support";
 import { useCallback, useEffect, useState } from "react";
-import { setSelectedTicket } from "@/app/lib/redux/slices/support";
+import {
+  setMessageLoading,
+  setSelectedTicket,
+} from "@/app/lib/redux/slices/support";
+import { SocketService } from "../../hooks/useSocket";
 
 type TicketStatus = "open" | "closed";
 
 interface IUser {
+  _id: string | undefined;
   firstname: string;
   lastname: string;
   avatar: null | string;
@@ -31,6 +36,7 @@ interface Ticket {
   subtitle: string;
   status: TicketStatus;
   fullname: string;
+  userId: string | undefined;
   avatar: null | string | undefined;
   time: string;
   ticketId: string;
@@ -48,6 +54,7 @@ const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filter, setFilter] = useState<TicketStatus>("open");
   const [loading, setLoading] = useState(false);
+  const socketService = SocketService.getInstance().getSocket();
   const [counts, setCounts] = useState<{ open: number; closed: number }>({
     open: 0,
     closed: 0,
@@ -67,6 +74,7 @@ const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
     subtitle: ticket.description,
     status: ticket.status,
     ticketId: ticket?.ticketId,
+    userId: ticket?.createdBy?._id,
     avatar: ticket?.createdBy?.avatar,
     fullname: ticket?.createdBy?.firstname + " " + ticket?.createdBy?.lastname,
     time: new Date(ticket.createdAt).toLocaleString(),
@@ -101,6 +109,11 @@ const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
     if (!activeTicket && tickets.length > 0) {
       setActiveTicket(tickets[0]?.ticketId);
       dispatch(setSelectedTicket(tickets[0]));
+      dispatch(setMessageLoading(true));
+      socketService?.emit("list", {
+        toUserId: tickets[0].userId,
+        ticketId: tickets[0]?._id,
+      });
     }
   }, [tickets, activeTicket, setActiveTicket]);
 

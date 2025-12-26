@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useAppSelector } from "@/app/lib/redux/controls";
-import { useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import clsx from "clsx";
 
 interface TicketChatProps {
   activeTicket: string | null;
@@ -9,117 +10,152 @@ interface TicketChatProps {
 
 const TicketChat = ({ activeTicket }: TicketChatProps) => {
   const chatEndRef = useRef<HTMLDivElement | null>(null);
-  const selectedTickets = useAppSelector((state) => state.support.singleTicket);
+  const [chatText, setChatText] = useState("");
+  const selectedTicket = useAppSelector((state) => state.support.singleTicket);
+  const messages = useAppSelector((state) => state.support.messages);
+  const loading = useAppSelector((state) => state.support.loading);
 
-  // Scroll to bottom whenever activeTicket changes
+  const online = useAppSelector((state) => state.support.online);
+  const authUser = useAppSelector((state) => state.auth.user);
+
+  const isUserOnline = online?.includes(selectedTicket?.userId ?? "");
+
+  /* 🔽 Auto-scroll to bottom */
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [activeTicket]);
+  }, [activeTicket, messages?.length]);
+
+  const handleChat = () => {};
 
   return (
     <div className="w-2/3 flex ml-[15px] flex-col bg-surface-light dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-      {/* Chat Header */}
-      <div className="h-16 px-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between shrink-0 bg-white dark:bg-surface-dark z-10">
+      {/* ================= HEADER ================= */}
+      <div className="h-16 px-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between shrink-0 bg-white dark:bg-surface-dark">
         <div className="flex items-center gap-3">
           <div className="relative">
             <Image
               src={
-                selectedTickets?.avatar ?? `https://picsum.photos/200/200?${2}`
+                selectedTicket?.avatar ?? `https://picsum.photos/200/200?${2}`
               }
               width={36}
               height={36}
-              alt="icon"
+              alt="avatar"
               className="rounded-full"
             />
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
+            <span
+              className={clsx(
+                "absolute bottom-0 right-0 w-3 h-3 border-2 rounded-full",
+                isUserOnline
+                  ? "bg-green-500 border-white"
+                  : "bg-gray-400 border-white"
+              )}
+            />
           </div>
+
           <div>
             <h3 className="text-sm font-bold text-gray-900 dark:text-white">
-              {selectedTickets?.fullname}
+              {selectedTicket?.fullname}
             </h3>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                Ticket {activeTicket}
-              </span>
-              <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-              <span className="text-xs text-primary font-medium">
-                {selectedTickets?.title}
-              </span>
-            </div>
+            <span className="text-xs text-gray-500">
+              {isUserOnline ? "Online" : "Offline"}
+            </span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
-            <span className="material-icons-outlined">search</span>
-          </button>
-          <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
-            <span className="material-icons-outlined">more_vert</span>
-          </button>
-          <button className="ml-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-xs font-semibold rounded-lg transition-colors">
-            Close Ticket
-          </button>
-        </div>
+
+        <button className="ml-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-xs font-semibold rounded-lg">
+          Close Ticket
+        </button>
       </div>
 
-      {/* Chat Messages */}
+      {/* ================= MESSAGES ================= */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50 dark:bg-gray-900/50">
-        {/* Example Chat Bubbles */}
-        <div className="flex justify-center">
-          <span className="text-xs font-medium text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
-            Today, Oct 24
-          </span>
-        </div>
+        {/* 🔹 Skeleton Loader */}
+        {loading && (
+          <>
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex gap-3 animate-pulse">
+                <div className="w-8 h-8 bg-gray-300 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-300 rounded w-1/3" />
+                  <div className="h-4 bg-gray-200 rounded w-2/3" />
+                </div>
+              </div>
+            ))}
+          </>
+        )}
 
-        <div className="flex items-end gap-3">
-          <img
-            alt="Alice"
-            className="w-8 h-8 rounded-full mb-1"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGVFEuFshaJmYjwGYvtjgrjAk668RL_y45yZvcuGerqPr8BVy4jmp_EZIrVRKsuSJZ59bF2xDVMNyQ5p96dAMRcdjQA-FUnQHePb5KVZutPkek54n9fEk6v8GSL5xvektaQrp57eVYmDKBUo405yZG63j8Bi6VjVBVF3atLgic370RpNVJS69OsE5LriWjTkBCLseA1AXdVji_PVzpyYdQQEUgb-akZLNgtiSyrALYP-PgDDoBjlj6AaNzPecFQFDqcJLK74KQhe47"
-          />
-          <div className="flex flex-col gap-1 max-w-[70%]">
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl rounded-bl-none shadow-sm border border-gray-100 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-200">
-              Hi support, I initiated a withdrawal of 0.5 BTC about 4 hours ago.
-              It's still processing.
-            </div>
-            <span className="text-[10px] text-gray-400 ml-1">10:23 AM</span>
+        {/* 🔹 Empty Placeholder */}
+        {!loading && messages?.length === 0 && (
+          <div className="h-full flex flex-col items-center justify-center text-center">
+            <div className="text-4xl mb-3">💬</div>
+            <h4 className="font-semibold text-gray-700 dark:text-gray-200">
+              No messages yet
+            </h4>
+            <p className="text-sm text-gray-400 max-w-xs">
+              Start the conversation and help the user resolve their issue.
+            </p>
           </div>
-        </div>
+        )}
 
-        {/* Dummy div to scroll to bottom */}
-        <div ref={chatEndRef}></div>
+        {/* 🔹 Chat Messages */}
+        {messages?.map((msg, index) => {
+          const isMine = msg.from === authUser?.id;
+
+          return (
+            <div
+              key={msg.id}
+              className={clsx(
+                "flex items-end gap-3",
+                isMine ? "justify-end" : "justify-start"
+              )}
+            >
+              {!isMine && (
+                <Image
+                  src={`https://picsum.photos/200/200?${index + 2}`}
+                  width={25}
+                  height={25}
+                  alt="icon"
+                  className="rounded-full"
+                />
+              )}
+
+              <div className="flex flex-col gap-1 max-w-[70%]">
+                <div
+                  className={clsx(
+                    "p-4 rounded-2xl shadow-sm border text-sm",
+                    isMine
+                      ? "bg-primary text-white rounded-br-none"
+                      : "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-none"
+                  )}
+                >
+                  {msg.text}
+                </div>
+                <span className="text-[10px] text-gray-400 ml-1">
+                  {new Date(msg.createdAt).toLocaleTimeString()}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+
+        <div ref={chatEndRef} />
       </div>
 
-      {/* Chat Input */}
+      {/* ================= INPUT (UI UNCHANGED) ================= */}
       <div className="p-4 bg-white dark:bg-surface-dark border-t border-gray-100 dark:border-gray-700">
-        <div className="relative flex items-center gap-2 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-600 p-2 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
-          <button className="p-2 mt-[7px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shrink-0">
-            <span className="material-icons-outlined">attach_file</span>
-          </button>
+        <div className="relative flex items-center gap-2 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-600 p-2">
           <textarea
             className="w-full bg-transparent border-none text-[12px] text-gray-800 dark:text-white placeholder-gray-400 focus:ring-0 resize-none py-2.5 max-h-32"
             placeholder="Type your reply..."
             rows={1}
-          ></textarea>
-          <div className="flex flex-row items-center gap-2 shrink-0 pb-1">
-            <button className="text-gray-400 mt-[7px] hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-              <span className="material-icons-outlined">
-                sentiment_satisfied_alt
-              </span>
-            </button>
-            <button className="px-[10px] py-[5px] text-[12px] bg-primary hover:bg-purple-700 text-white rounded-[5px] shadow-sm transition-colors flex items-center justify-center">
-              Send
-            </button>
-          </div>
-        </div>
-        <div className="flex justify-between items-center mt-2 px-1">
-          <span className="text-xs text-gray-400">
-            Enter to send, Shift + Enter for new line
-          </span>
-          <div className="flex gap-2">
-            <button className="text-xs font-medium text-gray-500 hover:text-primary transition-colors">
-              Saved Replies
-            </button>
-          </div>
+            onChange={(e) => setChatText(e.target.value)}
+          />
+          <button
+            onClick={handleChat}
+            className="px-[10px] py-[5px] text-[12px] bg-primary hover:bg-purple-700 text-white rounded-[5px]"
+          >
+            Send
+          </button>
         </div>
       </div>
     </div>
