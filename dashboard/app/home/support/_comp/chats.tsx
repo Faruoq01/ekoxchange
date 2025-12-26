@@ -1,5 +1,6 @@
 "use client";
-
+import Image from "next/image";
+import { useAppSelector } from "@/app/lib/redux/controls";
 import { useRef, useEffect } from "react";
 
 interface TicketChatProps {
@@ -8,6 +9,7 @@ interface TicketChatProps {
 
 const TicketChat = ({ activeTicket }: TicketChatProps) => {
   const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const selectedTickets = useAppSelector((state) => state.support.singleTicket);
 
   // Scroll to bottom whenever activeTicket changes
   useEffect(() => {
@@ -20,16 +22,20 @@ const TicketChat = ({ activeTicket }: TicketChatProps) => {
       <div className="h-16 px-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between shrink-0 bg-white dark:bg-surface-dark z-10">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <img
-              alt="Active User"
-              className="w-10 h-10 rounded-full"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWQ1BfZfTCNwRgm-XFaV8Ijx34qHcbEEkJUJ7Dwkqm9MrneqhREKM9BfS_2dKcyIBQ2pDOBe1b4Xx6JhZ0aMV9SaXmo3PgBFd4J3x2HMi4hfeiRYxBKvOjW3D4q0bVlIZKZ7gGueRnmeTQsIKSk_1j1qVbXMVMN9PhClVXfaI_s3YM-3fM8SU-sTDuN522ZUzDjHHqWI-dCao9adErm-1F23hcvhYXmS2tJTZVN2Nh3g_l56yuvw-hsi4wOoSwrAYLc-3AOC68qsde"
+            <Image
+              src={
+                selectedTickets?.avatar ?? `https://picsum.photos/200/200?${2}`
+              }
+              width={36}
+              height={36}
+              alt="icon"
+              className="rounded-full"
             />
             <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
           </div>
           <div>
             <h3 className="text-sm font-bold text-gray-900 dark:text-white">
-              Alice Freeman
+              {selectedTickets?.fullname}
             </h3>
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -37,7 +43,7 @@ const TicketChat = ({ activeTicket }: TicketChatProps) => {
               </span>
               <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
               <span className="text-xs text-primary font-medium">
-                Withdrawal Issue
+                {selectedTickets?.title}
               </span>
             </div>
           </div>

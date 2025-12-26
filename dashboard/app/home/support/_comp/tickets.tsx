@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
-import { useAppSelector } from "@/app/lib/redux/controls";
+import { useAppDispatch, useAppSelector } from "@/app/lib/redux/controls";
 import { SupportService } from "@/app/lib/services/support";
 import { useCallback, useEffect, useState } from "react";
+import { setSelectedTicket } from "@/app/lib/redux/slices/support";
 
 type TicketStatus = "open" | "closed";
 
@@ -41,9 +42,10 @@ interface TicketListProps {
 }
 
 const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const dispatch = useAppDispatch();
   const [skip] = useState(0);
   const [limit] = useState(30);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filter, setFilter] = useState<TicketStatus>("open");
   const [loading, setLoading] = useState(false);
   const [counts, setCounts] = useState<{ open: number; closed: number }>({
@@ -98,6 +100,7 @@ const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
   useEffect(() => {
     if (!activeTicket && tickets.length > 0) {
       setActiveTicket(tickets[0]?.ticketId);
+      dispatch(setSelectedTicket(tickets[0]));
     }
   }, [tickets, activeTicket, setActiveTicket]);
 
