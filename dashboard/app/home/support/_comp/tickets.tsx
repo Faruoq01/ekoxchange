@@ -106,16 +106,22 @@ const TicketList = ({ activeTicket, setActiveTicket }: TicketListProps) => {
   }, [getTicketList]);
 
   useEffect(() => {
-    if (!activeTicket && tickets.length > 0) {
-      setActiveTicket(tickets[0]?.ticketId);
-      dispatch(setSelectedTicket(tickets[0]));
-      dispatch(setMessageLoading(true));
-      socketService?.emit("list", {
-        toUserId: tickets[0].userId,
-        ticketId: tickets[0]?._id,
-      });
+    if (tickets.length === 0) return;
+
+    let ticketToSelect = tickets.find((t) => t.ticketId === activeTicket);
+    if (!ticketToSelect) {
+      ticketToSelect = tickets[0];
+      setActiveTicket(ticketToSelect.ticketId);
     }
-  }, [tickets, activeTicket, setActiveTicket]);
+
+    dispatch(setSelectedTicket(ticketToSelect));
+    dispatch(setMessageLoading(true));
+
+    socketService?.emit("list", {
+      toUserId: ticketToSelect.userId,
+      ticketId: ticketToSelect._id,
+    });
+  }, [activeTicket, tickets, dispatch, socketService]);
 
   return (
     <div className="w-1/3 flex flex-col bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">

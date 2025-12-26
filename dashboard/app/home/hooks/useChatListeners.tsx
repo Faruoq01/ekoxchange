@@ -34,7 +34,7 @@ export default function useChatSocketListeners() {
     };
 
     const handleMessaging = (msg: any) => {
-      console.log(msg, "msg ======>");
+      dispatch(setMessages(msg));
     };
 
     const handleInitialFetch = (msg: any) => {

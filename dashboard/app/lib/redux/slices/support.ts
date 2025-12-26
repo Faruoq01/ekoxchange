@@ -22,6 +22,7 @@ interface IUser {
 }
 
 interface ChatMessageType {
+  _id: any;
   id: string;
   from: string;
   to?: string;
