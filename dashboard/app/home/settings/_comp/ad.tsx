@@ -12,26 +12,21 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import axios from "axios";
 import { SettingsService } from "@/app/lib/services/settings";
+import toast from "react-hot-toast";
 
-/* -------------------------------------------------------------------------- */
-/* Schema */
-/* -------------------------------------------------------------------------- */
-
+/* ---------------------------- Schema ---------------------------- */
 const schema = z.object({
   enabled: z.boolean(),
-  imageUrl: z.url("Banner image is required"),
+  imageUrl: z.string().url("Banner image is required"),
 });
 
 type FormValues = z.infer<typeof schema>;
 
-/* -------------------------------------------------------------------------- */
-/* Component */
-/* -------------------------------------------------------------------------- */
-
+/* ---------------------------- Component ---------------------------- */
 export default function AdBannerSettings() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
   const {
@@ -51,78 +46,53 @@ export default function AdBannerSettings() {
   const enabled = watch("enabled");
   const imageUrl = watch("imageUrl");
 
-  /* -------------------------------------------------------------------------- */
-  /* Fetch existing banner on mount */
-  /* -------------------------------------------------------------------------- */
+  /* ---------------------------- Fetch existing banner ---------------------------- */
   const fetchBanner = useCallback(async () => {
     const { error, payload } = await SettingsService.getBanner();
     if (!error && payload) {
-      setValue("enabled", payload.status === "active", {
-        shouldDirty: false,
-      });
-      console.log(`${process.env.NEXT_PUBLIC_BASE_URL}${payload.path}`, "llll");
+      setValue("enabled", payload.status === "active", { shouldDirty: false });
       setValue(
         "imageUrl",
         `${process.env.NEXT_PUBLIC_BASE_URL}${payload.path}`,
-        {
-          shouldDirty: false,
-        }
+        { shouldDirty: false }
       );
     }
-  }, []);
+  }, [setValue]);
 
   useEffect(() => {
     fetchBanner();
-  }, [setValue]);
+  }, [fetchBanner]);
 
-  /* -------------------------------------------------------------------------- */
-  /* Image Upload */
-  /* -------------------------------------------------------------------------- */
-  const handleFileChange = async (file: File) => {
+  /* ---------------------------- Form Submit ---------------------------- */
+  const onSubmit = async (data: FormValues) => {
+    if (!selectedFile) {
+      alert("Please select a banner image");
+      return;
+    }
+
     try {
       setUploading(true);
 
       const formData = new FormData();
-      formData.append("file", file);
-      formData.append("status", String(enabled));
-
-      const res = await fetch("http://localhost:4000/banner/update", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error("Upload failed");
-
-      const data = await res.json();
-      setValue("imageUrl", data.path, { shouldValidate: true });
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  /* -------------------------------------------------------------------------- */
-  /* Submit Banner Settings */
-  /* -------------------------------------------------------------------------- */
-  const onSubmit = async (data: FormValues) => {
-    try {
-      const formData = new FormData();
-      if (fileInputRef.current?.files?.[0]) {
-        formData.append("file", fileInputRef.current.files[0]);
-      }
+      formData.append("file", selectedFile);
       formData.append("status", String(data.enabled));
 
-      await fetch("http://localhost:4000/banner/update", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: formData,
-      });
+      const { error, payload } = await SettingsService.saveBanner(formData);
+
+      if (!error && payload) {
+        const bannerUrl = `${process.env.NEXT_PUBLIC_BASE_URL}${payload.path}`;
+        setValue("imageUrl", bannerUrl, { shouldValidate: true });
+
+        // Reset selected file for future uploads
+        setSelectedFile(null);
+
+        toast.success("Banner uploaded successfully!");
+      }
     } catch (err) {
       console.error(err);
+      toast.error("Failed to upload banner");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -162,11 +132,18 @@ export default function AdBannerSettings() {
 
         <Separator />
 
-        {/* Current Banner */}
+        {/* Current Banner / Selected File */}
         <div className="space-y-3">
           <h3 className="text-sm font-medium">Current Banner</h3>
 
-          {imageUrl ? (
+          {selectedFile ? (
+            <div className="rounded-xl border bg-muted/20 p-4 text-center">
+              <p className="text-sm font-medium">
+                Selected file:{" "}
+                <span className="font-semibold">{selectedFile.name}</span>
+              </p>
+            </div>
+          ) : imageUrl ? (
             <div className="rounded-xl border bg-muted/20 p-4">
               <img
                 src={imageUrl}
@@ -188,7 +165,7 @@ export default function AdBannerSettings() {
 
         {/* Upload */}
         <div className="space-y-3">
-          <h3 className="text-sm font-medium">Upload New Banner</h3>
+          <h3 className="text-sm font-medium">Select New Banner</h3>
 
           <div
             onClick={() => enabled && fileInputRef.current?.click()}
@@ -205,7 +182,7 @@ export default function AdBannerSettings() {
             ) : (
               <>
                 <UploadCloud className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                <p className="text-sm font-medium">Click to upload image</p>
+                <p className="text-sm font-medium">Click to select image</p>
                 <p className="text-xs text-muted-foreground">
                   PNG, JPG, WebP • Recommended 1200×300
                 </p>
@@ -220,7 +197,7 @@ export default function AdBannerSettings() {
             accept="image/*"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) handleFileChange(file);
+              if (file) setSelectedFile(file);
             }}
           />
         </div>

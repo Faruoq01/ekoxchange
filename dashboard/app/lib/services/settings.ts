@@ -75,6 +75,19 @@ export const SettingsService = {
       return { error: true, payload: e.message };
     }
   },
+  saveBanner: async (param: any) => {
+    try {
+      const response = await API.post(`/banner/update`, param, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };
 
 interface IGeneralSettings {
