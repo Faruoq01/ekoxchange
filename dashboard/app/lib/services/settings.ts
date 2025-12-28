@@ -65,6 +65,16 @@ export const SettingsService = {
       return { error: true, payload: e.message };
     }
   },
+  getBanner: async () => {
+    try {
+      const response = await API.get(`/banner/get`, {
+        withCredentials: true,
+      });
+      return { error: false, payload: response?.data };
+    } catch (e: any) {
+      return { error: true, payload: e.message };
+    }
+  },
 };
 
 interface IGeneralSettings {

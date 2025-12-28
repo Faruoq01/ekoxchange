@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { UploadCloud, ImageIcon } from "lucide-react";
-import { useRef } from "react";
+import { UploadCloud, ImageIcon, Loader2 } from "lucide-react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,24 +11,28 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import axios from "axios";
+import { SettingsService } from "@/app/lib/services/settings";
 
 /* -------------------------------------------------------------------------- */
-/*                               Schema                                       */
+/* Schema */
 /* -------------------------------------------------------------------------- */
 
 const schema = z.object({
   enabled: z.boolean(),
-  imageUrl: z.string().url("Banner image is required"),
+  imageUrl: z.url("Banner image is required"),
 });
 
 type FormValues = z.infer<typeof schema>;
 
 /* -------------------------------------------------------------------------- */
-/*                               Component                                    */
+/* Component */
 /* -------------------------------------------------------------------------- */
 
 export default function AdBannerSettings() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const {
     handleSubmit,
@@ -40,66 +44,102 @@ export default function AdBannerSettings() {
     resolver: zodResolver(schema),
     defaultValues: {
       enabled: true,
-      imageUrl: "", // existing banner URL can be fetched & set here
+      imageUrl: "",
     },
   });
 
+  const enabled = watch("enabled");
   const imageUrl = watch("imageUrl");
 
-  /* ----------------------------- Cloudinary Upload ----------------------------- */
+  /* -------------------------------------------------------------------------- */
+  /* Fetch existing banner on mount */
+  /* -------------------------------------------------------------------------- */
+  const fetchBanner = useCallback(async () => {
+    const { error, payload } = await SettingsService.getBanner();
+    if (!error && payload) {
+      setValue("enabled", payload.status === "active", {
+        shouldDirty: false,
+      });
+      console.log(`${process.env.NEXT_PUBLIC_BASE_URL}${payload.path}`, "llll");
+      setValue(
+        "imageUrl",
+        `${process.env.NEXT_PUBLIC_BASE_URL}${payload.path}`,
+        {
+          shouldDirty: false,
+        }
+      );
+    }
+  }, []);
 
-  const uploadToCloudinary = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "YOUR_UPLOAD_PRESET");
+  useEffect(() => {
+    fetchBanner();
+  }, [setValue]);
 
-    const res = await fetch(
-      "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-
-    if (!res.ok) throw new Error("Image upload failed");
-
-    const data = await res.json();
-    return data.secure_url as string;
-  };
-
+  /* -------------------------------------------------------------------------- */
+  /* Image Upload */
+  /* -------------------------------------------------------------------------- */
   const handleFileChange = async (file: File) => {
-    const url = await uploadToCloudinary(file);
-    setValue("imageUrl", url, { shouldValidate: true });
+    try {
+      setUploading(true);
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("status", String(enabled));
+
+      const res = await fetch("http://localhost:4000/banner/update", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Upload failed");
+
+      const data = await res.json();
+      setValue("imageUrl", data.path, { shouldValidate: true });
+    } finally {
+      setUploading(false);
+    }
   };
 
-  /* ----------------------------- Submit to API ----------------------------- */
-
+  /* -------------------------------------------------------------------------- */
+  /* Submit Banner Settings */
+  /* -------------------------------------------------------------------------- */
   const onSubmit = async (data: FormValues) => {
-    await fetch("/api/settings/ad-banner", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    try {
+      const formData = new FormData();
+      if (fileInputRef.current?.files?.[0]) {
+        formData.append("file", fileInputRef.current.files[0]);
+      }
+      formData.append("status", String(data.enabled));
+
+      await fetch("http://localhost:4000/banner/update", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <motion.section
-      key="ads"
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
-      className="mb-[50px]"
+      className="max-w-3xl"
     >
-      <Card className="bg-card-light dark:bg-card-dark p-6 rounded-xl shadow-sm space-y-6">
+      <Card className="p-6 rounded-2xl space-y-6 shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-heading-light dark:text-heading-dark">
-              Ad Banner Settings
-            </h2>
-            <p className="text-[12px] text-text-light dark:text-text-dark">
-              Manage dashboard promotional banners.
+            <h2 className="text-xl font-semibold">Ad Banner</h2>
+            <p className="text-sm text-muted-foreground">
+              Control the promotional banner shown on the dashboard.
             </p>
           </div>
 
@@ -107,9 +147,9 @@ export default function AdBannerSettings() {
             name="enabled"
             control={control}
             render={({ field }) => (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Badge variant={field.value ? "default" : "secondary"}>
-                  {field.value ? "Enabled" : "Disabled"}
+                  {field.value ? "Active" : "Inactive"}
                 </Badge>
                 <Switch
                   checked={field.value}
@@ -120,16 +160,18 @@ export default function AdBannerSettings() {
           />
         </div>
 
-        {/* Existing Banner */}
-        <div className="space-y-2">
-          <h3 className="font-medium">Current Banner</h3>
+        <Separator />
+
+        {/* Current Banner */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-medium">Current Banner</h3>
 
           {imageUrl ? (
-            <div className="rounded-xl border p-4 bg-muted/30">
+            <div className="rounded-xl border bg-muted/20 p-4">
               <img
                 src={imageUrl}
                 alt="Banner preview"
-                className="max-h-44 mx-auto rounded-lg object-contain"
+                className="mx-auto max-h-44 rounded-lg object-contain"
               />
             </div>
           ) : (
@@ -146,17 +188,29 @@ export default function AdBannerSettings() {
 
         {/* Upload */}
         <div className="space-y-3">
-          <h3 className="font-medium">Upload Banner</h3>
+          <h3 className="text-sm font-medium">Upload New Banner</h3>
 
           <div
-            onClick={() => fileInputRef.current?.click()}
-            className="cursor-pointer rounded-xl border border-dashed p-6 flex flex-col items-center justify-center text-center hover:border-primary transition"
+            onClick={() => enabled && fileInputRef.current?.click()}
+            className={`rounded-xl border border-dashed p-6 text-center transition
+              ${
+                enabled
+                  ? "cursor-pointer hover:border-primary"
+                  : "opacity-50 cursor-not-allowed"
+              }
+            `}
           >
-            <UploadCloud className="h-8 w-8 text-muted-foreground mb-2" />
-            <p className="text-sm font-medium">Click to upload image</p>
-            <p className="text-xs text-muted-foreground">
-              PNG, JPG, WebP • Recommended 1200×300
-            </p>
+            {uploading ? (
+              <Loader2 className="h-8 w-8 mx-auto animate-spin text-muted-foreground" />
+            ) : (
+              <>
+                <UploadCloud className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                <p className="text-sm font-medium">Click to upload image</p>
+                <p className="text-xs text-muted-foreground">
+                  PNG, JPG, WebP • Recommended 1200×300
+                </p>
+              </>
+            )}
           </div>
 
           <input
@@ -173,7 +227,7 @@ export default function AdBannerSettings() {
 
         {/* Actions */}
         <form onSubmit={handleSubmit(onSubmit)} className="flex justify-end">
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting || uploading}>
             {isSubmitting ? "Saving..." : "Save Changes"}
           </Button>
         </form>
