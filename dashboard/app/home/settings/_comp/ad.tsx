@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { SettingsService } from "@/app/lib/services/settings";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 /* ---------------------------- Schema ---------------------------- */
 const schema = z.object({
@@ -101,7 +102,7 @@ export default function AdBannerSettings() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="max-w-3xl"
+      className="max-w-3xl mb-[50px]"
     >
       <Card className="p-6 rounded-2xl space-y-6 shadow-sm">
         {/* Header */}
@@ -144,11 +145,13 @@ export default function AdBannerSettings() {
               </p>
             </div>
           ) : imageUrl ? (
-            <div className="rounded-xl border bg-muted/20 p-4">
-              <img
+            <div className="rounded-xl border bg-muted/20 p-4 flex flex-row justify-start">
+              <Image
                 src={imageUrl}
+                width={200}
+                height={150}
                 alt="Banner preview"
-                className="mx-auto max-h-44 rounded-lg object-contain"
+                className="max-h-44 rounded-lg object-contain"
               />
             </div>
           ) : (
