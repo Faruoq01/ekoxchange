@@ -1,72 +1,31 @@
 "use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-const Notifications = () => {
+const CryptoNotifications = () => {
   return (
     <div className="p-8 mb-[50px] space-y-10">
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-lg font-bold text-gray-900 dark:text-white">
-            Notifications Settings
+            Crypto Notification Settings
           </h1>
           <p className="text-[12px] text-gray-500 dark:text-gray-400">
-            Manage system alerts, delivery channels, and admin recipients.
+            Customize alerts for trades, wallet activity, fees, and market
+            rates.
           </p>
         </div>
         <Button variant="outline" className="flex items-center gap-2">
-          <span className="material-icons-outlined text-lg">send</span>
+          <span className="material-icons-outlined text-lg">
+            notifications_active
+          </span>
           Send Test Notification
         </Button>
       </div>
-
-      {/* Delivery Channels */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <span className="material-icons-outlined text-primary">
-              campaign
-            </span>
-            Delivery Channels
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { title: "Email", icon: "mail", color: "blue" },
-            { title: "SMS", icon: "smartphone", color: "green" },
-            { title: "Webhooks", icon: "webhook", color: "purple" },
-          ].map((channel) => (
-            <Card
-              key={channel.title}
-              className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div
-                  className={`p-2.5 bg-${channel.color}-100 dark:bg-${channel.color}-900/40 text-${channel.color}-600 dark:text-${channel.color}-400 rounded-lg shadow-sm`}
-                >
-                  <span className="material-icons-outlined">
-                    {channel.icon}
-                  </span>
-                </div>
-                <Switch />
-              </div>
-              <h3 className="font-semibold text-gray-900 dark:text-white text-lg">
-                {channel.title}
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
-                {channel.title === "Email" &&
-                  "Send comprehensive alerts and reports to registered admin email addresses."}
-                {channel.title === "SMS" &&
-                  "Urgent alerts delivered directly to admin mobile numbers via Twilio."}
-                {channel.title === "Webhooks" &&
-                  "Push real-time event JSON payloads to configured external URLs (e.g., Slack)."}
-              </p>
-            </Card>
-          ))}
-        </CardContent>
-      </Card>
 
       {/* Triggers Configuration */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -74,31 +33,35 @@ const Notifications = () => {
           <CardHeader className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <span className="material-icons-outlined text-primary">tune</span>
-              Triggers Configuration
+              Trade & Wallet Alerts
             </CardTitle>
-            <Badge>System Level</Badge>
+            <Badge>User Level</Badge>
           </CardHeader>
           <CardContent className="divide-y divide-gray-100 dark:divide-gray-700">
             {[
               {
-                title: "Large Transaction Alerts",
-                desc: "Triggers when value > $50,000",
+                title: "Buy Completed",
+                desc: "Notify when a crypto purchase is successful",
               },
               {
-                title: "Failed Transactions",
-                desc: "Notify on 3+ consecutive failures",
+                title: "Sell Completed",
+                desc: "Notify when a crypto sale is successful",
               },
               {
-                title: "Suspicious Activity",
-                desc: "IP mismatch or unusual login locations",
+                title: "Send/Receive",
+                desc: "Alerts on incoming or outgoing wallet transfers",
               },
               {
-                title: "System Errors",
-                desc: "Server 500 errors and API timeouts",
+                title: "Swap Executed",
+                desc: "Notify when a token swap is completed",
               },
               {
-                title: "KYC Review Needed",
-                desc: "Documents pending manual approval",
+                title: "Rate Changes",
+                desc: "Notify when BTC, ETH or selected tokens change by >5%",
+              },
+              {
+                title: "Fee Updates",
+                desc: "Alerts when network or trading fees change significantly",
               },
             ].map((trigger) => (
               <div
@@ -144,21 +107,21 @@ const Notifications = () => {
           <CardContent className="space-y-2">
             {[
               {
-                name: "Faruk Aminu",
-                email: "faruk@eko.com",
-                initials: "FA",
+                name: "Alice Crypto",
+                email: "alice@crypto.com",
+                initials: "AC",
                 bg: "indigo",
               },
               {
-                name: "Jane Doe",
-                email: "jane@eko.com",
-                initials: "JD",
+                name: "Bob Trader",
+                email: "bob@crypto.com",
+                initials: "BT",
                 bg: "emerald",
               },
               {
-                name: "Security Mgr",
-                email: "sec@eko.com",
-                initials: "SM",
+                name: "Charlie Wallet",
+                email: "charlie@crypto.com",
+                initials: "CW",
                 bg: "pink",
               },
             ].map((recipient) => (
@@ -197,7 +160,7 @@ const Notifications = () => {
               <span className="material-icons-outlined text-sm">
                 person_add
               </span>{" "}
-              Add New Admin
+              Add New Recipient
             </Button>
           </CardContent>
         </Card>
@@ -206,10 +169,10 @@ const Notifications = () => {
       {/* Actions */}
       <div className="pt-6 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-4">
         <Button variant="outline">Discard Changes</Button>
-        <Button>Save Configuration</Button>
+        <Button>Save Settings</Button>
       </div>
     </div>
   );
 };
 
-export default Notifications;
+export default CryptoNotifications;
