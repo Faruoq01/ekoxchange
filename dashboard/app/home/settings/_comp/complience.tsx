@@ -88,10 +88,10 @@ export default function Compliance() {
   };
 
   const getGeneralSettings = useCallback(async () => {
-    const { error, payload } = await SettingsService.getGeneralSettings();
+    const { error, payload } = await SettingsService.getComplianceSettings();
 
-    if (!error && payload?.generalSettings) {
-      setCompliance(payload.generalSettings);
+    if (!error && payload?.complianceSettings) {
+      setCompliance(payload.complianceSettings);
     }
   }, []);
 

@@ -28,6 +28,10 @@ const nextConfig: NextConfig = {
         hostname: "picsum.photos",
       },
       {
+        protocol: "https",
+        hostname: "api.ekoxchange.com",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
         port: "4000",
